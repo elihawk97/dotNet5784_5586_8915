@@ -9,7 +9,7 @@ partial class Program
 
     private static void Welcome8915()
     {
-        console.WriteLine("Soclof has entered the chat.")
+        Console.WriteLine("Soclof has entered the chat.");
     }
 
     static partial void Welcome5586();
