@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace DO
 {
-    internal class Order
+    internal class Dependency
     {
     }
 }
