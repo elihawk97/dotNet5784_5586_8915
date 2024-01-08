@@ -34,14 +34,14 @@ public record Task
     string deliverables; // may need to change field type
     string notes;
     int engineerID;
-    ExperienceLevel level;
+    Enums.ExperienceLevel level;
     
 
     public Task()
     {
     }
 
-    public Task(int iD, string? nickName, string description, bool isMilestone, DateTime dateCreated, DateTime projectedStartDate, DateTime? actualStartTime, int duration, DateTime dealLine, DateTime? actualEndDate, bool deliverable, string notes, int engineerID)
+    public Task(int iD, string? nickName, string description, bool isMilestone, DateTime dateCreated, DateTime projectedStartDate, DateTime? actualStartTime, int duration, DateTime dealLine, DateTime? actualEndDate, string deliverable, string notes, int engineerID)
     {
         ID = iD;
         this.nickName = nickName;
@@ -53,7 +53,7 @@ public record Task
         this.duration = duration;
         this.dealLine = dealLine;
         this.actualEndDate = actualEndDate;
-        this.deliverable = deliverable;
+        this.deliverables = deliverable;
         this.notes = notes;
         this.engineerID = engineerID;
     }
