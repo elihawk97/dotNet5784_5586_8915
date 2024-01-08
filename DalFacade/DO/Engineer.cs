@@ -14,7 +14,7 @@ public record Engineer
     string? Name;
     string? Email;
 
-    Enums.ExperienceLevel? EngineerExperience = null ;
+    Enums.ExperienceLevel? EngineerExperience;
     double Cost;
 
     // Default constructor with initialization
