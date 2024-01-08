@@ -12,12 +12,14 @@ namespace Dal
         private static readonly Random random = new Random();
 
         // Internal lists for data entities
+        internal static List<DO.Task> tasks = new List<DO.Task>();
         internal static List<Engineer> Engineers = new List<Engineer>();
         internal static List<Dependency> Dependencies = new List<Dependency>();
 
         internal static class Config
         {
             // Internal static fields for auto-incremental identifier fields
+        
             internal static int EngineerIdCounter = 0;
             internal static int DependencyIdCounter = 0;
 
