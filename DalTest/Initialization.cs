@@ -239,7 +239,13 @@ public static class Initialization
                 createdOn,
                 ship,
                 delivery
-            ); 
+            );
+
+            if (checkCircularDependency(newDependency))
+            {
+                // Circular dependency detected, skip this iteration
+                continue;
+            }
 
             // Creating using CRUD method Create
             s_dalDependency!.Create(newDependency);
@@ -247,4 +253,31 @@ public static class Initialization
     }
 
 
+    static bool checkCircularDependency(DO.Dependency item)
+    {
+
+        if (item.DependentTask == item.DependentOnTask)
+        {
+            return true;
+        }
+
+        bool checkCircularHelper(DO.Dependency item, int dependentID)
+        {
+            List<DO.Dependency> chain = new List<DO.Dependency>();
+            bool res;
+            chain = s_dalDependency!.ReadAll().FindAll(i => i.DependentTask == item.DependentOnTask);
+            foreach (var d in chain)
+            {
+                if (d.DependentOnTask == dependentID)
+                    return true;
+                res = checkCircularHelper(d, dependentID);
+                if (res) return res;
+            }
+            return false;
+        }
+        return checkCircularHelper(item, item.DependentTask);
+
+    }
+
 }
+

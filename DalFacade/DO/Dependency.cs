@@ -16,8 +16,8 @@
 public record Dependency
 {
     public int Id; 
-    int DependentTask;
-    int DependentOnTask;
+    public int DependentTask;
+    public int DependentOnTask;
     string? CustomerEmail;
     string? Address;
     DateTime? CreatedOn;
