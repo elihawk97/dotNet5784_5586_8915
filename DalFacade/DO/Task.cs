@@ -21,7 +21,7 @@ namespace DO;
 /// </summary>
 public record Task
 {
-    int ID;
+    public int Id;
     string? nickName;
     string description;
     bool isMilestone = false;
@@ -41,9 +41,9 @@ public record Task
     {
     }
 
-    public Task(int iD, string? nickName, string description, bool isMilestone, DateTime dateCreated, DateTime projectedStartDate, DateTime? actualStartTime, int duration, DateTime dealLine, DateTime? actualEndDate, string deliverable, string notes, int engineerID)
+    public Task(int Id, string? nickName, string description, bool isMilestone, DateTime dateCreated, DateTime projectedStartDate, DateTime? actualStartTime, int duration, DateTime dealLine, DateTime? actualEndDate, string deliverable, string notes, int engineerID)
     {
-        ID = iD;
+        ID = Id;
         this.nickName = nickName;
         this.description = description;
         this.isMilestone = isMilestone;
