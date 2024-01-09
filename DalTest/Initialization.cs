@@ -4,6 +4,7 @@ using DO;
 using DalApi;
 using Dal;
 using System;
+using System.Net;
 
 
 public static class Initialization
@@ -14,6 +15,18 @@ public static class Initialization
 
     private static readonly Random s_rand = new();
 
+    public static void Do(ITask? dalTask, IEngineer? dalEngineer, IDependency? dalDependency)
+    {
+        // Assign the arguments to access variables
+        s_dalTask = dalTask ?? throw new NullReferenceException("DAL Task cannot be null!");
+        s_dalEngineer = dalEngineer ?? throw new NullReferenceException("DAL Engineer cannot be null!");
+        s_dalDependency = dalDependency ?? throw new NullReferenceException("DAL Dependency cannot be null!");
+
+        // Call the private initialization methods
+        createTasks();
+        CreateEngineers();
+        CreateDependencys();
+    }
     private static void createTasks()
     {
         string[] TaskName = {"Task 1", "Task 2", "Task 3", "Task 4", "Task 5",
@@ -85,12 +98,25 @@ public static class Initialization
 
             //nullable values
             string? description = null;
-            string? deliverables = null;
+            string? deliverables = null; 
             string? notes = null;
             int? EngineerID = null;
 
             //Constructor for Task 
-            Task newTask = new(_id, Task, description, dateCreated, projectedStartDate, actualStartTime, duration, deadLine, actualEndDate, deliverables, notes, EngineerID, DifficultyLevel);
+            Task newTask = new(
+                _id, 
+                Task, 
+                description, 
+                dateCreated, 
+                projectedStartDate, 
+                actualStartTime, 
+                duration, 
+                deadLine, 
+                actualEndDate, 
+                deliverables, 
+                notes, 
+                EngineerID, 
+                DifficultyLevel);
 
             s_dalTask!.Create(newTask);
 
@@ -150,7 +176,12 @@ public static class Initialization
             double Cost = s_rand.NextDouble() * (300 - 150) + 150;
 
             //Create new Engineer Object
-            Engineer NewEngineer = new(_id, EngineerName, email, experienceLevel, Cost);
+            Engineer NewEngineer = new(
+                _id, 
+                EngineerName, 
+                email, 
+                experienceLevel, 
+                Cost);
 
 
             //Create using Crud method Create
@@ -162,11 +193,58 @@ public static class Initialization
 
     private static void CreateDependencys()
     {
+        // Creates 40 Names for Dependency
+        string name = "Dependency";
+        string[] names = new string[40];
 
+        for (int i = 1; i <= 40; i++)
+        {
+            names[i - 1] = $"{name} {i}";
+        }
 
+        foreach (var dependencyName in names)
+        {
+            // Setting the Dependency Id
+            int dependencyId;
+            do
+            {
+                dependencyId = s_rand.Next(names.Length);
+            } while (s_dalDependency!.Read(dependencyId) != null);
 
+            // Generating random dependencies for the task
+            int dependentTaskId = s_rand.Next(1, 21); // Assuming task Ids range from 1 to 20
+            int dependentOnTaskId = s_rand.Next(1, 21); // Assuming task Ids range from 1 to 20
 
+            // Ensure that dependentTaskId and dependentOnTaskId are not the same
+            while (dependentTaskId == dependentOnTaskId)
+            {
+                dependentOnTaskId = s_rand.Next(1, 21);
+            }
+
+            // Setting other properties
+            string? customerEmail = null;
+            string? address = null;
+            DateTime createdOn = DateTime.Now.AddDays(-s_rand.Next(1, 357));
+            DateTime ship = DateTime.Now.AddDays(s_rand.Next(1, 16));
+            DateTime delivery = ship.AddDays(s_rand.Next(1, 11));
+
+            // Creating Dependency object
+            Dependency newDependency = new Dependency
+            (
+                dependencyId,
+                dependentTaskId,
+                dependentOnTaskId,
+                customerEmail,
+                address,
+                createdOn,
+                ship,
+                delivery
+            ); 
+
+            // Creating using CRUD method Create
+            s_dalDependency!.Create(newDependency);
+        }
     }
 
-}
+
 }
