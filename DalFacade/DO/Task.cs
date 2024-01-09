@@ -34,9 +34,6 @@ public record Task
     string? deliverables; // may need to change field type
     string? notes;
     int? engineerID;
-    Enums.ExperienceLevel level;
-    private string task;
-    private DateTime created;
     private Enums.ExperienceLevel difficultyLevel;
 
     public Task()
@@ -58,13 +55,13 @@ public record Task
     /// <param name="deliverable"></param>
     /// <param name="notes"></param>
     /// <param name="engineerID"></param>
-    public Task(string? nickName, string description, bool isMilestone, DateTime dateCreated, DateTime projectedStartDate, DateTime? actualStartTime, int duration, DateTime dealLine, DateTime? actualEndDate, string deliverable, string notes)
-    public Task(int id, string task, string? description, DateTime created, DateTime projectedStartDate, DateTime? actualStartTime, TimeSpan? duration, DateTime deadLine, DateTime? actualEndDate, string? deliverables, string? notes, int? engineerID, Enums.ExperienceLevel difficultyLevel)
+    public Task(int id, string nickName, string? description, DateTime dateCreated, DateTime projectedStartDate, DateTime? actualStartTime, TimeSpan? duration, DateTime deadLine, DateTime? actualEndDate, string? deliverables, string? notes, int? engineerID, Enums.ExperienceLevel difficultyLevel)
     {
-        ID = Id;
+        this.Id = Id;
         this.nickName = nickName;
         this.description = description;
-        this.created = created;
+        this.isMilestone = false;
+        this.dateCreated = dateCreated;
         this.projectedStartDate = projectedStartDate;
         this.actualStartTime = actualStartTime;
         this.duration = duration;
@@ -72,8 +69,8 @@ public record Task
         this.actualEndDate = actualEndDate;
         this.deliverables = deliverables;
         this.notes = notes;
+        this.difficultyLevel = difficultyLevel;
     }
-
 
 }
 

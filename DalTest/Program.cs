@@ -3,30 +3,38 @@ using DalApi;
 using Dal;
 using DO;
 using System.Runtime.InteropServices;
+using DalTest;
+using System.ComponentModel;
 
 internal class Program
 {
-    public DO.Task taskInput()
+
+    private static IDependency? sDependency = new DependencyImplementation();
+    private static ITask? sTask = new TaskImplementation();
+    private static IEngineer? sEngineer = new EngineerImplementation();
+    public static DO.Task taskInput()
     {
         Console.WriteLine("Enter data to create new task");
+        int Id = int.Parse(Console.ReadLine());
         string nickName = Console.ReadLine();
         string description = Console.ReadLine();
         bool isMilestone = bool.Parse(Console.ReadLine());
         DateTime dateCreated = DateTime.Parse(Console.ReadLine());
         DateTime projectedStartDate = DateTime.Parse(Console.ReadLine());
-        DateTime? actualStartTime = DateTime.TryParse(Console.ReadLine()) ? DateTime.Parse(Console.ReadLine()) : null;
-        int duration = int.Parse(Console.ReadLine());
+        DateTime? actualStartTime = DateTime.Parse(Console.ReadLine());
+        System.TimeSpan duration = System.TimeSpan.Parse(Console.ReadLine());
         DateTime dealLine = DateTime.Parse(Console.ReadLine());
-        DateTime? actualEndDate = DateTime.TryParse(Console.ReadLine()) ? DateTime.Parse(Console.ReadLine()) : null;
+        DateTime? actualEndDate = DateTime.Parse(Console.ReadLine());
         string deliverables = Console.ReadLine();
         string notes = Console.ReadLine();
         int engineerID = int.Parse(Console.ReadLine());
-        Enums.ExperienceLevel level = (Enums.ExperienceLevel)Enum.Parse(typeof(Enums.ExperienceLevel), Console.ReadLine());
+        DO.Enums.ExperienceLevel level = (Enums.ExperienceLevel)Enum.Parse(typeof(Enums.ExperienceLevel), Console.ReadLine());
+
 
         DO.Task newTask = new DO.Task(
+            Id,
             nickName,
             description,
-            isMilestone,
             dateCreated,
             projectedStartDate,
             actualStartTime,
@@ -34,17 +42,19 @@ internal class Program
             dealLine,
             actualEndDate,
             deliverables,
-            notes
+            notes,
+            engineerID,
+            level
         );
         return newTask;
     }
-    public void createTask()
+    public static void createTask()
     {
         DO.Task newTask = taskInput();
         sTask.Create(newTask);
     }
 
-    public void readTask()
+    public static void readTask()
     {
         Console.WriteLine("Enter the id of the Task you wish to see");
         int id = int.Parse(Console.ReadLine());
@@ -52,7 +62,7 @@ internal class Program
         Console.WriteLine(toPrint);
     }
 
-    public void readAllTasks()
+    public static void readAllTasks()
     {
         List<DO.Task> taskList = sTask.ReadAll();
         foreach (var task in taskList)
@@ -61,7 +71,7 @@ internal class Program
         }
     }
 
-    public void updateTask()
+    public static void updateTask()
     {
         Console.WriteLine("Enter the id of the Task you wish to update");
         DO.Task updateTask = taskInput();
@@ -69,14 +79,14 @@ internal class Program
 
     }
 
-    public void deleteTask()
+    public static void deleteTask()
     {
         Console.WriteLine("Enter the id of the Task you wish to delete");
         int id = int.Parse(Console.ReadLine());
         sTask.Delete(id);
     }
 
-    public void useTask()
+    public static void useTask()
     {
         Console.WriteLine(@"Choose one of the following tasks to perfrom:
                             1: Create Task
@@ -119,9 +129,10 @@ internal class Program
     }
 
 
-    public DO.Dependency dependencyInput()
+    public static DO.Dependency dependencyInput()
     {
         Console.WriteLine("Enter data to create new dependency");
+        int Id = int.Parse(Console.ReadLine());
         int dependentTask = int.Parse(Console.ReadLine());
         int dependentOnTask = int.Parse(Console.ReadLine());
         string customerEmail = Console.ReadLine();
@@ -131,6 +142,7 @@ internal class Program
         DateTime delivery = DateTime.Parse(Console.ReadLine());
 
         DO.Dependency newDependency = new DO.Dependency(
+            Id,
             dependentTask,
             dependentOnTask,
             customerEmail,
@@ -142,20 +154,20 @@ internal class Program
         return newDependency;
     }
 
-    public void createDependency()
+    public static void createDependency()
     {
         DO.Dependency newDependency = dependencyInput();
         sDependency.Create(newDependency);
     }
 
-    public void readDependency()
+    public static void readDependency()
     {
         Console.WriteLine("Enter the id of the Dependency you wish to see");
         int id = int.Parse(Console.ReadLine());
         DO.Dependency toPrint = sDependency.Read(id);
         Console.WriteLine(toPrint);
     }
-    public void readAllDependencies()
+    public static void readAllDependencies()
     {
         List<Dependency> dependencyList = sDependency.ReadAll();
         foreach (var dependency in dependencyList)
@@ -163,21 +175,21 @@ internal class Program
             Console.WriteLine(dependency);
         }
     }
-    public void updateDependency()
+    public static void updateDependency()
     {
         Console.WriteLine("Enter the id of the Dependency you wish to update");
         DO.Dependency updateDependency = dependencyInput();
         sDependency.Update(updateDependency);
     }
 
-    public void deleteDependency()
+    public static void deleteDependency()
     {
         Console.WriteLine("Enter the id of the Dependency you wish to delete");
         int id = int.Parse(Console.ReadLine());
         sDependency.Delete(id);
     }
 
-    public void useDependency()
+    public static void useDependency()
     {
         Console.WriteLine(@"Choose one of the following dependencies to perform:
                         1: Create Dependency
@@ -218,59 +230,63 @@ internal class Program
         }
     }
 
-    public DO.Engineer engineerInput()
+    public static DO.Engineer engineerInput()
     {
         Console.WriteLine("Enter data to create a new engineer");
+        int Id = int.Parse(Console.ReadLine());
         string name = Console.ReadLine();
         string email = Console.ReadLine();
         double cost = double.Parse(Console.ReadLine());
+        DO.Enums.ExperienceLevel level = (Enums.ExperienceLevel)Enum.Parse(typeof(Enums.ExperienceLevel), Console.ReadLine());
 
         DO.Engineer newEngineer = new DO.Engineer(
+            Id,
             name,
             email,
+            level,
             cost
+
         );
         return newEngineer;
     }
-
-    public void createEngineer()
+    public static void createEngineer()
     {
         DO.Engineer newEngineer = engineerInput();
         sEngineer.Create(newEngineer);
     }
 
-    public void readEngineer()
+    public static void readEngineer()
     {
         Console.WriteLine("Enter the id of the Engineer you wish to see");
         int id = int.Parse(Console.ReadLine());
         DO.Engineer toPrint = sEngineer.Read(id);
         Console.WriteLine(toPrint);
     }
-    public void readAllEngineers()
+    public static void readAllEngineers()
     {
-        List<Engineer> engineerList = sEngineer.ReadAll(); 
-        foreach(var engineer in engineerList)
+        List<Engineer> engineerList = sEngineer.ReadAll();
+        foreach (var engineer in engineerList)
         {
             Console.WriteLine(engineer);
         }
     }
 
 
-    public void updateEngineer()
+    public static void updateEngineer()
     {
         Console.WriteLine("Enter the id of the Engineer you wish to update");
         DO.Engineer updateEngineer = engineerInput();
         sEngineer.Update(updateEngineer);
     }
 
-    public void deleteEngineer()
+    public static void deleteEngineer()
     {
         Console.WriteLine("Enter the id of the Engineer you wish to delete");
         int id = int.Parse(Console.ReadLine());
         sEngineer.Delete(id);
     }
 
-    public void useEngineer()
+    public static void useEngineer()
     {
         Console.WriteLine(@"Choose one of the following actions to perform on an Engineer:
                         1: Create Engineer
@@ -311,25 +327,47 @@ internal class Program
     }
 
 
+
     private static void Main(string[] args)
     {
-        private static IDependency? sDependency = new DependencyImplementation();
-    private static ITask? sTask = new TaskImplementation();
-    private static IEngineer? sEngineer = new EngineerImplementation();
-
-        try{
-            Initialization.Do(sDependency, sTask, sEngineer);
+        try
+        {
+            Initialization.Do(sTask, sEngineer, sDependency);
             int choice = 1;
-            while(choice != 0){
+            while (choice != 0)
+            {
                 Console.WriteLine(@"These are the options of interfaces you may interact with:
-                     1: Task
-                     2: Engineer
-                     3: Dependency
-                    ");
+                         1: Task
+                         2: Engineer
+                         3: Dependency
+                        ");
+                choice = int.Parse(Console.ReadLine());
+                switch (choice)
+                {
+                    case 1:
+                        useTask();
+                        break;
+                    case 2:
+                        useEngineer();
+                        break;
+                    case 3:
+                        useDependency();
+                        break;
+                    default:
+                        choice = 0;
+                        break;
+                }
             }
         }
-        catch {
-
-}
+        catch (Exception ex)
+        {
+            // Handle other types of exceptions
+            Console.WriteLine($"Caught exception: {ex.GetType().Name}");
+            Console.WriteLine($"Message: {ex.Message}");
+            Console.WriteLine($"StackTrace: {ex.StackTrace}");
+            // You can print or log more details based on your needs
+        }
     }
 }
+
+

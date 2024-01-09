@@ -24,12 +24,12 @@ public class EngineerImplementation : IEngineer
 
     public Engineer? Read(int id)
     {
-        Engineer copy = DataSource.Engineers.Find(e => e.Id == id);
-        if (copy == null)
+        return DataSource.Engineers.Find(e => e.Id == id);
+/*        if (copy == null)
         {
             throw new Exception($"Can not read Engineer. Engineer with ID={id} does Not exist");
         }
-        return copy;
+        return copy;*/
 
     }
 

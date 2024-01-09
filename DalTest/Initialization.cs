@@ -136,7 +136,7 @@ public static class Initialization
             while (s_dalEngineer!.Read(_id) != null);
            
             //setting the Email
-            string email; 
+            string email = ""; 
             string[] parts = EngineerName.Split(' ');
             if (parts.Length >= 2)
             {

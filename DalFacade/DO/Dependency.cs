@@ -26,6 +26,7 @@ public record Dependency
 
     public Dependency(int Id, int dependentTask, int dependentOnTask, string? customerEmail, string? address, DateTime? createdOn, DateTime? ship, DateTime? delivery)
     {
+        this.Id = Id;
         DependentTask = dependentTask;
         DependentOnTask = dependentOnTask;
         CustomerEmail = customerEmail;
@@ -35,5 +36,3 @@ public record Dependency
         Delivery = delivery;
     }
 }
-
-
