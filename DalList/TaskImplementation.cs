@@ -30,9 +30,9 @@ public class TaskImplementation : ITask
         return DataSource.Tasks.FindAll(e => true);
     }
 
-    public void Update(Task item)
+    public void Update(Task item) 
     {
-        Engineer existingItem = DataSource.Engineers.Find(e => e.Id == item.Id);
+        Task existingItem = DataSource.Tasks.Find(e => e.Id == item.Id);
 
         if (existingItem == null)
         {
@@ -40,10 +40,10 @@ public class TaskImplementation : ITask
         }
 
         // Remove the old object from the list
-        DataSource.Engineers.Remove(existingItem);
+        DataSource.Tasks.Remove(existingItem);
 
         // Add the updated object to the list
-        DataSource.Engineers.Add(item);
+        DataSource.Tasks.Add(item);
  
     }
 }
