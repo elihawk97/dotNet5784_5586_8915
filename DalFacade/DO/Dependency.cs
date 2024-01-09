@@ -5,16 +5,16 @@ namespace DO;
 
 
 /// <summary>
-/// Dependency Entity
+/// Represents the Dependency entity.
 /// </summary>
-/// <param name="Id">Personal unique ID of the Dependency </param> 
-/// <param name="DependentTask"></param>
-/// <param name="DependentOnTask">Requisite</param>
-/// <param name="CustomerEmail"></param>
-/// /// <param name="Address"></param>
-/// <param name="CreatedOn">Requisite</param>
-/// <param name="Ship"></param>
-/// /// <param name="Delivery"></param>
+/// <param name="Id">Personal unique ID of the Dependency.</param>
+/// <param name="DependentTask">The ID of the dependent task.</param>
+/// <param name="DependentOnTask">The ID of the task on which it depends (Requisite).</param>
+/// <param name="CustomerEmail">The customer's email associated with the Dependency.</param>
+/// <param name="Address">The address associated with the Dependency.</param>
+/// <param name="CreatedOn">The date and time when the Dependency was created (Requisite).</param>
+/// <param name="Ship">The date and time when the Dependency is scheduled to ship.</param>
+/// <param name="Delivery">The date and time when the Dependency is scheduled for delivery.</param>
 
 public record Dependency
 {
@@ -27,6 +27,17 @@ public record Dependency
     DateTime? Ship;
     DateTime? Delivery;
 
+    /// <summary>
+    /// Initializes a new instance of the Dependency class.
+    /// </summary>
+    /// <param name="Id">Personal unique ID of the Dependency.</param>
+    /// <param name="dependentTask">The ID of the dependent task.</param>
+    /// <param name="dependentOnTask">The ID of the task on which it depends (Requisite).</param>
+    /// <param name="customerEmail">The customer's email associated with the Dependency.</param>
+    /// <param name="address">The address associated with the Dependency.</param>
+    /// <param name="createdOn">The date and time when the Dependency was created (Requisite).</param>
+    /// <param name="ship">The date and time when the Dependency is scheduled to ship.</param>
+    /// <param name="delivery">The date and time when the Dependency is scheduled for delivery.</param>
     public Dependency(int Id, int dependentTask, int dependentOnTask, string? customerEmail, string? address, DateTime? createdOn, DateTime? ship, DateTime? delivery)
     {
         this.Id = Id;
@@ -39,6 +50,10 @@ public record Dependency
         Delivery = delivery;
     }
 
+    /// <summary>
+    /// Overrides the default ToString method to provide a formatted string representation of the Dependency object.
+    /// </summary>
+    /// <returns>A formatted string representing the Dependency object.</returns>
     public override string ToString() => $@"
     ID={Id}, 
     DependentTask={DependentTask}, 

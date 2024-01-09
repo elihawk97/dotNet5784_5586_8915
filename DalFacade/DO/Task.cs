@@ -3,21 +3,21 @@
 namespace DO;
 
 /// <summary>
-/// Task record that describes all details of a task.
+/// Represents a Task record that describes all details of a task.
 /// 
-/// ID - task ID
-/// _nickName - the _nickName for the task
-/// _description - _description of the task
-/// _isMilestone - boolean whether this task is a milestone or not
-/// _dateCreated - the date the project was created
-/// _projectedStartDate - date the project is predicted to begin
-/// actualStartDate - date the project started
-/// _deadLine - predicted end date
-/// _actualEndDate - actual end date of the project
-/// deliverable - 
-/// _notes - additional _notes about the project
+/// ID - Task ID
+/// _nickName - The nickname for the task
+/// _description - Description of the task
+/// _isMilestone - Boolean indicating whether this task is a milestone or not
+/// _dateCreated - The date the project was created
+/// _projectedStartDate - Date the project is predicted to begin
+/// actualStartDate - Date the project started
+/// _deadLine - Predicted end date
+/// _actualEndDate - Actual end date of the project
+/// deliverables - Deliverables associated with the task
+/// _notes - Additional notes about the project
 /// _engineerID - ID of the engineer working on the project
-/// Difficulty - enum of level of difficulty of the project
+/// DifficultyLevel - Enum indicating the level of difficulty of the project
 /// </summary>
 public record Task
 {
@@ -36,6 +36,9 @@ public record Task
     int? _engineerID;
     private Enums.ExperienceLevel _difficultyLevel;
 
+    /// <summary>
+    /// Initializes a new instance of the Task class.
+    /// </summary>
     public Task()
     {
     }
@@ -71,6 +74,11 @@ public record Task
         this._notes = notes;
         this._difficultyLevel = difficultyLevel;
     }
+
+    /// <summary>
+    /// Overrides the default ToString method to provide a formatted string representation of the Task object.
+    /// </summary>
+    /// <returns>A formatted string representing the Task object.</returns>
     public override string ToString() => $@"
     ID={Id}, 
     NickName={_nickName}, 

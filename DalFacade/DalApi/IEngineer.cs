@@ -1,7 +1,9 @@
 ﻿namespace DalApi;
 using DO;
 
-
+/// <summary>
+/// Represents the contract for Engineer-related operations in the DAL.
+/// </summary>
 public interface IEngineer
 { 
     int Create(Engineer item); // Creates new entity object in DAL

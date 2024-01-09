@@ -1,6 +1,9 @@
 ﻿namespace DalApi;
 using DO;
 
+/// <summary>
+/// Represents the contract for Dependency-related operations in the DAL.
+/// </summary>
 public interface IDependency
 {
     int Create(Dependency item); // Creates new entity object in DAL
