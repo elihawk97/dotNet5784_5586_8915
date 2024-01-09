@@ -7,26 +7,43 @@ public class TaskImplementation : ITask
 {
     public int Create(Task item)
     {
-        throw new NotImplementedException();
+        int id = DataSource.Config.GetNextTaskId();
+        Task copy = item with { Id = id };
+        DataSource.Tasks.Add(copy);
+        return id;
     }
 
     public void Delete(int id)
     {
-        throw new NotImplementedException();
+        int itemsDeleted = DataSource.Engineers.RemoveAll(e => e.Id == id);
+
+        //Throw Exception using number of ItemsDeleted
     }
 
     public Task? Read(int id)
     {
-        throw new NotImplementedException();
+        return DataSource.Tasks.Find(e => e.Id == id);
     }
 
     public List<Task> ReadAll()
     {
-        throw new NotImplementedException();
+        return DataSource.Tasks.FindAll(e => true);
     }
 
     public void Update(Task item)
     {
-        throw new NotImplementedException();
+        Engineer existingItem = DataSource.Engineers.Find(e => e.Id == item.Id);
+
+        if (existingItem == null)
+        {
+            // Object with the specified Id does not exist, throw an exception
+        }
+
+        // Remove the old object from the list
+        DataSource.Engineers.Remove(existingItem);
+
+        // Add the updated object to the list
+        DataSource.Engineers.Add(item);
+ 
     }
 }

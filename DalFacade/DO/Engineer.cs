@@ -10,7 +10,7 @@
 /// /// <param name="Cost"></param>
 public record Engineer
 {
-    int Id;
+    public int Id;
     string? Name;
     string? Email;
 
