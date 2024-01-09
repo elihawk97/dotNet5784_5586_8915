@@ -25,11 +25,7 @@ public class DependencyImplementation : IDependency
     public Dependency? Read(int id)
     {
         return DataSource.Dependencies.Find(item => item.Id == id);
-/*        if(copy == null)
-        {
-            throw new Exception($"Can not read dependency. Dependency with ID={id} does Not exist");
-        }
-        return copy;*/
+
     }
 
     public List<Dependency> ReadAll()

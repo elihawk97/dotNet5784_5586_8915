@@ -1,5 +1,8 @@
 ﻿namespace DalApi;
 using DO;
+/// <summary>
+/// Represents the interface for managing Task entities in the data access layer (DAL).
+/// </summary>
 public interface ITask
 {
     int Create(Task item); // Creates new entity object in DAL
