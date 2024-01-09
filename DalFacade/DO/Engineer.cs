@@ -31,6 +31,12 @@ public record Engineer
         Cost = cost;
     }
 
-
+    public override string ToString() => $@"
+    ID={Id}, 
+    Name={Name}, 
+    Email={Email}, 
+    EngineerExperience={EngineerExperience}, 
+    Cost={Cost}
+    ";
 
 }

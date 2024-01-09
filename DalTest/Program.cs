@@ -293,6 +293,7 @@ internal class Program
                         2: Read Engineer
                         3: Update Engineer
                         4: Delete Engineer
+                        5: Read All Engineers
     ");
         string inputString = Console.ReadLine();
         int parsedInt;
