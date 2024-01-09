@@ -36,14 +36,30 @@ public record Task
     int engineerID;
     Enums.ExperienceLevel level;
     
-
+    /// <summary>
+    /// 
+    /// </summary>
     public Task()
     {
     }
 
-    public Task(int Id, string? nickName, string description, bool isMilestone, DateTime dateCreated, DateTime projectedStartDate, DateTime? actualStartTime, int duration, DateTime dealLine, DateTime? actualEndDate, string deliverable, string notes, int engineerID)
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="nickName"></param>
+    /// <param name="description"></param>
+    /// <param name="isMilestone"></param>
+    /// <param name="dateCreated"></param>
+    /// <param name="projectedStartDate"></param>
+    /// <param name="actualStartTime"></param>
+    /// <param name="duration"></param>
+    /// <param name="dealLine"></param>
+    /// <param name="actualEndDate"></param>
+    /// <param name="deliverable"></param>
+    /// <param name="notes"></param>
+    /// <param name="engineerID"></param>
+    public Task(string? nickName, string description, bool isMilestone, DateTime dateCreated, DateTime projectedStartDate, DateTime? actualStartTime, int duration, DateTime dealLine, DateTime? actualEndDate, string deliverable, string notes)
     {
-        ID = Id;
         this.nickName = nickName;
         this.description = description;
         this.isMilestone = isMilestone;
@@ -55,7 +71,6 @@ public record Task
         this.actualEndDate = actualEndDate;
         this.deliverables = deliverable;
         this.notes = notes;
-        this.engineerID = engineerID;
     }
 
 
