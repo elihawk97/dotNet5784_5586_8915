@@ -22,7 +22,18 @@ public record Dependency
     string? Address;
     DateTime? CreatedOn;
     DateTime? Ship;
-    DateTime? Delivery; 
+    DateTime? Delivery;
+
+    public Dependency(int Id, int dependentTask, int dependentOnTask, string? customerEmail, string? address, DateTime? createdOn, DateTime? ship, DateTime? delivery)
+    {
+        DependentTask = dependentTask;
+        DependentOnTask = dependentOnTask;
+        CustomerEmail = customerEmail;
+        Address = address;
+        CreatedOn = createdOn;
+        Ship = ship;
+        Delivery = delivery;
+    }
 }
 
 
