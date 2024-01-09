@@ -15,8 +15,8 @@ public class DependencyImplementation : IDependency
 
     public void Delete(int id)
     {
-        int amountDeleted = DataSource.Dependencies.RemoveAll(item => item.id == id);
-        if (amountDeleted < 0)
+        int amountDeleted = DataSource.Dependencies.RemoveAll(item => item.Id == id);
+        if (amountDeleted <= 0)
         {
             throw new Exception($"Dependency with ID={id} does Not exist");
         }
@@ -24,7 +24,7 @@ public class DependencyImplementation : IDependency
 
     public Dependency? Read(int id)
     {
-        Dependency copy = DataSource.Dependencies.Find(item => item.id == id);
+        Dependency copy = DataSource.Dependencies.Find(item => item.Id == id);
         if(copy == null)
         {
             throw new Exception($"Can not read dependency. Dependency with ID={id} does Not exist");
@@ -44,11 +44,16 @@ public class DependencyImplementation : IDependency
 
     public void Update(Dependency item)
     {
-        bool isDeleted = DataSource.Dependencies.Remove(element => element.id == item.id);
-        if (!isDeleted)
+        Dependency toDelete = DataSource.Dependencies.Find(element => element.Id == item.Id);
+        if (toDelete == null)
         {
-            throw new Exception("Can't update no item with matching ID found");
+            throw new Exception($"Can't update! No Dependency  with matching ID {item.Id} found");
         }
-        DataSource.Dependencies.Add(item);           
+        // Remove the old object from the list
+        DataSource.Dependencies.Remove(toDelete);
+
+        // Add the updated object to the list
+        DataSource.Dependencies.Add(item);
+
     }
 }

@@ -15,31 +15,19 @@ public class TaskImplementation : ITask
 
     public void Delete(int id)
     {
-        int amountDeleted = DataSource.Engineers.RemoveAll(e => e.Id == id);
-        if (amountDeleted <= 0)
-        {
-            throw new Exception($"Can't Delete! Task with ID={id} does Not exist");
-        }
+        int itemsDeleted = DataSource.Engineers.RemoveAll(e => e.Id == id);
+
+        //Throw Exception using number of ItemsDeleted
     }
 
     public Task? Read(int id)
     {
-        Task copy = DataSource.Tasks.Find(e => e.Id == id);
-        if (copy == null)
-        {
-            throw new Exception($"Can not read Engineer. Engineer with ID={id} does Not exist");
-        }
-        return copy;
+        return DataSource.Tasks.Find(e => e.Id == id);
     }
 
     public List<Task> ReadAll()
     {
-        List<Task> copyList = DataSource.Tasks.FindAll(e => true);
-        if (copyList.Count == 0)
-        {
-            throw new Exception($"Can not read data since the Task list is empty");
-        }
-        return copyList;
+        return DataSource.Tasks.FindAll(e => true);
     }
 
     public void Update(Task item) 
@@ -48,7 +36,7 @@ public class TaskImplementation : ITask
 
         if (existingItem == null)
         {
-            throw new Exception($"Can't update! No Task with matching ID {item.Id} found");
+            // Object with the specified Id does not exist, throw an exception
         }
 
         // Remove the old object from the list

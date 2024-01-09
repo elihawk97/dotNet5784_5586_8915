@@ -22,6 +22,7 @@ namespace Dal
         
             internal static int EngineerIdCounter = 0;
             internal static int TaskIdCounter = 0;
+            internal static int dependencyIdCounter = 0;
 
             // Private static field for the object identifier
             private static int objectIdCounter = 0;
@@ -38,8 +39,13 @@ namespace Dal
                 return ++EngineerIdCounter;
             }
 
-            // Get method for the Dependency identifier
+            // Get method for the Task identifier
             internal static int GetNextTaskId()
+            {
+                return ++dependencyIdCounter;
+            }
+            // Get method for the Dependency identifier
+            internal static int GetNextDependencyId()
             {
                 return ++TaskIdCounter;
             }
