@@ -15,7 +15,7 @@
 
 public record Dependency
 {
-    int Id; 
+    public int Id; 
     int DependentTask;
     int DependentOnTask;
     string? CustomerEmail;
