@@ -23,37 +23,38 @@ public record Task
 {
     public int Id;
     string? nickName;
-    string description;
+    string? description;
     bool isMilestone = false;
     DateTime dateCreated;
     DateTime projectedStartDate;
     DateTime? actualStartTime;
-    int duration;
-    DateTime dealLine;
+    TimeSpan? duration;
+    DateTime deadLine;
     DateTime? actualEndDate;
-    string deliverables; // may need to change field type
-    string notes;
-    int engineerID;
+    string? deliverables; // may need to change field type
+    string? notes;
+    int? engineerID;
     Enums.ExperienceLevel level;
-    
+    private string task;
+    private DateTime created;
+    private Enums.ExperienceLevel difficultyLevel;
 
     public Task()
     {
     }
 
-    public Task(int Id, string? nickName, string description, bool isMilestone, DateTime dateCreated, DateTime projectedStartDate, DateTime? actualStartTime, int duration, DateTime dealLine, DateTime? actualEndDate, string deliverable, string notes, int engineerID)
+    public Task(int id, string task, string? description, DateTime created, DateTime projectedStartDate, DateTime? actualStartTime, TimeSpan? duration, DateTime deadLine, DateTime? actualEndDate, string? deliverables, string? notes, int? engineerID, Enums.ExperienceLevel difficultyLevel)
     {
-        ID = Id;
-        this.nickName = nickName;
+        Id = id;
+        this.task = task;
         this.description = description;
-        this.isMilestone = isMilestone;
-        this.dateCreated = dateCreated;
+        this.created = created;
         this.projectedStartDate = projectedStartDate;
         this.actualStartTime = actualStartTime;
         this.duration = duration;
-        this.dealLine = dealLine;
+        this.deadLine = deadLine;
         this.actualEndDate = actualEndDate;
-        this.deliverables = deliverable;
+        this.deliverables = deliverables;
         this.notes = notes;
         this.engineerID = engineerID;
     }
