@@ -1,4 +1,7 @@
-﻿namespace DO;
+﻿using System.Diagnostics;
+using System.Xml.Linq;
+
+namespace DO;
 
 
 /// <summary>
@@ -35,4 +38,15 @@ public record Dependency
         Ship = ship;
         Delivery = delivery;
     }
+
+    public override string ToString() => $@"
+    ID={Id}, 
+    DependentTask={DependentTask}, 
+    DependentOnTask={DependentOnTask}, 
+    CustomerEmail={CustomerEmail}, 
+    Address={Address}, 
+    CreatedOn={CreatedOn}, 
+    Ship={Ship}, 
+    Delivery={Delivery}
+    ";
 }
