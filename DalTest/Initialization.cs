@@ -5,6 +5,7 @@ using DalApi;
 using Dal;
 using System;
 using System.Net;
+using System.Data.Common;
 
 
 public static class Initialization
@@ -202,6 +203,7 @@ public static class Initialization
             names[i - 1] = $"{name} {i}";
         }
 
+        int count = 0;
         foreach (var dependencyName in names)
         {
             // Setting the Dependency Id
@@ -241,26 +243,39 @@ public static class Initialization
                 delivery
             );
 
-            if (checkCircularDependency(newDependency))
+
+
+            if (count > 0)
             {
-                // Circular dependency detected, skip this iteration
-                continue;
+                if (checkCircularDependency(newDependency))
+                {
+                    // Circular dependency detected, skip this iteration
+                    continue;
+                }
             }
+          
 
             // Creating using CRUD method Create
             s_dalDependency!.Create(newDependency);
         }
     }
 
-
+    /// <summary>
+    /// Checks for circular dependencies starting from the given dependency item.
+    /// </summary>
+    /// <param name="item">The dependency item to check for circular dependencies.</param>
+    /// <returns>True if a circular dependency is detected, otherwise false.</returns>
     static bool checkCircularDependency(DO.Dependency item)
     {
+        //If the dependent task is the same as the task it depends on, it's circular.
 
         if (item.DependentTask == item.DependentOnTask)
         {
             return true;
         }
 
+
+        // Recursive helper function to check circular dependencies within the dependency chain.
         bool checkCircularHelper(DO.Dependency item, int dependentID)
         {
             List<DO.Dependency> chain = new List<DO.Dependency>();
