@@ -1,5 +1,4 @@
-﻿using DalList;
-using DalApi;
+﻿using DalApi;
 using Dal;
 using DO;
 using System.Runtime.InteropServices;
@@ -136,20 +135,14 @@ internal class Program
         int dependentTask = int.Parse(Console.ReadLine());
         int dependentOnTask = int.Parse(Console.ReadLine());
         string customerEmail = Console.ReadLine();
-        string address = Console.ReadLine();
         DateTime createdOn = DateTime.Parse(Console.ReadLine());
-        DateTime ship = DateTime.Parse(Console.ReadLine());
-        DateTime delivery = DateTime.Parse(Console.ReadLine());
 
         DO.Dependency newDependency = new DO.Dependency(
             Id,
             dependentTask,
             dependentOnTask,
             customerEmail,
-            address,
-            createdOn,
-            ship,
-            delivery
+            createdOn
         );
         return newDependency;
     }

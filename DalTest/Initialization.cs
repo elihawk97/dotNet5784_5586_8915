@@ -144,10 +144,8 @@ public static class Initialization
                 experienceLevel, 
                 Cost);
 
-
             //Create using Crud method Create
             s_dalEngineer!.Create(NewEngineer);
-
         }
     }
 
@@ -226,6 +224,7 @@ public static class Initialization
             return true;
         }
 
+      
 
         // Recursive helper function to check circular dependencies within the dependency chain.
         bool checkCircularHelper(DO.Dependency item, int dependentID)
