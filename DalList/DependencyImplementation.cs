@@ -52,4 +52,10 @@ public class DependencyImplementation : IDependency
         DataSource.Dependencies.Add(item);
 
     }
+
+    public void Reset()
+    {
+        DataSource.Dependencies.Clear(); 
+    }
 }
+
