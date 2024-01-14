@@ -30,22 +30,24 @@ public static class Initialization
     }
     private static void createTasks()
     {
-        string[] TaskName = {"Task 1", "Task 2", "Task 3", "Task 4", "Task 5",
 
-                               "Task 6", "Task 7", "Task 8", "Task 9", "Task 10",
+        // Creates 20 Names for Task
+        string name = "Dependency";
+        string[] TaskNames = new string[20];
 
-                               "Task 11", "Task 12", "Task 13", "Task 14", "Task 15",
+        for (int i = 1; i <= 20; i++)
+        {
+            TaskNames[i - 1] = $"{name} {i}";
+        }
+        
 
-                               "Task 16", "Task 17", "Task 18", "Task 19", "Task 20"
-        };
-
-        foreach (var Task in TaskName)
+        foreach (var Task in TaskNames)
         {
 
             //Setting the Id
             int _id;
             do
-                _id = s_rand.Next(TaskName.Length);
+                _id = s_rand.Next(TaskNames.Length);
             while (s_dalTask!.Read(_id) != null);
 
             //setting all the dates
@@ -73,29 +75,7 @@ public static class Initialization
 
 
             //setting the difficuly level
-            int level = s_rand.Next(1, 6);
-            Enums.ExperienceLevel DifficultyLevel;
-            switch (level)
-            {
-                case 1:
-                    DifficultyLevel = Enums.ExperienceLevel.Novice;
-                    break;
-                case 2:
-                    DifficultyLevel = Enums.ExperienceLevel.AdvancedBeginner;
-                    break;
-                case 3:
-                    DifficultyLevel = Enums.ExperienceLevel.Competent;
-                    break;
-                case 4:
-                    DifficultyLevel = Enums.ExperienceLevel.Proficient;
-                    break;
-                case 5:
-                    DifficultyLevel = Enums.ExperienceLevel.Expert;
-                    break;
-                default:
-                    DifficultyLevel = Enums.ExperienceLevel.Novice;
-                    return;
-            }
+            Enums.ExperienceLevel experienceLevel = randomExperienceLevel();
 
             //nullable values
             string? description = null;
@@ -117,7 +97,7 @@ public static class Initialization
                 deliverables, 
                 notes, 
                 EngineerID, 
-                DifficultyLevel);
+                experienceLevel);
 
             s_dalTask!.Create(newTask);
 
@@ -149,29 +129,9 @@ public static class Initialization
             }
 
             //set the Experience Level 
-            int level = s_rand.Next(1, 6); 
-            Enums.ExperienceLevel experienceLevel;
-            switch (level)
-            {
-                case 1:
-                    experienceLevel = Enums.ExperienceLevel.Novice;
-                    break;
-                case 2:
-                    experienceLevel = Enums.ExperienceLevel.AdvancedBeginner;
-                    break;
-                case 3:
-                    experienceLevel = Enums.ExperienceLevel.Competent;
-                    break;
-                case 4:
-                    experienceLevel = Enums.ExperienceLevel.Proficient;
-                    break;
-                case 5:
-                    experienceLevel = Enums.ExperienceLevel.Expert;
-                    break;
-                default:
-                    experienceLevel = Enums.ExperienceLevel.Novice;
-                    return;
-            }
+           
+            Enums.ExperienceLevel experienceLevel = randomExperienceLevel();
+             
 
             //generate Cost
             double Cost = s_rand.NextDouble() * (300 - 150) + 150;
@@ -184,33 +144,30 @@ public static class Initialization
                 experienceLevel, 
                 Cost);
 
-
             //Create using Crud method Create
             s_dalEngineer!.Create(NewEngineer);
-
         }
-
     }
 
     private static void CreateDependencys()
     {
         // Creates 40 Names for Dependency
         string name = "Dependency";
-        string[] names = new string[40];
+        string[] DependencyNames = new string[40];
 
         for (int i = 1; i <= 40; i++)
         {
-            names[i - 1] = $"{name} {i}";
+            DependencyNames[i - 1] = $"{name} {i}";
         }
 
         int count = 0;
-        foreach (var dependencyName in names)
+        foreach (var dependencyName in DependencyNames)
         {
             // Setting the Dependency Id
             int dependencyId;
             do
             {
-                dependencyId = s_rand.Next(names.Length);
+                dependencyId = s_rand.Next(DependencyNames.Length);
             } while (s_dalDependency!.Read(dependencyId) != null);
 
             // Generating random dependencies for the task
@@ -225,10 +182,8 @@ public static class Initialization
 
             // Setting other properties
             string? customerEmail = null;
-            string? address = null;
             DateTime createdOn = DateTime.Now.AddDays(-s_rand.Next(1, 357));
-            DateTime ship = DateTime.Now.AddDays(s_rand.Next(1, 16));
-            DateTime delivery = ship.AddDays(s_rand.Next(1, 11));
+           
 
             // Creating Dependency object
             Dependency newDependency = new Dependency
@@ -237,12 +192,8 @@ public static class Initialization
                 dependentTaskId,
                 dependentOnTaskId,
                 customerEmail,
-                address,
-                createdOn,
-                ship,
-                delivery
+                createdOn
             );
-
 
 
             if (count > 0)
@@ -254,7 +205,6 @@ public static class Initialization
                 }
             }
           
-
             // Creating using CRUD method Create
             s_dalDependency!.Create(newDependency);
         }
@@ -274,6 +224,7 @@ public static class Initialization
             return true;
         }
 
+      
 
         // Recursive helper function to check circular dependencies within the dependency chain.
         bool checkCircularHelper(DO.Dependency item, int dependentID)
@@ -294,5 +245,35 @@ public static class Initialization
 
     }
 
+    /// <summary>
+    ///  Provides a random experience level from enum ExperienceLevel 
+    /// </summary>
+    /// <returns>Enum.Experience Level</returns>
+    static Enums.ExperienceLevel randomExperienceLevel() { 
+    int level = s_rand.Next(1, 6);
+    Enums.ExperienceLevel DifficultyLevel;
+            switch (level)
+            {
+                case 1:
+                    DifficultyLevel = Enums.ExperienceLevel.Novice;
+                    break;
+                case 2:
+                    DifficultyLevel = Enums.ExperienceLevel.AdvancedBeginner;
+                    break;
+                case 3:
+                    DifficultyLevel = Enums.ExperienceLevel.Competent;
+                    break;
+                case 4:
+                    DifficultyLevel = Enums.ExperienceLevel.Proficient;
+                    break;
+                case 5:
+                    DifficultyLevel = Enums.ExperienceLevel.Expert;
+                    break;
+                default:
+                    DifficultyLevel = Enums.ExperienceLevel.Novice;
+                break; 
+            }
+        return DifficultyLevel; 
+    }
 }
 

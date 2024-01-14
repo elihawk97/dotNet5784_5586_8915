@@ -57,5 +57,10 @@ public class EngineerImplementation : IEngineer
         // Add the updated object to the list
         DataSource.Engineers.Add(item);
     }
+
+    public void Reset()
+    {
+        DataSource.Engineers.Clear();
+    }
 }
 

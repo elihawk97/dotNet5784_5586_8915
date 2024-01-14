@@ -57,4 +57,9 @@ public class TaskImplementation : ITask
         DataSource.Tasks.Add(item);
  
     }
+
+    public void Reset()
+    {
+        DataSource.Tasks.Clear();
+    }
 }

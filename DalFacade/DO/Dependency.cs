@@ -11,10 +11,7 @@ namespace DO;
 /// <param name="DependentTask">The ID of the dependent task.</param>
 /// <param name="DependentOnTask">The ID of the task on which it depends (Requisite).</param>
 /// <param name="CustomerEmail">The customer's email associated with the Dependency.</param>
-/// <param name="Address">The address associated with the Dependency.</param>
 /// <param name="CreatedOn">The date and time when the Dependency was created (Requisite).</param>
-/// <param name="Ship">The date and time when the Dependency is scheduled to ship.</param>
-/// <param name="Delivery">The date and time when the Dependency is scheduled for delivery.</param>
 
 public record Dependency
 {
@@ -24,8 +21,6 @@ public record Dependency
     string? CustomerEmail;
     string? Address;
     DateTime? CreatedOn;
-    DateTime? Ship;
-    DateTime? Delivery;
     public bool IsActive = true;
 
 
@@ -36,20 +31,14 @@ public record Dependency
     /// <param name="dependentTask">The ID of the dependent task.</param>
     /// <param name="dependentOnTask">The ID of the task on which it depends (Requisite).</param>
     /// <param name="customerEmail">The customer's email associated with the Dependency.</param>
-    /// <param name="address">The address associated with the Dependency.</param>
     /// <param name="createdOn">The date and time when the Dependency was created (Requisite).</param>
-    /// <param name="ship">The date and time when the Dependency is scheduled to ship.</param>
-    /// <param name="delivery">The date and time when the Dependency is scheduled for delivery.</param>
-    public Dependency(int Id, int dependentTask, int dependentOnTask, string? customerEmail, string? address, DateTime? createdOn, DateTime? ship, DateTime? delivery)
+    public Dependency(int Id, int dependentTask, int dependentOnTask, string? customerEmail, DateTime? createdOn)
     {
         this.Id = Id;
         DependentTask = dependentTask;
         DependentOnTask = dependentOnTask;
         CustomerEmail = customerEmail;
-        Address = address;
         CreatedOn = createdOn;
-        Ship = ship;
-        Delivery = delivery;
     }
 
     /// <summary>
@@ -61,9 +50,6 @@ public record Dependency
     DependentTask={DependentTask}, 
     DependentOnTask={DependentOnTask}, 
     CustomerEmail={CustomerEmail}, 
-    Address={Address}, 
     CreatedOn={CreatedOn}, 
-    Ship={Ship}, 
-    Delivery={Delivery}
     ";
 }
