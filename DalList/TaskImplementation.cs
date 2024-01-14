@@ -42,7 +42,7 @@ public class TaskImplementation : ITask
         return copyList;
     }
 
-    public void Update(Task item) 
+    internal void Update(Task item) 
     {
         Task existingItem = DataSource.Tasks.Find(e => e.Id == item.Id);
 
