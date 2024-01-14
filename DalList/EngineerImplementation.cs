@@ -34,7 +34,7 @@ internal class EngineerImplementation : IEngineer
 
     public List<Engineer> ReadAll()
     {
-        List<Engineer> copyList = DataSource.Engineers.FindAll(e => e.IsActive == true);
+        List<Engineer> copyList = DataSource.Engineers.FindAll(e => true);
         if (copyList.Count == 0)
         {
             throw new Exception($"Can not read data since the Engineer list is empty");

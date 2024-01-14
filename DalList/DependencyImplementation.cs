@@ -29,7 +29,7 @@ internal class DependencyImplementation : IDependency
 
     public List<Dependency> ReadAll()
     {
-        List<Dependency> copyList = DataSource.Dependencies.FindAll(item => item.IsActive == true);
+        List<Dependency> copyList = DataSource.Dependencies.FindAll(item => true);
         if(copyList.Count == 0)
         {
             throw new Exception($"Can not read data since the list is empty");
