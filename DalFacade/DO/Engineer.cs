@@ -16,6 +16,8 @@ public record Engineer
 
     Enums.ExperienceLevel? EngineerExperience;
     double Cost;
+    public bool IsActive = true;
+
 
     /// <summary>
     /// Initializes a new instance of the Engineer class with default values.

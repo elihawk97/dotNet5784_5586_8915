@@ -26,6 +26,8 @@ public record Dependency
     DateTime? CreatedOn;
     DateTime? Ship;
     DateTime? Delivery;
+    public bool IsActive = true;
+
 
     /// <summary>
     /// Initializes a new instance of the Dependency class.

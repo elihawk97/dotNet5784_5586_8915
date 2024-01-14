@@ -15,11 +15,10 @@ public class DependencyImplementation : IDependency
 
     public void Delete(int id)
     {
-        int amountDeleted = DataSource.Dependencies.RemoveAll(item => item.Id == id);
-        if (amountDeleted <= 0)
-        {
-            throw new Exception($"Dependency with ID={id} does Not exist");
-        }
+        Dependency copy = DataSource.Dependencies.Find(e => e.Id == id) with { IsActive = false };
+        Dependency copyChange = copy with { IsActive = false };
+        DataSource.Dependencies.Remove(copy);
+        DataSource.Dependencies.Add(copyChange);
     }
 
     public Dependency? Read(int id)

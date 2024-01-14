@@ -86,14 +86,22 @@ internal class Program
         sTask.Delete(id);
     }
 
+    public static void resetTasks()
+    {
+     // delete all task and all dependencies 
+    }
+
     public static void useTask()
     {
         Console.WriteLine(@"Choose one of the following tasks to perfrom:
+                            0: Exit
                             1: Create Task
                             2: Read Task
                             3: Update Task
                             4: Delete Task
                             5: Read all Tasks
+                            6: Reset
+                            Any Other number to go back
         
         ");
         string inputString = Console.ReadLine();
@@ -117,6 +125,9 @@ internal class Program
                     break;
                 case 5:
                     readAllTasks();
+                    break;
+                case 6:
+                    resetTasks();
                     break;
                 default:
                     break;
