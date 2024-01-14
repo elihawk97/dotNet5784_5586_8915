@@ -15,11 +15,10 @@ internal class DependencyImplementation : IDependency
 
     public void Delete(int id)
     {
-        int amountDeleted = DataSource.Dependencies.RemoveAll(item => item.Id == id);
-        if (amountDeleted <= 0)
-        {
-            throw new Exception($"Dependency with ID={id} does Not exist");
-        }
+        Dependency copy = DataSource.Dependencies.Find(e => e.Id == id) with { IsActive = false };
+        Dependency copyChange = copy with { IsActive = false };
+        DataSource.Dependencies.Remove(copy);
+        DataSource.Dependencies.Add(copyChange);
     }
 
     public Dependency? Read(int id)
@@ -30,7 +29,7 @@ internal class DependencyImplementation : IDependency
 
     public List<Dependency> ReadAll()
     {
-        List<Dependency> copyList = DataSource.Dependencies.FindAll(item => true);
+        List<Dependency> copyList = DataSource.Dependencies.FindAll(item => item.IsActive == true);
         if(copyList.Count == 0)
         {
             throw new Exception($"Can not read data since the list is empty");

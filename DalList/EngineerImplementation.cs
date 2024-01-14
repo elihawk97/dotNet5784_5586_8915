@@ -15,11 +15,10 @@ internal class EngineerImplementation : IEngineer
 
     public void Delete(int id)
     {
-        int amountDeleted = DataSource.Engineers.RemoveAll(e => e.Id == id);
-        if (amountDeleted <= 0)
-        {
-            throw new Exception($"Can't Delete! Dependency with ID={id} does Not exist");
-        }
+        Engineer copy = DataSource.Engineers.Find(e => e.Id == id) with { IsActive = false };
+        Engineer copyChange = copy with { IsActive = false };
+        DataSource.Engineers.Remove(copy);
+        DataSource.Engineers.Add(copyChange);
     }
 
     public Engineer? Read(int id)
@@ -35,7 +34,7 @@ internal class EngineerImplementation : IEngineer
 
     public List<Engineer> ReadAll()
     {
-        List<Engineer> copyList = DataSource.Engineers.FindAll(e => true);
+        List<Engineer> copyList = DataSource.Engineers.FindAll(e => e.IsActive == true);
         if (copyList.Count == 0)
         {
             throw new Exception($"Can not read data since the Engineer list is empty");

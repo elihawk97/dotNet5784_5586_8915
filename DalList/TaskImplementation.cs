@@ -15,11 +15,10 @@ public class TaskImplementation : ITask
 
     public void Delete(int id)
     {
-        int amountDeleted = DataSource.Engineers.RemoveAll(e => e.Id == id);
-        if (amountDeleted <= 0)
-        {
-            throw new Exception($"Can't Delete! Task with ID={id} does Not exist");
-        }
+        Task copy = DataSource.Tasks.Find(e => e.Id == id) with { IsActive = false };
+        Task copyChange = copy with { IsActive = false };
+        DataSource.Tasks.Remove(copy);
+        DataSource.Tasks.Add(copyChange);
     }
 
     public Task? Read(int id)
@@ -34,7 +33,7 @@ public class TaskImplementation : ITask
 
     public List<Task> ReadAll()
     {
-        List<Task> copyList = DataSource.Tasks.FindAll(e => true);
+        List<Task> copyList = DataSource.Tasks.FindAll(e => e.IsActive == true);
         if (copyList.Count == 0)
         {
             throw new Exception($"Can not read data since the Task list is empty");

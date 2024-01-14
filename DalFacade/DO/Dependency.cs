@@ -19,10 +19,10 @@ public record Dependency
     public int DependentTask;
     public int DependentOnTask;
     string? CustomerEmail;
- 
+    string? Address;
     DateTime? CreatedOn;
-   
-    
+    public bool IsActive = true;
+
 
     /// <summary>
     /// Initializes a new instance of the Dependency class.
