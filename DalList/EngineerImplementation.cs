@@ -2,6 +2,7 @@
 using DO;
 using DalApi;
 using System.Collections.Generic;
+using System.Linq;
 
 internal class EngineerImplementation : IEngineer
 {
@@ -15,7 +16,7 @@ internal class EngineerImplementation : IEngineer
 
     public void Delete(int id)
     {
-        Engineer copy = DataSource.Engineers.Find(e => e.Id == id) with { IsActive = false };
+        Engineer copy = DataSource.Engineers.FirstOrDefault(item => item.Id == id);
         Engineer copyChange = copy with { IsActive = false };
         DataSource.Engineers.Remove(copy);
         DataSource.Engineers.Add(copyChange);
@@ -23,7 +24,8 @@ internal class EngineerImplementation : IEngineer
 
     public Engineer? Read(int id)
     {
-        return DataSource.Engineers.Find(e => e.Id == id);
+        Engineer copy = DataSource.Engineers.FirstOrDefault(item => item.Id == id);
+        return copy;
 /*        if (copy == null)
         {
             throw new Exception($"Can not read Engineer. Engineer with ID={id} does Not exist");
@@ -34,17 +36,17 @@ internal class EngineerImplementation : IEngineer
 
     public List<Engineer> ReadAll()
     {
-        List<Engineer> copyList = DataSource.Engineers.FindAll(e => true);
-        if (copyList.Count == 0)
+        List<Engineer> activeEngineers= DataSource.Engineers.Where(Engineer => Engineer.IsActive == true).ToList();
+        if (activeEngineers.Count == 0)
         {
             throw new Exception($"Can not read data since the Engineer list is empty");
         }
-        return copyList;
+        return activeEngineers;
     }
 
     public void Update(Engineer item)
     {
-        Engineer existingItem = DataSource.Engineers.Find(e => e.Id == item.Id);
+        Engineer existingItem = DataSource.Engineers.FirstOrDefault(item => item.Id == item.Id);
 
         if (existingItem == null)
         {
