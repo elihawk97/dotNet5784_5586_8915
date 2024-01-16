@@ -11,11 +11,11 @@ namespace DalApi;
 
     public interface ICrud<T> where T : class
     {
-        int Create(T entity); 
-        T? Read(int id); 
-        List<T> ReadAll(); 
-        void Update(T item); 
-        void Delete(int id); 
+        public int Create(T entity); 
+        public T? Read(int id); 
+        public List<T> ReadAll(); 
+        public void Update(T item); 
+        public void Delete(int id); 
     }
 
 
