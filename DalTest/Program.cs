@@ -7,12 +7,11 @@ using System.ComponentModel;
 
 internal class Program
 {
-
-    private static IDependency? sDependency = new DependencyImplementation();
-    private static ITask? sTask = new TaskImplementation();
-    private static IEngineer? sEngineer = new EngineerImplementation();
+    
     public static DO.Task taskInput()
     {
+
+
         Console.WriteLine("Enter data to create new task");
         int Id = int.Parse(Console.ReadLine());
         string nickName = Console.ReadLine();
@@ -50,20 +49,20 @@ internal class Program
     public static void createTask()
     {
         DO.Task newTask = taskInput();
-        sTask.Create(newTask);
+        s_dal!.Task.Create(newTask);
     }
 
     public static void readTask()
     {
         Console.WriteLine("Enter the id of the Task you wish to see");
         int id = int.Parse(Console.ReadLine());
-        DO.Task toPrint = sTask.Read(id);
+        DO.Task toPrint = s_dal!.Task.Read(id);
         Console.WriteLine(toPrint);
     }
 
     public static void readAllTasks()
     {
-        List<DO.Task> taskList = sTask.ReadAll();
+        List<DO.Task> taskList = s_dal!.Task.ReadAll();
         foreach (var task in taskList)
         {
             Console.WriteLine(task);
@@ -74,7 +73,7 @@ internal class Program
     {
         Console.WriteLine("Enter the id of the Task you wish to update");
         DO.Task updateTask = taskInput();
-        sTask.Update(updateTask);
+        s_dal!.Task.Update(updateTask);
 
     }
 
@@ -82,7 +81,7 @@ internal class Program
     {
         Console.WriteLine("Enter the id of the Task you wish to delete");
         int id = int.Parse(Console.ReadLine());
-        sTask.Delete(id);
+        s_dal!.Task.Delete(id);
     }
 
     public static void resetTasks()
@@ -161,19 +160,19 @@ internal class Program
     public static void createDependency()
     {
         DO.Dependency newDependency = dependencyInput();
-        sDependency.Create(newDependency);
+        s_dal!.Dependency.Create(newDependency);
     }
 
     public static void readDependency()
     {
         Console.WriteLine("Enter the id of the Dependency you wish to see");
         int id = int.Parse(Console.ReadLine());
-        DO.Dependency toPrint = sDependency.Read(id);
+        DO.Dependency toPrint = s_dal!.Dependency.Read(id);
         Console.WriteLine(toPrint);
     }
     public static void readAllDependencies()
     {
-        List<Dependency> dependencyList = sDependency.ReadAll();
+        List<Dependency> dependencyList = s_dal!.Dependency.ReadAll();
         foreach (var dependency in dependencyList)
         {
             Console.WriteLine(dependency);
@@ -183,14 +182,14 @@ internal class Program
     {
         Console.WriteLine("Enter the id of the Dependency you wish to update");
         DO.Dependency updateDependency = dependencyInput();
-        sDependency.Update(updateDependency);
+        s_dal!.Dependency.Update(updateDependency);
     }
 
     public static void deleteDependency()
     {
         Console.WriteLine("Enter the id of the Dependency you wish to delete");
         int id = int.Parse(Console.ReadLine());
-        sDependency.Delete(id);
+        s_dal!.Dependency.Delete(id);
     }
 
     public static void useDependency()
@@ -256,19 +255,19 @@ internal class Program
     public static void createEngineer()
     {
         DO.Engineer newEngineer = engineerInput();
-        sEngineer.Create(newEngineer);
+        s_dal!.Engineer.Create(newEngineer);
     }
 
     public static void readEngineer()
     {
         Console.WriteLine("Enter the id of the Engineer you wish to see");
         int id = int.Parse(Console.ReadLine());
-        DO.Engineer toPrint = sEngineer.Read(id);
+        DO.Engineer toPrint = s_dal!.Engineer.Read(id);
         Console.WriteLine(toPrint);
     }
     public static void readAllEngineers()
     {
-        List<Engineer> engineerList = sEngineer.ReadAll();
+        List<Engineer> engineerList = s_dal!.Engineer.ReadAll();
         foreach (var engineer in engineerList)
         {
             Console.WriteLine(engineer);
@@ -280,14 +279,14 @@ internal class Program
     {
         Console.WriteLine("Enter the id of the Engineer you wish to update");
         DO.Engineer updateEngineer = engineerInput();
-        sEngineer.Update(updateEngineer);
+        s_dal!.Engineer.Update(updateEngineer);
     }
 
     public static void deleteEngineer()
     {
         Console.WriteLine("Enter the id of the Engineer you wish to delete");
         int id = int.Parse(Console.ReadLine());
-        sEngineer.Delete(id);
+        s_dal!.Engineer.Delete(id);
     }
 
     public static void useEngineer()
@@ -331,13 +330,13 @@ internal class Program
         }
     }
 
+    static readonly IDal s_dal = new DalList(); //stage 2
 
-
-    private static void Main(string[] args)
+    static void Main(string[] args)
     {
         try
         {
-            Initialization.Do(sTask, sEngineer, sDependency);
+            Initialization.Do(s_dal);
             int choice = 1;
             while (choice != 0)
             {
