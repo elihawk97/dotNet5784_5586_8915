@@ -10,18 +10,21 @@ using System.Data.Common;
 
 public static class Initialization
 {
-    private static ITask? s_dalTask; 
+    private static IDal? s_dal;
+/*    private static ITask? s_dalTask; 
     private static IEngineer? s_dalEngineer; 
-    private static IDependency? s_dalDependency;
+    private static IDependency? s_dalDependency;*/
 
     private static readonly Random s_rand = new();
 
-    public static void Do(ITask? dalTask, IEngineer? dalEngineer, IDependency? dalDependency)
+    public static void Do(IDal dal)
     {
         // Assign the arguments to access variables
-        s_dalTask = dalTask ?? throw new NullReferenceException("DAL Task cannot be null!");
-        s_dalEngineer = dalEngineer ?? throw new NullReferenceException("DAL Engineer cannot be null!");
-        s_dalDependency = dalDependency ?? throw new NullReferenceException("DAL Dependency cannot be null!");
+        /*        s_dalTask = dalTask ?? throw new NullReferenceException("DAL Task cannot be null!");
+                s_dalEngineer = dalEngineer ?? throw new NullReferenceException("DAL Engineer cannot be null!");
+                s_dalDependency = dalDependency ?? throw new NullReferenceException("DAL Dependency cannot be null!");
+        */
+        s_dal = dal ?? throw new NullReferenceException("DAL object can not be null!");
 
         // Call the private initialization methods
         createTasks();
@@ -48,7 +51,7 @@ public static class Initialization
             int _id;
             do
                 _id = s_rand.Next(TaskNames.Length);
-            while (s_dalTask!.Read(_id) != null);
+            while (s_dal!.Task.Read(_id) != null);
 
             //setting all the dates
 
@@ -99,8 +102,7 @@ public static class Initialization
                 EngineerID, 
                 experienceLevel);
 
-            s_dalTask!.Create(newTask);
-
+            s_dal!.Task.Create(newTask);
         }
     }
         private static void CreateEngineers()
@@ -114,7 +116,7 @@ public static class Initialization
             int _id; 
             do
                  _id = s_rand.Next(EngineerName.Length);
-            while (s_dalEngineer!.Read(_id) != null);
+            while (s_dal!.Engineer.Read(_id) != null);
            
             //setting the Email
             string email = ""; 
@@ -145,7 +147,8 @@ public static class Initialization
                 Cost);
 
             //Create using Crud method Create
-            s_dalEngineer!.Create(NewEngineer);
+            s_dal!.Engineer.Create(NewEngineer);
+
         }
     }
 
@@ -168,7 +171,7 @@ public static class Initialization
             do
             {
                 dependencyId = s_rand.Next(DependencyNames.Length);
-            } while (s_dalDependency!.Read(dependencyId) != null);
+            } while (s_dal!.Dependency.Read(dependencyId) != null);
 
             // Generating random dependencies for the task
             int dependentTaskId = s_rand.Next(1, 21); // Assuming task Ids range from 1 to 20
@@ -206,7 +209,7 @@ public static class Initialization
             }
           
             // Creating using CRUD method Create
-            s_dalDependency!.Create(newDependency);
+            s_dal!.Dependency.Create(newDependency);
         }
     }
 
@@ -231,7 +234,7 @@ public static class Initialization
         {
             List<DO.Dependency> chain = new List<DO.Dependency>();
             bool res;
-            chain = s_dalDependency!.ReadAll().FindAll(i => i.DependentTask == item.DependentOnTask);
+            chain = s_dal!.Dependency.ReadAll().FindAll(i => i.DependentTask == item.DependentOnTask);
             foreach (var d in chain)
             {
                 if (d.DependentOnTask == dependentID)

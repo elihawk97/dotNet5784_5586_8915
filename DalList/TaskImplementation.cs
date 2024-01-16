@@ -3,7 +3,7 @@ using DO;
 using DalApi;
 using System.Collections.Generic;
 
-public class TaskImplementation : ITask
+internal class TaskImplementation : ITask
 {
     public int Create(Task item)
     {
@@ -41,7 +41,7 @@ public class TaskImplementation : ITask
         return copyList;
     }
 
-    internal void Update(Task item) 
+    public void Update(Task item) 
     {
         Task existingItem = DataSource.Tasks.Find(e => e.Id == item.Id);
 
