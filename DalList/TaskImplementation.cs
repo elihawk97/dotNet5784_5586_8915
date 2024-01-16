@@ -2,6 +2,7 @@
 using DO;
 using DalApi;
 using System.Collections.Generic;
+using System.Linq;
 
 internal class TaskImplementation : ITask
 {
@@ -15,7 +16,13 @@ internal class TaskImplementation : ITask
 
     public void Delete(int id)
     {
-        Task copy = DataSource.Tasks.Find(e => e.Id == id) with { IsActive = false };
+        Task? copy = DataSource.Tasks.FirstOrDefault(e => e.Id == id);
+
+        if (copy == null)
+        {
+            throw new DalDoesNotExistException($"Task with ID={id} does not exist");
+        }
+
         Task copyChange = copy with { IsActive = false };
         DataSource.Tasks.Remove(copy);
         DataSource.Tasks.Add(copyChange);
@@ -23,30 +30,37 @@ internal class TaskImplementation : ITask
 
     public Task? Read(int id)
     {
-        return DataSource.Tasks.Find(e => e.Id == id);
-/*        if (copy == null)
-        {
-            throw new Exception($"Can not read Engineer. Engineer with ID={id} does Not exist");
-        }
-        return copy;*/
-    }
+        Task? task = DataSource.Tasks.FirstOrDefault(e => e.Id == id);
 
+        if (task == null)
+        {
+            throw new DalDoesNotExistException($"Task with ID={id} does not exist");
+        }
+
+        return task;
+    }
+    
+    public IEnumerable<Task> ReadAll(Func<Task, bool>? filter = null) //stage 2
+    {
+        if (filter == null)
+            return DataSource.Tasks.Select(item => item);
+        else
+            return DataSource.Tasks.Where(filter);
+    }
 
     public void Update(Task item) 
     {
-        Task existingItem = DataSource.Tasks.Find(e => e.Id == item.Id);
+        Task existingItem = DataSource.Tasks.FirstOrDefault(e => e.Id == item.Id);
 
         if (existingItem == null)
         {
-            throw new Exception($"Can't update! No Task with matching ID {item.Id} found");
+            throw new DalDoesNotExistException($"Task with ID={item.Id} does not exist");
         }
 
-        // Remove the old object from the list
-        DataSource.Tasks.Remove(existingItem);
+        // Replace the old object in the list with the updated object
+        int index = DataSource.Tasks.IndexOf(existingItem);
+        DataSource.Tasks[index] = item;
 
-        // Add the updated object to the list
-        DataSource.Tasks.Add(item);
- 
     }
 
     public void Reset()
