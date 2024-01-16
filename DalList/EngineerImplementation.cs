@@ -34,16 +34,6 @@ internal class EngineerImplementation : IEngineer
 
     }
 
-    public List<Engineer> ReadAll()
-    {
-        List<Engineer> activeEngineers= DataSource.Engineers.Where(Engineer => Engineer.IsActive == true).ToList();
-        if (activeEngineers.Count == 0)
-        {
-            throw new Exception($"Can not read data since the Engineer list is empty");
-        }
-        return activeEngineers;
-    }
-
     public void Update(Engineer item)
     {
         Engineer existingItem = DataSource.Engineers.FirstOrDefault(item => item.Id == item.Id);
@@ -63,6 +53,18 @@ internal class EngineerImplementation : IEngineer
     public void Reset()
     {
         DataSource.Engineers.Clear();
+    }
+
+    public IEnumerable<Engineer> ReadAll(Func<Engineer, bool>? filter = null) //stage 2
+    {
+        if (filter != null)
+        {
+            return from item in DataSource.Engineers
+                   where filter(item)
+                   select item;
+        }
+        return from item in DataSource.Engineers
+               select item;
     }
 }
 

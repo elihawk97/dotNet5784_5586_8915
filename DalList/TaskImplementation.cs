@@ -31,15 +31,6 @@ internal class TaskImplementation : ITask
         return copy;*/
     }
 
-    public List<Task> ReadAll()
-    {
-        List<Task> copyList = DataSource.Tasks.FindAll(e => true);
-        if (copyList.Count == 0)
-        {
-            throw new Exception($"Can not read data since the Task list is empty");
-        }
-        return copyList;
-    }
 
     public void Update(Task item) 
     {

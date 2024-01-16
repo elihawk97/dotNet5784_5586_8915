@@ -234,7 +234,7 @@ public static class Initialization
         {
             List<DO.Dependency> chain = new List<DO.Dependency>();
             bool res;
-            chain = s_dal!.Dependency.ReadAll().FindAll(i => i.DependentTask == item.DependentOnTask);
+            chain = (List<Dependency>)s_dal!.Dependency.ReadAll(i => i.DependentTask == item.DependentOnTask);
             foreach (var d in chain)
             {
                 if (d.DependentOnTask == dependentID)

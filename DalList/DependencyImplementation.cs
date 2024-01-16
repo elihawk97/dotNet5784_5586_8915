@@ -58,5 +58,18 @@ internal class DependencyImplementation : IDependency
     {
         DataSource.Dependencies.Clear(); 
     }
+
+    public IEnumerable<Dependency> ReadAll(Func<Dependency, bool>? filter = null) //stage 2
+    {
+        if (filter != null)
+        {
+            return from item in DataSource.Dependencies
+                   where filter(item)
+                   select item;
+        }
+        return from item in DataSource.Dependencies
+               select item;
+    }
+
 }
 
