@@ -40,18 +40,12 @@ internal class TaskImplementation : ITask
         return task;
     }
     
-    public List<Task> ReadAll()
+    public IEnumerable<Task> ReadAll(Func<Task, bool>? filter = null) //stage 2
     {
-        List<Task> activeTasks = DataSource.Tasks
-                                      .Where(task => task.IsActive)
-                                      .ToList();
-
-        if (activeTasks.Count == 0)
-        {
-            throw new DalDoesNotExistException("There are no tasks to read.");
-        }
-
-        return activeTasks;
+        if (filter == null)
+            return DataSource.Tasks.Select(item => item);
+        else
+            return DataSource.Tasks.Where(filter);
     }
 
     public void Update(Task item) 
