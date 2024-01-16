@@ -15,7 +15,7 @@ internal class DependencyImplementation : IDependency
 
     public void Delete(int id)
     {
-        Dependency copy = DataSource.Dependencies.Find(e => e.Id == id) with { IsActive = false };
+        Dependency copy = DataSource.Dependencies.FirstOrDefault(e => e.Id == id);
         Dependency copyChange = copy with { IsActive = false };
         DataSource.Dependencies.Remove(copy);
         DataSource.Dependencies.Add(copyChange);
@@ -23,23 +23,25 @@ internal class DependencyImplementation : IDependency
 
     public Dependency? Read(int id)
     {
-        return DataSource.Dependencies.Find(item => item.Id == id);
+        return DataSource.Dependencies.FirstOrDefault(item => item.Id == id);
 
     }
 
     public List<Dependency> ReadAll()
     {
-        List<Dependency> copyList = DataSource.Dependencies.FindAll(item => true);
-        if(copyList.Count == 0)
+        List<Dependency> activeDependency = DataSource.Dependencies.Where(Dependency => Dependency.IsActive == true).ToList();
+
+        if(activeDependency.Count == 0)
         {
             throw new Exception($"Can not read data since the list is empty");
         }
-        return copyList;
+        return activeDependency;
     }
 
     public void Update(Dependency item)
     {
-        Dependency toDelete = DataSource.Dependencies.Find(element => element.Id == item.Id);
+
+        Dependency toDelete = DataSource.Dependencies.FirstOrDefault(element => element.Id == item.Id);
         if (toDelete == null)
         {
             throw new Exception($"Can't update! No Dependency  with matching ID {item.Id} found");
