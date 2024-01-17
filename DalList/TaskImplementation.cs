@@ -34,7 +34,7 @@ internal class TaskImplementation : ITask
 
         if (task == null)
         {
-            throw new DalDoesNotExistException($"Task with ID={id} does not exist");
+            //throw new DalDoesNotExistException($"Task with ID={id} does not exist");
         }
 
         return task;

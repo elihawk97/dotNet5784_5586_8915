@@ -3,13 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.8.34330.188
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Targil0", "Targil0\Targil0.csproj", "{8BD3D550-9152-4E49-B83A-F2291EC0FE5F}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DalFacade", "DalFacade\DalFacade.csproj", "{405DB668-6576-43DC-9038-CA332B248874}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DalList", "DalList\DalList.csproj", "{7271197E-5AB7-4ECB-AA47-0FD60005E52C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DalList", "DalList\DalList.csproj", "{7271197E-5AB7-4ECB-AA47-0FD60005E52C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DalTest", "DalTest\DalTest.csproj", "{7A564751-1DAA-418D-8C7C-CD2357BEA710}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DalTest", "DalTest\DalTest.csproj", "{7A564751-1DAA-418D-8C7C-CD2357BEA710}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -17,10 +15,6 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{8BD3D550-9152-4E49-B83A-F2291EC0FE5F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{8BD3D550-9152-4E49-B83A-F2291EC0FE5F}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{8BD3D550-9152-4E49-B83A-F2291EC0FE5F}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{8BD3D550-9152-4E49-B83A-F2291EC0FE5F}.Release|Any CPU.Build.0 = Release|Any CPU
 		{405DB668-6576-43DC-9038-CA332B248874}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{405DB668-6576-43DC-9038-CA332B248874}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{405DB668-6576-43DC-9038-CA332B248874}.Release|Any CPU.ActiveCfg = Release|Any CPU
