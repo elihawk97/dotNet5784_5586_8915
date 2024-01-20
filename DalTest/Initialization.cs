@@ -8,6 +8,7 @@ using System.Net;
 using System.Data.Common;
 
 
+
 public static class Initialization
 {
     private static IDal? s_dal;
@@ -33,7 +34,7 @@ public static class Initialization
     }
     private static void createTasks()
     {
-
+        
         // Creates 20 Names for Task
         string name = "Dependency";
         string[] TaskNames = new string[20];
@@ -49,11 +50,11 @@ public static class Initialization
 
             //Setting the Id
             int _id = 123456; // will be set properly in the crud
-/*            do
-                _id = s_rand.Next(TaskNames.Length);
-            while (s_dal!.Task.Read(_id) != null);*/
+            /*            do
+                            _id = s_rand.Next(TaskNames.Length);
+                        while (s_dal!.Task.Read(_id) != null);*/
 
-            //setting all the dates
+           
 
             int randomAmountOfDays = s_rand.Next(1, 357);
 
