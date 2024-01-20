@@ -18,8 +18,8 @@ internal static class DataSource
         internal static int EngineerIdCounter = 0;
         internal static int TaskIdCounter = 0;
         internal static int dependencyIdCounter = 0;
-        internal static DateTime StartDate = DateTime.Now;
-        internal static DateTime EndDate = DateTime.Now;
+        internal static DateTime StartDate = DateTime.Now.AddDays(-(365 + 365));
+        internal static DateTime EndDate = DateTime.Now.AddDays(365 + 365);
 
 
         // Private static field for the object identifier
