@@ -43,17 +43,20 @@ public static class Initialization
             TaskNames[i - 1] = $"{name} {i}";
         }
         
-        // ADD in end and start date
+
         foreach (var Task in TaskNames)
         {
 
             //Setting the Id
-            int _id = 123456; // will be set properly in the crud
-/*            do
+            int _id;
+            do
                 _id = s_rand.Next(TaskNames.Length);
-            while (s_dal!.Task.Read(_id) != null);*/
+            while (s_dal!.Task.Read(_id) != null);
 
             //setting all the dates
+
+            DateTime Today = DateTime.Now;
+
 
             int randomAmountOfDays = s_rand.Next(1, 357);
 
@@ -99,10 +102,8 @@ public static class Initialization
                 EngineerID, 
                 experienceLevel);
 
-                s_dal!.Task.Create(newTask);
-  
+            s_dal!.Task.Create(newTask);
         }
-
     }
         private static void CreateEngineers()
     {
@@ -112,10 +113,10 @@ public static class Initialization
 
             //Setting the Id
 
-            int _id = 123456; // will be set properly in the crud 
-/*            do
+            int _id; 
+            do
                  _id = s_rand.Next(EngineerName.Length);
-            while (s_dal!.Engineer.Read(_id) != null);*/
+            while (s_dal!.Engineer.Read(_id) != null);
            
             //setting the Email
             string email = ""; 
@@ -166,11 +167,11 @@ public static class Initialization
         foreach (var dependencyName in DependencyNames)
         {
             // Setting the Dependency Id
-            int _id = 123456; // will be set properly in the crud 
-            /*           do
-                       {
-                           dependencyId = s_rand.Next(DependencyNames.Length);
-                       } while (s_dal!.Dependency.Read(dependencyId) != null);*/
+            int dependencyId;
+            do
+            {
+                dependencyId = s_rand.Next(DependencyNames.Length);
+            } while (s_dal!.Dependency.Read(dependencyId) != null);
 
             // Generating random dependencies for the task
             int dependentTaskId = s_rand.Next(1, 21); // Assuming task Ids range from 1 to 20
@@ -182,12 +183,19 @@ public static class Initialization
                 dependentOnTaskId = s_rand.Next(1, 21);
             }
 
+            // Setting other properties
+            string? customerEmail = null;
+            DateTime createdOn = DateTime.Now.AddDays(-s_rand.Next(1, 357));
+           
+
             // Creating Dependency object
             Dependency newDependency = new Dependency
             (
-                _id,
+                dependencyId,
                 dependentTaskId,
-                dependentOnTaskId
+                dependentOnTaskId,
+                customerEmail,
+                createdOn
             );
 
 

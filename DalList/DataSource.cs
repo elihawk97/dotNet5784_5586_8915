@@ -10,7 +10,6 @@ internal static class DataSource
     internal static List<Engineer> Engineers = new List<Engineer>();
     internal static List<Dependency> Dependencies = new List<Dependency>();
 
-
     internal static class Config
     {
         // Internal static fields for auto-incremental identifier fields
@@ -18,9 +17,6 @@ internal static class DataSource
         internal static int EngineerIdCounter = 0;
         internal static int TaskIdCounter = 0;
         internal static int dependencyIdCounter = 0;
-        internal static DateTime StartDate = DateTime.Now;
-        internal static DateTime EndDate = DateTime.Now;
-
 
         // Private static field for the object identifier
         private static int objectIdCounter = 0;
@@ -46,24 +42,6 @@ internal static class DataSource
         internal static int GetNextDependencyId()
         {
             return ++TaskIdCounter;
-        }
-
-        internal static DateTime getStartDate()
-        {
-            return StartDate;
-        }
-        internal static DateTime getEndDate()
-        {
-            return EndDate;
-        }
-
-        internal static void setStartDate(DateTime startDate)
-        {
-            StartDate = startDate;
-        }
-        internal static void setEndDate(DateTime endDate)
-        {
-            EndDate = endDate;
         }
     }
 }

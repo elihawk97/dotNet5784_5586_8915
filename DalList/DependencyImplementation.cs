@@ -16,10 +16,6 @@ internal class DependencyImplementation : IDependency
     public void Delete(int id)
     {
         Dependency copy = DataSource.Dependencies.FirstOrDefault(e => e.Id == id);
-        if(copy == null)
-        {
-            throw new DalDoesNotExistException($"Dependency with ID={id} does not exist, so it can not be deleted");
-        }
         Dependency copyChange = copy with { IsActive = false };
         DataSource.Dependencies.Remove(copy);
         DataSource.Dependencies.Add(copyChange);
@@ -27,34 +23,20 @@ internal class DependencyImplementation : IDependency
 
     public Dependency? Read(int id)
     {
-        Dependency toRead = DataSource.Dependencies.FirstOrDefault(item => item.Id == id);
-        if(toRead == null)
-        {
-            throw new DalDoesNotExistException($"Can't Read! Dependency with ID={id} does not exist");
-        }
-        return toRead;
+        return DataSource.Dependencies.FirstOrDefault(item => item.Id == id);
+
     }
 
-    public Dependency Read(Func<Dependency, bool>? filter = null) //stage 2
+    public List<Dependency> ReadAll()
     {
-        Dependency toRead;
-        if (filter != null)
-        {
-            toRead = DataSource.Dependencies.FirstOrDefault(filter);
-        }
-        else
-        {
-            toRead = DataSource.Dependencies.FirstOrDefault();
-        }
+        List<Dependency> activeDependency = DataSource.Dependencies.Where(Dependency => Dependency.IsActive == true).ToList();
 
-        if (toRead == null)
+        if(activeDependency.Count == 0)
         {
-            throw new DalDoesNotExistException("No task with fits this filter argument");
+            throw new Exception($"Can not read data since the list is empty");
         }
-
-        return toRead;
+        return activeDependency;
     }
-
 
     public void Update(Dependency item)
     {
@@ -62,7 +44,7 @@ internal class DependencyImplementation : IDependency
         Dependency toDelete = DataSource.Dependencies.FirstOrDefault(element => element.Id == item.Id);
         if (toDelete == null)
         {
-            throw new DalDoesNotExistException($"Can't update! No Dependency  with matching ID {item.Id} found");
+            throw new Exception($"Can't update! No Dependency  with matching ID {item.Id} found");
         }
         // Remove the old object from the list
         DataSource.Dependencies.Remove(toDelete);
@@ -79,23 +61,14 @@ internal class DependencyImplementation : IDependency
 
     public IEnumerable<Dependency> ReadAll(Func<Dependency, bool>? filter = null) //stage 2
     {
-        IEnumerable<Dependency> list;
         if (filter != null)
         {
-            list = from item in DataSource.Dependencies
+            return from item in DataSource.Dependencies
                    where filter(item)
                    select item;
         }
-        else
-        {
-            list = from item in DataSource.Dependencies
-                   select item;
-        }
-        if(list == null)
-        {
-            throw new DalDoesNotExistException("Can't Read All! The list is empty");
-        }
-        return list;
+        return from item in DataSource.Dependencies
+               select item;
     }
 
 }

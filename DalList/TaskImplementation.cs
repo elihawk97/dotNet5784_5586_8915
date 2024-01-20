@@ -34,45 +34,18 @@ internal class TaskImplementation : ITask
 
         if (task == null)
         {
-           throw new DalDoesNotExistException($"Can't read Task with ID={id}, it does not exist");
+            //throw new DalDoesNotExistException($"Task with ID={id} does not exist");
         }
 
         return task;
     }
-
-    public Task Read(Func<Task, bool>? filter = null) //stage 2
-    {
-        Task toRead;
-        if (filter != null)
-        {
-            toRead = DataSource.Tasks.FirstOrDefault(filter);
-        }
-        else
-        {
-            toRead = DataSource.Tasks.FirstOrDefault();
-        }
-
-        if(toRead == null)
-        {
-            throw new DalDoesNotExistException("No task with fits this filter argument");
-        }
-
-        return toRead;
-    }
-
+    
     public IEnumerable<Task> ReadAll(Func<Task, bool>? filter = null) //stage 2
     {
-        IEnumerable<Task> tasks;
         if (filter == null)
-            tasks = DataSource.Tasks.Select(item => item);
+            return DataSource.Tasks.Select(item => item);
         else
-            tasks = DataSource.Tasks.Where(filter);
-        if(tasks == null)
-        {
-            throw new DalDoesNotExistException("Can not read all tasks, the Task list is empty");
-        }
-
-        return tasks;
+            return DataSource.Tasks.Where(filter);
     }
 
     public void Update(Task item) 
@@ -85,11 +58,8 @@ internal class TaskImplementation : ITask
         }
 
         // Replace the old object in the list with the updated object
-        // Remove the old object from the list
-        DataSource.Tasks.Remove(existingItem);
-
-        // Add the updated object to the list
-        DataSource.Tasks.Add(item);
+        int index = DataSource.Tasks.IndexOf(existingItem);
+        DataSource.Tasks[index] = item;
 
     }
 
@@ -98,5 +68,3 @@ internal class TaskImplementation : ITask
         DataSource.Tasks.Clear();
     }
 }
-
-
