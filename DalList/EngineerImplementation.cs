@@ -17,6 +17,10 @@ internal class EngineerImplementation : IEngineer
     public void Delete(int id)
     {
         Engineer copy = DataSource.Engineers.FirstOrDefault(item => item.Id == id);
+        if (copy == null)
+        {
+            throw new DalDoesNotExistException($"Can not delete Engineer. Engineer with ID={id} does Not exist");
+        }
         Engineer copyChange = copy with { IsActive = false };
         DataSource.Engineers.Remove(copy);
         DataSource.Engineers.Add(copyChange);
@@ -25,13 +29,32 @@ internal class EngineerImplementation : IEngineer
     public Engineer? Read(int id)
     {
         Engineer copy = DataSource.Engineers.FirstOrDefault(item => item.Id == id);
-        return copy;
-/*        if (copy == null)
+        if (copy == null)
         {
-            throw new Exception($"Can not read Engineer. Engineer with ID={id} does Not exist");
+            throw new DalDoesNotExistException($"Can not read Engineer. Engineer with ID={id} does Not exist");
         }
-        return copy;*/
+        return copy;
 
+    }
+
+    public Engineer Read(Func<Engineer, bool>? filter = null) //stage 2
+    {
+        Engineer toRead;
+        if (filter != null)
+        {
+            toRead = DataSource.Engineers.FirstOrDefault(filter);
+        }
+        else
+        {
+            toRead = DataSource.Engineers.FirstOrDefault();
+        }
+
+        if (toRead == null)
+        {
+            throw new DalDoesNotExistException("No engineer fits this filter argument");
+        }
+
+        return toRead;
     }
 
     public void Update(Engineer item)
@@ -40,7 +63,7 @@ internal class EngineerImplementation : IEngineer
 
         if (existingItem == null)
         {
-            throw new Exception($"Can't update! No Engineer with matching ID {item.Id} found");
+            throw new DalDoesNotExistException($"Can not update Engineer. Engineer with ID={item.Id} does Not exist");
         }
 
         // Remove the old object from the list
@@ -52,19 +75,31 @@ internal class EngineerImplementation : IEngineer
 
     public void Reset()
     {
-        DataSource.Engineers.Clear();
+        DataSource.Engineers = null;//.Clear();
     }
 
     public IEnumerable<Engineer> ReadAll(Func<Engineer, bool>? filter = null) //stage 2
     {
+        IEnumerable<Engineer> engineers;
         if (filter != null)
         {
-            return from item in DataSource.Engineers
-                   where filter(item)
-                   select item;
+            engineers = from item in DataSource.Engineers
+                        where filter(item)
+                        select item;
         }
-        return from item in DataSource.Engineers
-               select item;
+        else
+        {
+            engineers = from item in DataSource.Engineers
+                        select item;
+        }
+
+        if (engineers == null)
+        {
+            throw new DalDoesNotExistException($"Can not read all Engineers. The Engineer list is empty");
+        }
+
+        return engineers;
+
     }
 }
 

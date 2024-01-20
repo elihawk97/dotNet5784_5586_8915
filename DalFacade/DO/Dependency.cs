@@ -1,7 +1,4 @@
-﻿using System.Diagnostics;
-using System.Xml.Linq;
-
-namespace DO;
+﻿namespace DO;
 
 
 /// <summary>
@@ -10,17 +7,12 @@ namespace DO;
 /// <param name="Id">Personal unique ID of the Dependency.</param>
 /// <param name="DependentTask">The ID of the dependent task.</param>
 /// <param name="DependentOnTask">The ID of the task on which it depends (Requisite).</param>
-/// <param name="CustomerEmail">The customer's email associated with the Dependency.</param>
-/// <param name="CreatedOn">The date and time when the Dependency was created (Requisite).</param>
 
 public record Dependency
 {
     public int Id; 
     public int DependentTask;
     public int DependentOnTask;
-    string? CustomerEmail;
-    string? Address;
-    DateTime? CreatedOn;
     public bool IsActive = true;
 
 
@@ -30,15 +22,11 @@ public record Dependency
     /// <param name="Id">Personal unique ID of the Dependency.</param>
     /// <param name="dependentTask">The ID of the dependent task.</param>
     /// <param name="dependentOnTask">The ID of the task on which it depends (Requisite).</param>
-    /// <param name="customerEmail">The customer's email associated with the Dependency.</param>
-    /// <param name="createdOn">The date and time when the Dependency was created (Requisite).</param>
-    public Dependency(int Id, int dependentTask, int dependentOnTask, string? customerEmail, DateTime? createdOn)
+    public Dependency(int Id, int dependentTask, int dependentOnTask)
     {
         this.Id = Id;
         DependentTask = dependentTask;
         DependentOnTask = dependentOnTask;
-        CustomerEmail = customerEmail;
-        CreatedOn = createdOn;
     }
 
     /// <summary>
@@ -49,7 +37,5 @@ public record Dependency
     ID={Id}, 
     DependentTask={DependentTask}, 
     DependentOnTask={DependentOnTask}, 
-    CustomerEmail={CustomerEmail}, 
-    CreatedOn={CreatedOn}, 
     ";
 }
