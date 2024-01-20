@@ -2,6 +2,7 @@
 using DO;
 using DalApi;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 internal class DependencyImplementation : IDependency
 {
@@ -16,19 +17,17 @@ internal class DependencyImplementation : IDependency
     public void Delete(int id)
     {
         Dependency copy = DataSource.Dependencies.FirstOrDefault(e => e.Id == id);
-        if(copy == null)
+        if (copy == null)
         {
             throw new DalDoesNotExistException($"Dependency with ID={id} does not exist, so it can not be deleted");
         }
-        Dependency copyChange = copy with { IsActive = false };
         DataSource.Dependencies.Remove(copy);
-        DataSource.Dependencies.Add(copyChange);
     }
 
     public Dependency? Read(int id)
     {
-        Dependency toRead = DataSource.Dependencies.FirstOrDefault(item => item.Id == id);
-        if(toRead == null)
+        Dependency? toRead = DataSource.Dependencies.FirstOrDefault(item => item.Id == id);
+        if (toRead == null)
         {
             throw new DalDoesNotExistException($"Can't Read! Dependency with ID={id} does not exist");
         }
@@ -37,7 +36,7 @@ internal class DependencyImplementation : IDependency
 
     public Dependency Read(Func<Dependency, bool>? filter = null) //stage 2
     {
-        Dependency toRead;
+        Dependency? toRead;
         if (filter != null)
         {
             toRead = DataSource.Dependencies.FirstOrDefault(filter);
@@ -59,7 +58,7 @@ internal class DependencyImplementation : IDependency
     public void Update(Dependency item)
     {
 
-        Dependency toDelete = DataSource.Dependencies.FirstOrDefault(element => element.Id == item.Id);
+        Dependency? toDelete = DataSource.Dependencies.FirstOrDefault(element => element.Id == item.Id);
         if (toDelete == null)
         {
             throw new DalDoesNotExistException($"Can't update! No Dependency  with matching ID {item.Id} found");
@@ -74,28 +73,28 @@ internal class DependencyImplementation : IDependency
 
     public void Reset()
     {
-        DataSource.Dependencies.Clear(); 
+        DataSource.Dependencies = new List<Dependency>();
     }
 
     public IEnumerable<Dependency> ReadAll(Func<Dependency, bool>? filter = null) //stage 2
     {
-        IEnumerable<Dependency> list;
+        IEnumerable<Dependency> dependencies;
         if (filter != null)
         {
-            list = from item in DataSource.Dependencies
-                   where filter(item)
-                   select item;
+            dependencies = from item in DataSource.Dependencies
+                           where filter(item)
+                           select item;
         }
         else
         {
-            list = from item in DataSource.Dependencies
-                   select item;
+            dependencies = from item in DataSource.Dependencies
+                           select item;
         }
-        if(list == null)
+        if (dependencies.Count() == 0)
         {
             throw new DalDoesNotExistException("Can't Read All! The list is empty");
         }
-        return list;
+        return dependencies;
     }
 
 }
