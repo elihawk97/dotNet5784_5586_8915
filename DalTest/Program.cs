@@ -4,7 +4,6 @@ using DO;
 using System.Runtime.InteropServices;
 using DalTest;
 using System.ComponentModel;
-
 internal class Program
 {
     
@@ -13,20 +12,47 @@ internal class Program
 
 
         Console.WriteLine("Enter data to create new task");
+        Console.WriteLine("Enter task ID:");
         int Id = int.Parse(Console.ReadLine());
+
+        Console.WriteLine("Enter task nickname:");
         string nickName = Console.ReadLine();
+
+        Console.WriteLine("Enter task description:");
         string description = Console.ReadLine();
+
+        Console.WriteLine("Is it a milestone? (True/False):");
         bool isMilestone = bool.Parse(Console.ReadLine());
+
+        Console.WriteLine("Enter date created (MM/dd/yyyy HH:mm:ss):");
         DateTime dateCreated = DateTime.Parse(Console.ReadLine());
+
+        Console.WriteLine("Enter projected start date (MM/dd/yyyy HH:mm:ss):");
         DateTime projectedStartDate = DateTime.Parse(Console.ReadLine());
-        DateTime? actualStartTime = DateTime.Parse(Console.ReadLine());
-        System.TimeSpan duration = System.TimeSpan.Parse(Console.ReadLine());
+
+        Console.WriteLine("Enter actual start time (optional, leave blank if not applicable - MM/dd/yyyy HH:mm:ss):");
+        DateTime? actualStartTime = string.IsNullOrEmpty(Console.ReadLine()) ? (DateTime?)null : DateTime.Parse(Console.ReadLine());
+
+        Console.WriteLine("Enter task duration (HH:mm:ss):");
+        TimeSpan duration = TimeSpan.Parse(Console.ReadLine());
+
+        Console.WriteLine("Enter deadline (MM/dd/yyyy HH:mm:ss):");
         DateTime dealLine = DateTime.Parse(Console.ReadLine());
-        DateTime? actualEndDate = DateTime.Parse(Console.ReadLine());
+
+        Console.WriteLine("Enter actual end date (optional, leave blank if not applicable - MM/dd/yyyy HH:mm:ss):");
+        DateTime? actualEndDate = string.IsNullOrEmpty(Console.ReadLine()) ? (DateTime?)null : DateTime.Parse(Console.ReadLine());
+
+        Console.WriteLine("Enter deliverables:");
         string deliverables = Console.ReadLine();
+
+        Console.WriteLine("Enter additional notes:");
         string notes = Console.ReadLine();
+
+        Console.WriteLine("Enter engineer ID:");
         int engineerID = int.Parse(Console.ReadLine());
-        DO.Enums.ExperienceLevel level = (Enums.ExperienceLevel)Enum.Parse(typeof(Enums.ExperienceLevel), Console.ReadLine());
+
+        Console.WriteLine("Enter experience level (Junior/Mid/Senior):");
+        DO.Enums.ExperienceLevel level = (DO.Enums.ExperienceLevel)Enum.Parse(typeof(DO.Enums.ExperienceLevel), Console.ReadLine());
 
 
         DO.Task newTask = new DO.Task(
@@ -56,37 +82,66 @@ internal class Program
     {
         Console.WriteLine("Enter the id of the Task you wish to see");
         int id = int.Parse(Console.ReadLine());
-        DO.Task toPrint = s_dal!.Task.Read(id);
-        Console.WriteLine(toPrint);
+        try
+        {
+            DO.Task toPrint = s_dal!.Task.Read(id);
+            Console.WriteLine(toPrint);
+        }
+        catch (DalDoesNotExistException ex)
+        {
+            Console.WriteLine(ex);
+        }
     }
 
     public static void readAllTasks()
     {
-        List<DO.Task> taskList = (List<DO.Task>)s_dal!.Task.ReadAll();
-        foreach (var task in taskList)
+        try
         {
-            Console.WriteLine(task);
+            IEnumerable<DO.Task> taskList = s_dal!.Task.ReadAll();
+            foreach (var task in taskList)
+            {
+                Console.WriteLine(task);
+            }
         }
+        catch (DalDoesNotExistException ex)
+        {
+            Console.WriteLine(ex);
+        }
+
     }
 
-    public static void updateTask()
+        public static void updateTask()
     {
-        Console.WriteLine("Enter the id of the Task you wish to update");
-        DO.Task updateTask = taskInput();
-        s_dal!.Task.Update(updateTask);
+        try
+        {
+            Console.WriteLine("Enter the id of the Task you wish to update");
+            DO.Task updateTask = taskInput();
+            s_dal!.Task.Update(updateTask);
+        }
+        catch (DalDoesNotExistException ex)
+        {
+            Console.WriteLine(ex);
+        }
 
     }
 
     public static void deleteTask()
     {
-        Console.WriteLine("Enter the id of the Task you wish to delete");
-        int id = int.Parse(Console.ReadLine());
-        s_dal!.Task.Delete(id);
+        try
+        {
+            Console.WriteLine("Enter the id of the Task you wish to delete");
+            int id = int.Parse(Console.ReadLine());
+            s_dal!.Task.Delete(id);
+        }
+        catch (DalDoesNotExistException ex)
+        {
+            Console.WriteLine(ex);
+        }
     }
 
     public static void resetTasks()
     {
-     // delete all task and all dependencies 
+        s_dal!.Task.Reset();
     }
 
     public static void useTask()
@@ -140,19 +195,21 @@ internal class Program
 
     public static DO.Dependency dependencyInput()
     {
-        Console.WriteLine("Enter data to create new dependency");
+        Console.WriteLine("Enter data to create a new dependency:");
+        Console.WriteLine("Enter dependency ID:");
         int Id = int.Parse(Console.ReadLine());
+
+        Console.WriteLine("Enter dependent task ID:");
         int dependentTask = int.Parse(Console.ReadLine());
+
+        Console.WriteLine("Enter dependent on task ID:");
         int dependentOnTask = int.Parse(Console.ReadLine());
-        string customerEmail = Console.ReadLine();
-        DateTime createdOn = DateTime.Parse(Console.ReadLine());
+
 
         DO.Dependency newDependency = new DO.Dependency(
             Id,
             dependentTask,
-            dependentOnTask,
-            customerEmail,
-            createdOn
+            dependentOnTask
         );
         return newDependency;
     }
@@ -165,31 +222,63 @@ internal class Program
 
     public static void readDependency()
     {
-        Console.WriteLine("Enter the id of the Dependency you wish to see");
-        int id = int.Parse(Console.ReadLine());
-        DO.Dependency toPrint = s_dal!.Dependency.Read(id);
-        Console.WriteLine(toPrint);
+        try
+        {
+            Console.WriteLine("Enter the id of the Dependency you wish to see");
+            int id = int.Parse(Console.ReadLine());
+            DO.Dependency toPrint = s_dal!.Dependency.Read(id);
+            Console.WriteLine(toPrint);
+        }
+        catch (DalDoesNotExistException ex)
+        {
+            Console.WriteLine(ex);
+        }
     }
     public static void readAllDependencies()
     {
-        List<Dependency> dependencyList = (List<Dependency>)s_dal!.Dependency.ReadAll();
-        foreach (var dependency in dependencyList)
+        try
         {
-            Console.WriteLine(dependency);
+            IEnumerable<Dependency> dependencyList = s_dal!.Dependency.ReadAll();
+            foreach (var dependency in dependencyList)
+            {
+                Console.WriteLine(dependency);
+            }
+        }
+        catch (DalDoesNotExistException ex)
+        {
+            Console.WriteLine(ex);
         }
     }
     public static void updateDependency()
     {
-        Console.WriteLine("Enter the id of the Dependency you wish to update");
-        DO.Dependency updateDependency = dependencyInput();
-        s_dal!.Dependency.Update(updateDependency);
+        try
+        {
+            Console.WriteLine("Enter the id of the Dependency you wish to update");
+            DO.Dependency updateDependency = dependencyInput();
+            s_dal!.Dependency.Update(updateDependency);
+        }
+        catch (DalDoesNotExistException ex)
+        {
+            Console.WriteLine(ex);
+        }
     }
 
     public static void deleteDependency()
     {
-        Console.WriteLine("Enter the id of the Dependency you wish to delete");
-        int id = int.Parse(Console.ReadLine());
-        s_dal!.Dependency.Delete(id);
+        try
+        {
+            Console.WriteLine("Enter the id of the Dependency you wish to delete");
+            int id = int.Parse(Console.ReadLine());
+            s_dal!.Dependency.Delete(id);
+        }
+        catch (DalDoesNotExistException ex)
+        {
+            Console.WriteLine(ex);
+        }
+    }
+    public static void resetDependency()
+    {
+        s_dal!.Dependency.Reset();
     }
 
     public static void useDependency()
@@ -200,6 +289,7 @@ internal class Program
                         3: Update Dependency
                         4: Delete Dependency
                         5: Read all Dependencies
+                        6: Reset all Dependencies
     ");
         string inputString = Console.ReadLine();
         int parsedInt;
@@ -223,6 +313,9 @@ internal class Program
                 case 5:
                     readAllDependencies();
                     break;
+                case 6:
+                    resetDependency();
+                    break;
                 default:
                     break;
             }
@@ -235,12 +328,21 @@ internal class Program
 
     public static DO.Engineer engineerInput()
     {
-        Console.WriteLine("Enter data to create a new engineer");
+        Console.WriteLine("Enter data to create a new engineer:");
+        Console.WriteLine("Enter engineer ID:");
         int Id = int.Parse(Console.ReadLine());
+
+        Console.WriteLine("Enter engineer name:");
         string name = Console.ReadLine();
+
+        Console.WriteLine("Enter engineer email:");
         string email = Console.ReadLine();
+
+        Console.WriteLine("Enter engineer cost:");
         double cost = double.Parse(Console.ReadLine());
-        DO.Enums.ExperienceLevel level = (Enums.ExperienceLevel)Enum.Parse(typeof(Enums.ExperienceLevel), Console.ReadLine());
+
+        Console.WriteLine("Enter engineer experience level (Junior/Mid/Senior):");
+        DO.Enums.ExperienceLevel level = (DO.Enums.ExperienceLevel)Enum.Parse(typeof(DO.Enums.ExperienceLevel), Console.ReadLine());
 
         DO.Engineer newEngineer = new DO.Engineer(
             Id,
@@ -248,7 +350,6 @@ internal class Program
             email,
             level,
             cost
-
         );
         return newEngineer;
     }
@@ -260,35 +361,65 @@ internal class Program
 
     public static void readEngineer()
     {
-        Console.WriteLine("Enter the id of the Engineer you wish to see");
-        int id = int.Parse(Console.ReadLine());
-        DO.Engineer toPrint = s_dal!.Engineer.Read(id);
-        Console.WriteLine(toPrint);
+        try
+        {
+            Console.WriteLine("Enter the id of the Engineer you wish to see");
+            int id = int.Parse(Console.ReadLine());
+            DO.Engineer toPrint = s_dal!.Engineer.Read(id);
+            Console.WriteLine(toPrint);
+        }
+        catch (DalDoesNotExistException ex)
+        {
+            Console.WriteLine(ex);
+        }
     }
     public static void readAllEngineers()
     {
-        List<Engineer> engineerList = (List<Engineer>)s_dal!.Engineer.ReadAll();
-        foreach (var engineer in engineerList)
+        try
         {
-            Console.WriteLine(engineer);
+            IEnumerable<Engineer> engineerList = s_dal!.Engineer.ReadAll();
+            foreach (var engineer in engineerList)
+            {
+                Console.WriteLine(engineer);
+            }
+        }
+        catch (DalDoesNotExistException ex)
+        {
+            Console.WriteLine(ex);
         }
     }
 
-
     public static void updateEngineer()
     {
-        Console.WriteLine("Enter the id of the Engineer you wish to update");
-        DO.Engineer updateEngineer = engineerInput();
-        s_dal!.Engineer.Update(updateEngineer);
+        try
+        {
+            Console.WriteLine("Enter the id of the Engineer you wish to update");
+            DO.Engineer updateEngineer = engineerInput();
+            s_dal!.Engineer.Update(updateEngineer);
+        }
+        catch (DalDoesNotExistException ex)
+        {
+            Console.WriteLine(ex);
+        }
     }
 
     public static void deleteEngineer()
     {
-        Console.WriteLine("Enter the id of the Engineer you wish to delete");
-        int id = int.Parse(Console.ReadLine());
-        s_dal!.Engineer.Delete(id);
+        try
+        {
+            Console.WriteLine("Enter the id of the Engineer you wish to delete");
+            int id = int.Parse(Console.ReadLine());
+            s_dal!.Engineer.Delete(id);
+        }
+        catch (DalDoesNotExistException ex)
+        {
+            Console.WriteLine(ex);
+        }
     }
-
+    public static void resetEngineer()
+    {
+        s_dal!.Engineer.Reset();
+    }
     public static void useEngineer()
     {
         Console.WriteLine(@"Choose one of the following actions to perform on an Engineer:
@@ -297,6 +428,7 @@ internal class Program
                         3: Update Engineer
                         4: Delete Engineer
                         5: Read All Engineers
+                        6: Reset Engineers List
     ");
         string inputString = Console.ReadLine();
         int parsedInt;
@@ -320,6 +452,9 @@ internal class Program
                 case 5:
                     readAllEngineers();
                     break;
+                case 6:
+                    resetEngineer();
+                    break;
                 default:
                     break;
             }
@@ -334,8 +469,7 @@ internal class Program
 
     static void Main(string[] args)
     {
-        try
-        {
+
             Initialization.Do(s_dal);
             int choice = 1;
             while (choice != 0)
@@ -362,15 +496,7 @@ internal class Program
                         break;
                 }
             }
-        }
-        catch (Exception ex)
-        {
-            // Handle other types of exceptions
-            Console.WriteLine($"Caught exception: {ex.GetType().Name}");
-            Console.WriteLine($"Message: {ex.Message}");
-            Console.WriteLine($"StackTrace: {ex.StackTrace}");
-            // You can print or log more details based on your needs
-        }
+
     }
 }
 
