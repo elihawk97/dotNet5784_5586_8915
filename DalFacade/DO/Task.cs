@@ -26,10 +26,10 @@ public record Task
     string? Description;
     bool IsMilestone = false;
     DateTime DateCreated;
-    DateTime ProjectedStartDate;
+    public DateTime ProjectedStartDate;
     DateTime? ActualStartTime;
     TimeSpan? Duration;
-    DateTime DeadLine;
+    public DateTime DeadLine;
     DateTime? ActualEndDate;
     string? Deliverables; // may need to change field type
     string? Notes;
@@ -98,4 +98,5 @@ public record Task
     ";
 }
 
+ 
 
