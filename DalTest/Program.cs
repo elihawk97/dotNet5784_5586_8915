@@ -74,8 +74,15 @@ internal class Program
     }
     public static void createTask()
     {
-        DO.Task newTask = taskInput();
-        s_dal!.Task.Create(newTask);
+        try
+        {
+            DO.Task newTask = taskInput();
+            s_dal!.Task.Create(newTask);
+        }
+        catch(InvalidTime ex)
+        {
+            Console.WriteLine(ex);
+        }
     }
 
     public static void readTask()
