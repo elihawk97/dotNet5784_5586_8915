@@ -6,8 +6,16 @@ using System.Threading.Tasks;
 using System.Linq;
 using System;
 
+/// <summary>
+/// Implementation for the Dependency interface
+/// </summary>
 internal class DependencyImplementation : IDependency
 {
+    /// <summary>
+    /// Create a Dependency record by adding the object to the dependency list
+    /// </summary>
+    /// <param name="item">Depedency</param>
+    /// <returns></returns>
     public int Create(Dependency item)
     {
         int id = DataSource.Config.GetNextDependencyId();

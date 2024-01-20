@@ -42,7 +42,6 @@ public static class Initialization
         {
             TaskNames[i - 1] = $"{name} {i}";
         }
-        
         // ADD in end and start date
         foreach (var Task in TaskNames)
         {
