@@ -23,9 +23,7 @@ internal class TaskImplementation : ITask
             throw new DalDoesNotExistException($"Task with ID={id} does not exist");
         }
 
-        Task copyChange = copy with { IsActive = false };
         DataSource.Tasks.Remove(copy);
-        DataSource.Tasks.Add(copyChange);
     }
 
     public Task? Read(int id)
@@ -67,7 +65,7 @@ internal class TaskImplementation : ITask
             tasks = DataSource.Tasks.Select(item => item);
         else
             tasks = DataSource.Tasks.Where(filter);
-        if(tasks == null)
+        if(tasks.Count() == 0)
         {
             throw new DalDoesNotExistException("Can not read all tasks, the Task list is empty");
         }
@@ -95,7 +93,7 @@ internal class TaskImplementation : ITask
 
     public void Reset()
     {
-        DataSource.Tasks.Clear();
+        DataSource.Tasks = new List<Task>();
     }
 }
 

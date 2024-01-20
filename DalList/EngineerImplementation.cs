@@ -3,6 +3,7 @@ using DO;
 using DalApi;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 internal class EngineerImplementation : IEngineer
 {
@@ -21,9 +22,7 @@ internal class EngineerImplementation : IEngineer
         {
             throw new DalDoesNotExistException($"Can not delete Engineer. Engineer with ID={id} does Not exist");
         }
-        Engineer copyChange = copy with { IsActive = false };
         DataSource.Engineers.Remove(copy);
-        DataSource.Engineers.Add(copyChange);
     }
 
     public Engineer? Read(int id)
@@ -57,25 +56,25 @@ internal class EngineerImplementation : IEngineer
         return toRead;
     }
 
-    public void Update(Engineer item)
+    public void Update(Engineer engineer)
     {
-        Engineer existingItem = DataSource.Engineers.FirstOrDefault(item => item.Id == item.Id);
+        Engineer existingItem = DataSource.Engineers.FirstOrDefault(item => item.Id == engineer.Id);
 
         if (existingItem == null)
         {
-            throw new DalDoesNotExistException($"Can not update Engineer. Engineer with ID={item.Id} does Not exist");
+            throw new DalDoesNotExistException($"Can not update Engineer. Engineer with ID={engineer.Id} does Not exist");
         }
 
         // Remove the old object from the list
         DataSource.Engineers.Remove(existingItem);
 
         // Add the updated object to the list
-        DataSource.Engineers.Add(item);
+        DataSource.Engineers.Add(engineer);
     }
 
     public void Reset()
     {
-        DataSource.Engineers = null;//.Clear();
+        DataSource.Engineers = new List<Engineer>();
     }
 
     public IEnumerable<Engineer> ReadAll(Func<Engineer, bool>? filter = null) //stage 2
@@ -90,10 +89,10 @@ internal class EngineerImplementation : IEngineer
         else
         {
             engineers = from item in DataSource.Engineers
-                        select item;
+            select item;
         }
 
-        if (engineers == null)
+        if (engineers.Count() == 0)
         {
             throw new DalDoesNotExistException($"Can not read all Engineers. The Engineer list is empty");
         }
