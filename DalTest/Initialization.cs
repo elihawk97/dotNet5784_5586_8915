@@ -50,9 +50,6 @@ public static class Initialization
 
             //Setting the Id
             int _id = 123456; // will be set properly in the crud
-            /*            do
-                            _id = s_rand.Next(TaskNames.Length);
-                        while (s_dal!.Task.Read(_id) != null);*/
 
            
 
@@ -85,22 +82,29 @@ public static class Initialization
             int? EngineerID = null;
 
             //Constructor for Task 
-            Task newTask = new(
-                _id, 
-                Task, 
-                description, 
-                dateCreated, 
-                projectedStartDate, 
-                actualStartTime, 
-                duration, 
-                deadLine, 
-                actualEndDate, 
-                deliverables, 
-                notes, 
-                EngineerID, 
-                experienceLevel);
-
+            try
+            {
+                Task newTask = new(
+                    _id,
+                    Task,
+                    description,
+                    dateCreated,
+                    projectedStartDate,
+                    actualStartTime,
+                    duration,
+                    deadLine,
+                    actualEndDate,
+                    deliverables,
+                    notes,
+                    EngineerID,
+                    experienceLevel);
                 s_dal!.Task.Create(newTask);
+            }
+            catch (InvalidTime ex)
+            {
+                Console.WriteLine(ex);
+            }
+
   
         }
 
