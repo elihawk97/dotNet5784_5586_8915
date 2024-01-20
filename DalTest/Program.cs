@@ -51,7 +51,7 @@ internal class Program
         Console.WriteLine("Enter engineer ID:");
         int engineerID = int.Parse(Console.ReadLine());
 
-        Console.WriteLine("Enter experience level (Junior/Mid/Senior):");
+        Console.WriteLine("Enter experience level (Novice, AdvancedBeginner, Competent, Proficient, Expert):");
         DO.Enums.ExperienceLevel level = (DO.Enums.ExperienceLevel)Enum.Parse(typeof(DO.Enums.ExperienceLevel), Console.ReadLine());
 
 
