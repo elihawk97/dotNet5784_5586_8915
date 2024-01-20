@@ -61,7 +61,7 @@ public record Task
     /// <param name="engineerID"></param>
     public Task(int id, string nickName, string? description, DateTime dateCreated, DateTime projectedStartDate, DateTime? actualStartTime, TimeSpan? duration, DateTime deadLine, DateTime? actualEndDate, string? deliverables, string? notes, int? engineerID, Enums.ExperienceLevel difficultyLevel)
     {
-        this.Id = Id;
+        this.Id = id;
         this.NickName = nickName;
         this.Description = description;
         this.IsMilestone = false;
