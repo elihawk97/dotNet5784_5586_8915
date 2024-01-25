@@ -63,7 +63,7 @@ internal class EngineerImplementation : IEngineer
 
     public Engineer Read(Func<Engineer, bool>? filter = null) //stage 2
     {
-        Engineer toRead;
+        Engineer? toRead;
         if (filter != null)
         {
             toRead = DataSource.Engineers.FirstOrDefault(filter);
@@ -90,7 +90,7 @@ internal class EngineerImplementation : IEngineer
     /// <exception cref="DalDoesNotExistException">Throw if the engineer is not in the list</exception>
     public void Update(Engineer engineer)
     {
-        Engineer existingItem = DataSource.Engineers.FirstOrDefault(item => item.Id == engineer.Id);
+        Engineer? existingItem = DataSource.Engineers.FirstOrDefault(item => item.Id == engineer.Id);
 
         if (existingItem == null)
         {
