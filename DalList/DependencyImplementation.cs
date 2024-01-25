@@ -2,7 +2,6 @@
 using DO;
 using DalApi;
 using System.Collections.Generic;
-using System.Threading.Tasks;
 using System.Linq;
 using System;
 
@@ -18,7 +17,7 @@ internal class DependencyImplementation : IDependency
     /// <returns></returns>
     public int Create(Dependency item)
     {
-        int id = DataSource.Config.GetNextDependencyId();
+        int id = DataSource.Config.NextDependencyId;
         Dependency copy = item with { Id = id };
         DataSource.Dependencies.Add(copy);
         return id;
@@ -26,7 +25,7 @@ internal class DependencyImplementation : IDependency
 
     public void Delete(int id)
     {
-        Dependency copy = DataSource.Dependencies.FirstOrDefault(e => e.Id == id);
+        Dependency? copy = DataSource.Dependencies.FirstOrDefault(e => e.Id == id);
         if (copy == null)
         {
             throw new DalDoesNotExistException($"Dependency with ID={id} does not exist, so it can not be deleted");

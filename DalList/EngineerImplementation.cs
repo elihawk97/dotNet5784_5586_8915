@@ -3,7 +3,6 @@ using DO;
 using DalApi;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using System;
 
 /// <summary>
@@ -19,7 +18,7 @@ internal class EngineerImplementation : IEngineer
 
     public int Create(Engineer item)
     {
-        int id = DataSource.Config.GetNextEngineerId();
+        int id = DataSource.Config.NextEngineerId;
         Engineer copy = item with { Id = id };
         DataSource.Engineers.Add(copy);
         return id;
@@ -32,7 +31,7 @@ internal class EngineerImplementation : IEngineer
 
     public void Delete(int id)
     {
-        Engineer copy = DataSource.Engineers.FirstOrDefault(item => item.Id == id);
+        Engineer? copy = DataSource.Engineers.FirstOrDefault(item => item.Id == id);
         if (copy == null)
         {
             throw new DalDoesNotExistException($"Can not delete Engineer. Engineer with ID={id} does Not exist");
