@@ -48,11 +48,6 @@ public static class Initialization
         foreach (var Task in TaskNames)
         {
 
-            //Setting the Id
-            int _id = 123456; // will be set properly in the crud
-
-           
-
             int randomAmountOfDays = s_rand.Next(1, 357);
 
             //Project is Created within at least one year of the current date
@@ -85,7 +80,6 @@ public static class Initialization
             try
             {
                 Task newTask = new(
-                    _id,
                     Task,
                     description,
                     dateCreated,
@@ -115,9 +109,6 @@ public static class Initialization
 
         foreach (var EngineerName in EngineerNames){
 
-            //Setting the Id
-
-            int _id = 123456; // will be set properly in the crud 
 /*            do
                  _id = s_rand.Next(EngineerName.Length);
             while (s_dal!.Engineer.Read(_id) != null);*/
@@ -144,7 +135,6 @@ public static class Initialization
 
             //Create new Engineer Object
             Engineer NewEngineer = new(
-                _id, 
                 EngineerName, 
                 email, 
                 experienceLevel, 
@@ -171,7 +161,7 @@ public static class Initialization
         foreach (var dependencyName in DependencyNames)
         {
             // Setting the Dependency Id
-            int _id = 123456; // will be set properly in the crud 
+     
             /*           do
                        {
                            dependencyId = s_rand.Next(DependencyNames.Length);
@@ -190,7 +180,6 @@ public static class Initialization
             // Creating Dependency object
             Dependency newDependency = new Dependency
             (
-                _id,
                 dependentTaskId,
                 dependentOnTaskId
             );

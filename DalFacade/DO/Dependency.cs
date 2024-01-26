@@ -22,9 +22,9 @@ public record Dependency
     /// <param name="Id">Personal unique ID of the Dependency.</param>
     /// <param name="dependentTask">The ID of the dependent task.</param>
     /// <param name="dependentOnTask">The ID of the task on which it depends (Requisite).</param>
-    public Dependency(int Id, int dependentTask, int dependentOnTask)
+    public Dependency(int dependentTask, int dependentOnTask)
     {
-        this.Id = Id;
+        
         DependentTask = dependentTask;
         DependentOnTask = dependentOnTask;
     }
