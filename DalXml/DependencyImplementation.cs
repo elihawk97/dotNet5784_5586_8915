@@ -45,6 +45,10 @@ internal class DependencyImplementation : IDependency
         XElement? foundElement = xElement.Elements("Dependency")
                                         .FirstOrDefault(element => element.Element("Id") != null && (int)element.Element("Id") == id);
 
+        // Find the first element with the specified ID
+        XElement? foundElement = xElement.Elements("Dependency")
+                                        .FirstOrDefault(element => element.Element("Id") != null && (int)element.Element("Id") == id);
+
         if (foundElement == null)
         {
             // Log the error or handle it accordingly
