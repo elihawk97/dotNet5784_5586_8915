@@ -14,74 +14,27 @@ internal static class DataSource
     internal static class Config
     {
         // Internal static fields for auto-incremental identifier fields
+
+        //Engineer
         internal const int startEngineerId = 0;
         private static int nextEngineerId = startEngineerId;
         internal static int NextEngineerId { get => nextEngineerId++; }
 
-
+        //Task 
         internal const int startTaskId = 0;
         private static int nextTaskId = startTaskId;
-        internal static int NextTaskId { get => nextTaskId++; }
+        internal static int NextTaskId {get => nextTaskId++;}
 
+        //Dependency
         internal const int startDependencyId = 0;
         private static int nextDependencyId = startDependencyId;
         internal static int NextDependencyId { get => nextDependencyId++; }
 
-        internal static DateTime StartDate = DateTime.Now.AddDays(-(365 + 365));
-        internal static DateTime EndDate = DateTime.Now.AddDays(365 + 365);
-
-
+        internal static DateTime StartDate { get;  set; } = DateTime.Now.AddDays(-(365 + 365));
+        internal static DateTime EndDate { get;  set; } = DateTime.Now.AddDays(365 + 365);
     }
 
+        
 
 
-       
-       
-       
-
-
-        // Private static field for the object identifier
-        private static int objectIdCounter = 0;
-
-        // Get method for the object identifier
-        internal static int GetObjectId()
-        {
-            return ++objectIdCounter;
-        }
-
-        // Get method for the Engineer identifier
-        internal static int GetNextEngineerId()
-        {
-            return ++EngineerIdCounter;
-        }
-
-        // Get method for the Task identifier
-        internal static int GetNextTaskId()
-        {
-            return ++dependencyIdCounter;
-        }
-        // Get method for the Dependency identifier
-        internal static int GetNextDependencyId()
-        {
-            return ++TaskIdCounter;
-        }
-
-        internal static DateTime getStartDate()
-        {
-            return StartDate;
-        }
-        internal static DateTime getEndDate()
-        {
-            return EndDate;
-        }
-
-        internal static void setStartDate(DateTime startDate)
-        {
-            StartDate = startDate;
-        }
-        internal static void setEndDate(DateTime endDate)
-        {
-            EndDate = endDate;
-        }
-    }
 }

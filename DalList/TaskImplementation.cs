@@ -16,22 +16,23 @@ internal class TaskImplementation : ITask
     /// </summary>
     /// <param name="item">The Task object to be created.</param>
     /// <returns>The identifier (ID) of the newly created Task.</returns>
+    
     public int Create(Task item)
     {
 
         // Check if start date is not before project start date
-        if (item.ProjectedStartDate < DataSource.Config.getStartDate())
+        if (item.ProjectedStartDate < DataSource.Config.StartDate)
         {
             throw new InvalidTime("Task start date cannot be before project start date");
         }
 
         // Check if end date is not after project end date
-        if (item.DeadLine > DataSource.Config.getEndDate())
+        if (item.DeadLine > DataSource.Config.EndDate)
         {
             throw new InvalidTime("Task end date cannot be after project end date");
         }
 
-        int id = DataSource.Config.GetNextTaskId();
+        int id = DataSource.Config.NextTaskId;
         Task copy = item with { Id = id };
         
         DataSource.Tasks.Add(copy);
@@ -78,7 +79,7 @@ internal class TaskImplementation : ITask
     /// <returns>The Task object matching the filter condition.</returns>
     public Task Read(Func<Task, bool>? filter = null) //stage 2
     {
-        Task toRead;
+        Task? toRead;
         if (filter != null)
         {
             toRead = DataSource.Tasks.FirstOrDefault(filter);
@@ -122,7 +123,7 @@ internal class TaskImplementation : ITask
     /// <param name="item">The updated Task object.</param>
     public void Update(Task item) 
     {
-        Task existingItem = DataSource.Tasks.FirstOrDefault(e => e.Id == item.Id);
+        Task? existingItem = DataSource.Tasks.FirstOrDefault(e => e.Id == item.Id);
 
         if (existingItem == null)
         {

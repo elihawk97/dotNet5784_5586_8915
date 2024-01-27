@@ -12,6 +12,7 @@ using System.Data.Common;
 public static class Initialization
 {
     private static IDal? s_dal;
+
 /*    private static ITask? s_dalTask; 
     private static IEngineer? s_dalEngineer; 
     private static IDependency? s_dalDependency;*/
@@ -36,7 +37,7 @@ public static class Initialization
     {
         
         // Creates 20 Names for Task
-        string name = "Dependency";
+        string name = "Task";
         string[] TaskNames = new string[20];
 
         for (int i = 1; i <= 20; i++)
@@ -46,11 +47,6 @@ public static class Initialization
         // ADD in end and start date
         foreach (var Task in TaskNames)
         {
-
-            //Setting the Id
-            int _id = 123456; // will be set properly in the crud
-
-           
 
             int randomAmountOfDays = s_rand.Next(1, 357);
 
@@ -84,7 +80,6 @@ public static class Initialization
             try
             {
                 Task newTask = new(
-                    _id,
                     Task,
                     description,
                     dateCreated,
@@ -114,9 +109,6 @@ public static class Initialization
 
         foreach (var EngineerName in EngineerNames){
 
-            //Setting the Id
-
-            int _id = 123456; // will be set properly in the crud 
 /*            do
                  _id = s_rand.Next(EngineerName.Length);
             while (s_dal!.Engineer.Read(_id) != null);*/
@@ -143,7 +135,6 @@ public static class Initialization
 
             //Create new Engineer Object
             Engineer NewEngineer = new(
-                _id, 
                 EngineerName, 
                 email, 
                 experienceLevel, 
@@ -170,7 +161,7 @@ public static class Initialization
         foreach (var dependencyName in DependencyNames)
         {
             // Setting the Dependency Id
-            int _id = 123456; // will be set properly in the crud 
+     
             /*           do
                        {
                            dependencyId = s_rand.Next(DependencyNames.Length);
@@ -189,7 +180,6 @@ public static class Initialization
             // Creating Dependency object
             Dependency newDependency = new Dependency
             (
-                _id,
                 dependentTaskId,
                 dependentOnTaskId
             );

@@ -22,9 +22,8 @@ public record Engineer
     /// <summary>
     /// Initializes a new instance of the Engineer class with default values.
     /// </summary>    public Engineer() : this(0, null, null, null, 0.0) { }
-    public Engineer(int id, string? name, string? email, Enums.ExperienceLevel? engineerExperience, double cost)
+    public Engineer(string? name, string? email, Enums.ExperienceLevel? engineerExperience, double cost)
     {
-        Id = id;
         Name = name;
         Email = email;
         EngineerExperience = engineerExperience;
