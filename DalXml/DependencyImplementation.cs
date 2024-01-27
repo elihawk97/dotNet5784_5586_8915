@@ -39,19 +39,32 @@ internal class DependencyImplementation : IDependency
     public Dependency? Read(int id)
     {
         System.Xml.Linq.XElement xElement = XMLTools.LoadListFromXMLElement(s_dependencies_xml);
-        // Find the element with the specified ID and remove it
-        XElement foundElement = xElement.Elements("Dependency")
-                                        .FirstOrDefault(element => (int)element.Attribute("Id") == id);
+
+        // Find the first element with the specified ID
+        XElement? foundElement = xElement.Elements("Dependency")
+                                        .FirstOrDefault(element => element.Element("Id") != null && (int)element.Element("Id") == id);
 
         if (foundElement == null)
         {
-            throw new DalDoesNotExistException($"Can't Read! Dependency with ID={id} does not exist");
+            // Log the error or handle it accordingly
+            Console.WriteLine($"Warning: No Dependency found with ID={id}");
+            return null; // Return null or handle the absence of the element
         }
+
+        // Use the ?. operator to avoid null reference exceptions
         int.TryParse(foundElement.Element("Id")?.Value, out int idValue);
         int.TryParse(foundElement.Element("DependentTask")?.Value, out int dependentValue);
         int.TryParse(foundElement.Element("DependentOnTask")?.Value, out int dependentOnValue);
 
-        return new Dependency(dependentValue, dependentOnValue);  
+        // Validate that the required values are not null
+        if (idValue == 0 || dependentValue == 0 || dependentOnValue == 0)
+        {
+            // Log the error or handle it accordingly
+            Console.WriteLine($"Error: One or more values not found for Dependency with ID={id}");
+            return null; // Return null or handle the missing values
+        }
+
+        return new Dependency(idValue, dependentValue, dependentOnValue);
     }
 
     public Dependency? Read(Func<Dependency, bool> filter)
