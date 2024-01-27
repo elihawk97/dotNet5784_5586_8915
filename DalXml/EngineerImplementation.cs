@@ -11,93 +11,186 @@ internal class EngineerImplementation : IEngineer
 
     public int Create(Engineer entity)
     {
-        List<Engineer> engineers = XMLTools.LoadListFromXMLSerializer<Engineer>(s_engineers_xml);
 
-        int nextId = XMLTools.GetAndIncreaseNextId(s_engineers_xml, "NextId");
-        entity.Id = nextId;
-        engineers.Add(entity);
+        try
+        {
+            List<Engineer> engineers = XMLTools.LoadListFromXMLSerializer<Engineer>(s_engineers_xml);
 
-        XMLTools.SaveListToXMLSerializer(engineers, s_engineers_xml);
-        return nextId;
+            int nextId = XMLTools.GetAndIncreaseNextId(s_engineers_xml, "NextId");
+            entity.Id = nextId;
+            engineers.Add(entity);
+
+            XMLTools.SaveListToXMLSerializer(engineers, s_engineers_xml);
+            return nextId;
+
+        }
+
+        catch (DalXMLFileLoadCreateException ex)
+        {
+            Console.WriteLine($"Error creating Engineer: {ex.Message}");
+            return -1; 
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Unexpected error creating task: {ex.Message}");
+            return -1; 
+        }
+
     }
 
     public void Delete(int id)
     {
-        List<Engineer> engineers = XMLTools.LoadListFromXMLSerializer<Engineer>(s_engineers_xml);
 
-        Engineer? engineerToDelete = engineers.FirstOrDefault(e => e.Id == id);
-
-        if (engineerToDelete == null)
+        try
         {
-            throw new DalDoesNotExistException($"Engineer with ID {id} does not exist.");
+            List<Engineer> engineers = XMLTools.LoadListFromXMLSerializer<Engineer>(s_engineers_xml);
+
+            Engineer? engineerToDelete = engineers.FirstOrDefault(e => e.Id == id);
+
+            if (engineerToDelete == null)
+            {
+                throw new DalDoesNotExistException($"Engineer with ID {id} does not exist.");
+            }
+
+            engineerToDelete.IsActive = false;
+
+            XMLTools.SaveListToXMLSerializer(engineers, s_engineers_xml);
         }
 
-        engineerToDelete.IsActive = false;
+        catch (DalXMLFileLoadCreateException ex)
+        {
+            Console.WriteLine($"Error creating Engineer: {ex.Message}");
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Unexpected error creating task: {ex.Message}");
+        }
 
-        XMLTools.SaveListToXMLSerializer(engineers, s_engineers_xml);
-      
     }
 
     public Engineer? Read(int id)
     {
-        List<Engineer> engineers = XMLTools.LoadListFromXMLSerializer<Engineer>(s_engineers_xml);
-
-        Engineer? engineerToRead = engineers.FirstOrDefault(e => e.Id == id); 
-
-        if (engineerToRead == null)
+        try
         {
-            throw new DalDoesNotExistException($"Engineer with ID {id} does not exist.");
-        }
+            List<Engineer> engineers = XMLTools.LoadListFromXMLSerializer<Engineer>(s_engineers_xml);
 
-        return engineerToRead; 
+            Engineer? engineerToRead = engineers.FirstOrDefault(e => e.Id == id);
+
+            if (engineerToRead == null)
+            {
+                throw new DalDoesNotExistException($"Engineer with ID {id} does not exist.");
+            }
+
+            return engineerToRead;
+        }
+        catch (DalXMLFileLoadCreateException ex)
+        {
+            Console.WriteLine($"Error creating Engineer: {ex.Message}");
+            return null; 
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Unexpected error creating task: {ex.Message}");
+            return null; 
+        }
     }
 
     public Engineer? Read(Func<Engineer, bool> filter)
     {
-        List<Engineer> engineers = XMLTools.LoadListFromXMLSerializer<Engineer>(s_engineers_xml);
-        Engineer? engineerToRead = engineers.FirstOrDefault(filter); 
-
-        if (engineerToRead == null)
+        try
         {
-            throw new DalDoesNotExistException($"Engineer does not exist.");
+            List<Engineer> engineers = XMLTools.LoadListFromXMLSerializer<Engineer>(s_engineers_xml);
+            Engineer? engineerToRead = engineers.FirstOrDefault(filter);
+
+            if (engineerToRead == null)
+            {
+                throw new DalDoesNotExistException($"Engineer does not exist.");
+            }
+
+            return engineerToRead;
         }
-
-        return engineerToRead;
-
+        catch (DalXMLFileLoadCreateException ex)
+        {
+            Console.WriteLine($"Error creating Engineer: {ex.Message}");
+            return null; 
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Unexpected error creating task: {ex.Message}");
+            return null; 
+        }
     }
 
     public IEnumerable<Engineer?> ReadAll(Func<Engineer, bool>? filter = null)
     {
-        List<Engineer> engineers = XMLTools.LoadListFromXMLSerializer<Engineer>(s_engineers_xml);
-
-        if (engineers.Count == 0)
+        try
         {
-            throw new DalDoesNotExistException($"XML File is empty");
-        }
 
-        return filter != null ? engineers.Where(filter) : engineers;
+
+            List<Engineer> engineers = XMLTools.LoadListFromXMLSerializer<Engineer>(s_engineers_xml);
+
+            if (engineers.Count == 0)
+            {
+                throw new DalDoesNotExistException($"XML File is empty");
+            }
+
+            return filter != null ? engineers.Where(filter) : engineers;
+
+        }
+        catch (DalXMLFileLoadCreateException ex)
+        {
+            Console.WriteLine($"Error creating Engineer: {ex.Message}");
+            return null; 
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Unexpected error creating task: {ex.Message}");
+            return null; 
+        }
     }
 
     public void Reset()
     {
+        try { 
         List<Engineer> engineers = new List<Engineer>();
         XMLTools.SaveListToXMLSerializer(engineers, s_engineers_xml);
+        }
+        catch (DalXMLFileLoadCreateException ex)
+        {
+            Console.WriteLine($"Error creating Engineer: {ex.Message}");
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Unexpected error creating task: {ex.Message}");
+        }
     }
 
     public void Update(Engineer item)
     {
-        List<Engineer> engineers = XMLTools.LoadListFromXMLSerializer<Engineer>(s_engineers_xml);
-
-        Engineer? existingItem = engineers.FirstOrDefault(e => e.Id == item.Id);
-
-
-        if (existingItem == null)
+        try
         {
-            throw new DalDoesNotExistException($"Can not update Engineer. Engineer with ID={item.Id} does not exist");
+            List<Engineer> engineers = XMLTools.LoadListFromXMLSerializer<Engineer>(s_engineers_xml);
+
+            Engineer? existingItem = engineers.FirstOrDefault(e => e.Id == item.Id);
+
+
+            if (existingItem == null)
+            {
+                throw new DalDoesNotExistException($"Can not update Engineer. Engineer with ID={item.Id} does not exist");
+            }
+
+            engineers.Add(existingItem);
+
+            XMLTools.SaveListToXMLSerializer(engineers, s_engineers_xml);
+
         }
-
-        engineers.Add(existingItem);
-
-        XMLTools.SaveListToXMLSerializer(engineers, s_engineers_xml);
+        catch (DalXMLFileLoadCreateException ex)
+        {
+            Console.WriteLine($"Error creating Engineer: {ex.Message}");
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Unexpected error creating task: {ex.Message}");
+        }
     }
 }

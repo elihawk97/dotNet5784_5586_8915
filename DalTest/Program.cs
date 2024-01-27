@@ -9,6 +9,9 @@ internal class Program
 {
     static readonly IDal s_dal = new DalList(); //stage 2
 
+
+    //static readonly IDal s_dal = new DalXml.DalXml();
+
     public static DO.Task taskInput()
     {
 
@@ -322,9 +325,6 @@ public static T GetEntityInput<T>()
         );
         return newEngineer;
     }
-   
-
-
 
     public static void UseEntity<T>()
     {
@@ -338,6 +338,8 @@ public static T GetEntityInput<T>()
                         6: Reset
                         Any Other number to go back
     ");
+
+
         string inputString = Console.ReadLine();
         int parsedInt;
         bool success = int.TryParse(inputString, out parsedInt);
@@ -373,7 +375,6 @@ public static T GetEntityInput<T>()
         }
     }
 
-    //static readonly IDal s_dal = new DalXml.DalXml();
     static void Main(string[] args)
     {
         Initialization.Do(s_dal);

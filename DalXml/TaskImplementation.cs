@@ -10,98 +10,181 @@ internal class TaskImplementation : ITask
 
     public int Create(DO.Task entity)
     {
-        List<DO.Task> tasks = XMLTools.LoadListFromXMLSerializer<DO.Task>(s_tasks_xml);
+        try
+        {
+            List<DO.Task> tasks = XMLTools.LoadListFromXMLSerializer<DO.Task>(s_tasks_xml);
 
-        int nextId = XMLTools.GetAndIncreaseNextId(s_tasks_xml, "NextId");
-        entity.Id = nextId;
-        tasks.Add(entity);
+            int nextId = XMLTools.GetAndIncreaseNextId(s_tasks_xml, "NextId");
+            entity.Id = nextId;
+            tasks.Add(entity);
 
-        XMLTools.SaveListToXMLSerializer(tasks, s_tasks_xml);
-        return nextId;
+            XMLTools.SaveListToXMLSerializer(tasks, s_tasks_xml);
+            return nextId;
+        }
+        catch (DalXMLFileLoadCreateException ex)
+        {
+            Console.WriteLine($"Error creating task: {ex.Message}");
+            return -1; // Or any other value indicating a failure.
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Unexpected error creating task: {ex.Message}");
+            return -1; // Or any other value indicating a failure.
+        }
     }
-
-
-
     public void Delete(int id)
     {
-        List<DO.Task> tasks = XMLTools.LoadListFromXMLSerializer<DO.Task>(s_tasks_xml);
 
-        DO.Task? taskToDelete = tasks.FirstOrDefault(e => e.Id == id);
 
-        if (taskToDelete == null)
+        try
         {
-            throw new DalDoesNotExistException($"Task with ID {id} does not exist.");
+            List<DO.Task> tasks = XMLTools.LoadListFromXMLSerializer<DO.Task>(s_tasks_xml);
+
+            DO.Task? taskToDelete = tasks.FirstOrDefault(e => e.Id == id);
+
+            if (taskToDelete == null)
+            {
+                throw new DalDoesNotExistException($"Task with ID {id} does not exist.");
+            }
+
+            taskToDelete.IsActive = false;
+
+            XMLTools.SaveListToXMLSerializer(tasks, s_tasks_xml);
         }
 
-        taskToDelete.IsActive = false;
-
-        XMLTools.SaveListToXMLSerializer(tasks, s_tasks_xml);
-
+        catch (DalXMLFileLoadCreateException ex)
+        {
+            Console.WriteLine($"Error creating task: {ex.Message}");
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Unexpected error creating task: {ex.Message}");
+        }
     }
 
     public DO.Task? Read(int id)
     {
-        List<DO.Task> tasks = XMLTools.LoadListFromXMLSerializer<DO.Task>(s_tasks_xml);
-
-        DO.Task? taskToRead = tasks.FirstOrDefault(e => e.Id == id);
-
-        if (taskToRead == null)
+        try
         {
-            throw new DalDoesNotExistException($"Task with ID {id} does not exist.");
+            List<DO.Task> tasks = XMLTools.LoadListFromXMLSerializer<DO.Task>(s_tasks_xml);
+
+            DO.Task? taskToRead = tasks.FirstOrDefault(e => e.Id == id);
+
+            if (taskToRead == null)
+            {
+                throw new DalDoesNotExistException($"Task with ID {id} does not exist.");
+            }
+
+            return taskToRead;
+
         }
 
-        return taskToRead;
+        catch (DalXMLFileLoadCreateException ex)
+        {
+            Console.WriteLine($"Error creating task: {ex.Message}");
+            return null; 
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Unexpected error creating task: {ex.Message}");
+            return null; 
+        }
     }
-
     public DO.Task? Read(Func<DO.Task, bool> filter)
     {
-        List<DO.Task> tasks = XMLTools.LoadListFromXMLSerializer<DO.Task>(s_tasks_xml);
-        DO.Task? taskToRead = tasks.FirstOrDefault(filter);
-
-        if (taskToRead == null)
+        try
         {
-            throw new DalDoesNotExistException($"Task does not exist.");
+            List<DO.Task> tasks = XMLTools.LoadListFromXMLSerializer<DO.Task>(s_tasks_xml);
+            DO.Task? taskToRead = tasks.FirstOrDefault(filter);
+
+            if (taskToRead == null)
+            {
+                throw new DalDoesNotExistException($"Task does not exist.");
+            }
+
+            return taskToRead;
         }
 
-        return taskToRead;
-
+        catch (DalXMLFileLoadCreateException ex)
+        {
+            Console.WriteLine($"Error creating task: {ex.Message}");
+            return null; 
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Unexpected error creating task: {ex.Message}");
+            return null; 
+        }
     }
-
-
     public IEnumerable<DO.Task?> ReadAll(Func<DO.Task, bool>? filter = null)
     {
-        List<DO.Task> tasks = XMLTools.LoadListFromXMLSerializer<DO.Task>(s_tasks_xml);
-
-        if (tasks.Count == 0)
+        try
         {
-            throw new DalDoesNotExistException($"XML File is empty");
-        }
+            List<DO.Task> tasks = XMLTools.LoadListFromXMLSerializer<DO.Task>(s_tasks_xml);
 
-        return filter != null ? tasks.Where(filter) : tasks;
+            if (tasks.Count == 0)
+            {
+                throw new DalDoesNotExistException($"XML File is empty");
+            }
+
+            return filter != null ? tasks.Where(filter) : tasks;
+        }
+        catch (DalXMLFileLoadCreateException ex)
+        {
+            Console.WriteLine($"Error creating task: {ex.Message}"); 
+                return null ;
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Unexpected error creating task: {ex.Message}");
+            return null; 
+        }
     }
 
     public void Reset()
     {
-        List<DO.Task> tasks = new List<DO.Task>();
-        XMLTools.SaveListToXMLSerializer(tasks, s_tasks_xml);
+        try
+        {
+            List<DO.Task> tasks = new List<DO.Task>();
+            XMLTools.SaveListToXMLSerializer(tasks, s_tasks_xml);
+        }
+
+        catch (DalXMLFileLoadCreateException ex)
+        {
+            Console.WriteLine($"Error creating task: {ex.Message}");
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Unexpected error creating task: {ex.Message}");
+        }
     }
 
     public void Update(DO.Task item)
     {
-        List<DO.Task> tasks = XMLTools.LoadListFromXMLSerializer<DO.Task>(s_tasks_xml);
-
-        DO.Task? existingItem = tasks.FirstOrDefault(e => e.Id == item.Id);
-
-
-        if (existingItem == null)
+        try
         {
-            throw new DalDoesNotExistException($"Can not update Task. Task with ID={item.Id} does not exist");
+            List<DO.Task> tasks = XMLTools.LoadListFromXMLSerializer<DO.Task>(s_tasks_xml);
+
+            DO.Task? existingItem = tasks.FirstOrDefault(e => e.Id == item.Id);
+
+
+            if (existingItem == null)
+            {
+                throw new DalDoesNotExistException($"Can not update Task. Task with ID={item.Id} does not exist");
+            }
+
+            tasks.Add(existingItem);
+
+            XMLTools.SaveListToXMLSerializer(tasks, s_tasks_xml);
         }
-
-        tasks.Add(existingItem);
-
-        XMLTools.SaveListToXMLSerializer(tasks, s_tasks_xml);
-
+        catch (DalXMLFileLoadCreateException ex)
+        {
+            Console.WriteLine($"Error creating task: {ex.Message}");
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Unexpected error creating task: {ex.Message}");
+        }
 
     }
 }
