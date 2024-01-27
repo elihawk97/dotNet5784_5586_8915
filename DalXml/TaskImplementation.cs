@@ -2,6 +2,7 @@
 using DO;
 using DalApi;
 using Dal;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 namespace DalXml;
 
 internal class TaskImplementation : ITask
@@ -14,7 +15,7 @@ internal class TaskImplementation : ITask
         {
             List<DO.Task> tasks = XMLTools.LoadListFromXMLSerializer<DO.Task>(s_tasks_xml);
 
-            int nextId = XMLTools.GetAndIncreaseNextId(s_tasks_xml, "NextId");
+            int nextId = XMLTools.GetAndIncreaseNextId("data-config", "NextTaskId");
             entity.Id = nextId;
             tasks.Add(entity);
 
