@@ -375,6 +375,17 @@ public static T GetEntityInput<T>()
         }
     }
 
+    public static void ResetInitialData()
+    {
+        Console.Write("Do you really wish to Reset? (Y/N)"); //stage 3
+        string? ans = Console.ReadLine() ?? throw new FormatException("Wrong input"); //stage 3
+        if (ans == "Y")
+        {
+            Initialization.Do(s_dal);
+        }
+    }
+
+
     static void Main(string[] args)
     {
         Initialization.Do(s_dal);
@@ -385,7 +396,9 @@ public static T GetEntityInput<T>()
                      1: Task
                      2: Engineer
                      3: Dependency
+                     4: Optional: Reset Initial Data
                     ");
+
             choice = int.Parse(Console.ReadLine());
             switch (choice)
             {
@@ -398,6 +411,9 @@ public static T GetEntityInput<T>()
                 case 3:
                     UseEntity<DO.Dependency>();
                     break;
+                case 4:
+                    ResetInitialData();
+                    break; 
                 default:
                     choice = 0;
                     break;
