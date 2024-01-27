@@ -36,6 +36,19 @@ public record Dependency
     }
 
     /// <summary>
+    /// Initializes a new instance of the Dependency class.
+    /// </summary>
+    /// <param name="Id">Id of the task</param>
+    /// <param name="dependentTask">The ID of the dependent task.</param>
+    /// <param name="dependentOnTask">The ID of the task on which it depends (Requisite).</param>
+    public Dependency(int id, int dependentTask, int dependentOnTask)
+    {
+        Id = id;
+        DependentTask = dependentTask;
+        DependentOnTask = dependentOnTask;
+    }
+
+    /// <summary>
     /// Overrides the default ToString method to provide a formatted string representation of the Dependency object.
     /// </summary>
     /// <returns>A formatted string representing the Dependency object.</returns>

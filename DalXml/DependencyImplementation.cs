@@ -6,6 +6,8 @@ using System.Collections.Generic;
 using System.Xml.Linq;
 using System.Data.SqlTypes;
 using System.Xml;
+using System.Data.Common;
+using System.Reflection.Metadata;
 namespace DalXml;
 
 internal class DependencyImplementation : IDependency
@@ -38,12 +40,16 @@ internal class DependencyImplementation : IDependency
     {
         System.Xml.Linq.XElement xElement = XMLTools.LoadListFromXMLElement(s_dependencies_xml);
         // Find the element with the specified ID and remove it
-        XElement foundElement = xElement.Descendants("Dependency") 
-                                      .FirstOrDefault(element => (string)element.Attribute("id") == id.ToString());
+        XElement foundElement = xElement.Elements("Dependency")
+                                        .FirstOrDefault(element => (int)element.Attribute("Id") == id);
 
-        int.TryParse(foundElement.Element("id").Value, out int idValue);
-        int.TryParse(foundElement.Element("dependentTask").Value, out int dependentValue);
-        int.TryParse(foundElement.Element("dependentOnTask").Value, out int dependentOnValue);
+        if (foundElement == null)
+        {
+            throw new DalDoesNotExistException($"Can't Read! Dependency with ID={id} does not exist");
+        }
+        int.TryParse(foundElement.Element("Id")?.Value, out int idValue);
+        int.TryParse(foundElement.Element("DependentTask")?.Value, out int dependentValue);
+        int.TryParse(foundElement.Element("DependentOnTask")?.Value, out int dependentOnValue);
 
         return new Dependency(dependentValue, dependentOnValue);  
     }
@@ -73,19 +79,29 @@ internal class DependencyImplementation : IDependency
     public IEnumerable<Dependency?> ReadAll(Func<Dependency, bool>? filter = null)
     {
         System.Xml.Linq.XElement xElement = XMLTools.LoadListFromXMLElement(s_dependencies_xml);
-
         // Convert XML elements to Dependency objects
         List<Dependency> dependencies = xElement.Elements("Dependency")
             .Select(element =>
             {
-                int.TryParse(element.Element("dependentTask").Value, out int dependentValue);
-                int.TryParse(element.Element("dependentOnTask").Value, out int dependentOnValue);
-
-                return new Dependency(dependentValue, dependentOnValue);
+                int.TryParse(element.Element("DependentTask")?.Value, out int dependentValue);
+                int.TryParse(element.Element("DependentOnTask")?.Value, out int dependentOnValue);
+                int.TryParse(element.Element("Id")?.Value, out int id);
+                return new Dependency(id, dependentValue, dependentOnValue);
             })
             .ToList();
 
 
+        if (filter != null)
+        {
+            dependencies = (List<Dependency>)(from item in dependencies
+                           where filter(item)
+                           select item);
+        }
+
+        if (dependencies.Count() == 0)
+        {
+            throw new DalDoesNotExistException("Can't Read All! The list is empty");
+        }
         return dependencies;
     }
 
@@ -93,13 +109,13 @@ internal class DependencyImplementation : IDependency
     {
 
         // Load the existing XML file into an XDocument
-        XDocument xmlDoc = XDocument.Load(s_dependencies_xml);
+        XElement xmlDoc = XMLTools.LoadListFromXMLElement(s_dependencies_xml);
 
-        // Clear out all elements from the root
-        xmlDoc.Root?.RemoveAll();
+        // Remove all child nodes from the root element
+        xmlDoc.RemoveNodes();
 
         // Save the modified XDocument back to the same file, overwriting it
-        xmlDoc.Save(s_dependencies_xml);
+        XMLTools.SaveListToXMLElement(xmlDoc,s_dependencies_xml);
     }
 
     public void Update(Dependency item)
