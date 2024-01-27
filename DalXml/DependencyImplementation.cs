@@ -45,7 +45,7 @@ internal class DependencyImplementation : IDependency
         int.TryParse(foundElement.Element("dependentTask").Value, out int dependentValue);
         int.TryParse(foundElement.Element("dependentOnTask").Value, out int dependentOnValue);
 
-        return new Dependency(idValue, dependentValue, dependentOnValue);  
+        return new Dependency(dependentValue, dependentOnValue);  
     }
 
     public Dependency? Read(Func<Dependency, bool> filter)
@@ -60,7 +60,7 @@ internal class DependencyImplementation : IDependency
                 int.TryParse(element.Element("dependentTask").Value, out int dependentValue);
                 int.TryParse(element.Element("dependentOnTask").Value, out int dependentOnValue);
 
-                return new Dependency(idValue, dependentValue, dependentOnValue);
+                return new Dependency(dependentValue, dependentOnValue);
             })
             .ToList();
 
@@ -82,7 +82,7 @@ internal class DependencyImplementation : IDependency
                 int.TryParse(element.Element("dependentTask").Value, out int dependentValue);
                 int.TryParse(element.Element("dependentOnTask").Value, out int dependentOnValue);
 
-                return new Dependency(idValue, dependentValue, dependentOnValue);
+                return new Dependency(dependentValue, dependentOnValue);
             })
             .ToList();
 

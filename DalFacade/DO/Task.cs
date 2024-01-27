@@ -21,20 +21,21 @@ namespace DO;
 /// </summary>
 public record Task
 {
+    //fields are all public in order for XML Serializer
     public int Id;
-    string? NickName;
-    string? Description;
-    bool IsMilestone = false;
-    DateTime DateCreated;
+    public string? NickName;
+    public string? Description;
+    public bool IsMilestone = false;
+    public DateTime DateCreated;
     public DateTime ProjectedStartDate;
-    DateTime? ActualStartTime;
-    TimeSpan? Duration;
+    public DateTime? ActualStartTime;
+    public TimeSpan? Duration;
     public DateTime DeadLine;
-    DateTime? ActualEndDate;
-    string? Deliverables; // may need to change field type
-    string? Notes;
-    int? EngineerID;
-    private Enums.ExperienceLevel DifficultyLevel;
+    public DateTime? ActualEndDate;
+    public string? Deliverables; // may need to change field type
+    public string? Notes;
+    public int? EngineerID;
+    public Enums.ExperienceLevel DifficultyLevel;
     public bool IsActive = true;
 
     /// <summary>
