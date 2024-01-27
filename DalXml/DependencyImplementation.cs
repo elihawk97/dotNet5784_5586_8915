@@ -17,7 +17,7 @@ internal class DependencyImplementation : IDependency
     public int Create(Dependency entity)
     {
         List<Dependency> dependencies = XMLTools.LoadListFromXMLSerializer<Dependency>(s_dependencies_xml);
-        int _id = XMLTools.GetAndIncreaseNextId(s_dependencies_xml, "Dependency");
+        int _id = XMLTools.GetAndIncreaseNextId("data-config", "NextDependencyId");
         Dependency copy = entity with { Id = _id };
         dependencies.Add(copy);
         XMLTools.SaveListToXMLSerializer<Dependency>(dependencies, s_dependencies_xml);
@@ -41,7 +41,7 @@ internal class DependencyImplementation : IDependency
         System.Xml.Linq.XElement xElement = XMLTools.LoadListFromXMLElement(s_dependencies_xml);
         // Find the element with the specified ID and remove it
         XElement foundElement = xElement.Elements("Dependency")
-                                        .FirstOrDefault(element => (int)element.Attribute("Id") == id);
+                                        .FirstOrDefault(element => element.Element("Id").ToString() == id.ToString());
 
         if (foundElement == null)
         {
@@ -62,11 +62,11 @@ internal class DependencyImplementation : IDependency
         List<Dependency> dependencies = xElement.Elements("Dependency")
             .Select(element =>
             {
-                int.TryParse(element.Element("id").Value, out int idValue);
-                int.TryParse(element.Element("dependentTask").Value, out int dependentValue);
-                int.TryParse(element.Element("dependentOnTask").Value, out int dependentOnValue);
+                int.TryParse(element.Element("Id").Value, out int idValue);
+                int.TryParse(element.Element("DependentTask").Value, out int dependentValue);
+                int.TryParse(element.Element("DependentOnTask").Value, out int dependentOnValue);
 
-                return new Dependency(dependentValue, dependentOnValue);
+                return new Dependency(idValue, dependentValue, dependentOnValue);
             })
             .ToList();
 

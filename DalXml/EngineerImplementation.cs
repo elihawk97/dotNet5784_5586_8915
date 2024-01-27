@@ -16,7 +16,7 @@ internal class EngineerImplementation : IEngineer
         {
             List<Engineer> engineers = XMLTools.LoadListFromXMLSerializer<Engineer>(s_engineers_xml);
 
-            int nextId = XMLTools.GetAndIncreaseNextId(s_engineers_xml, "NextId");
+            int nextId = XMLTools.GetAndIncreaseNextId("data-config", "NextEngineerId");
             entity.Id = nextId;
             engineers.Add(entity);
 
