@@ -29,7 +29,7 @@ internal class DependencyImplementation : IDependency
         System.Xml.Linq.XElement xElement = XMLTools.LoadListFromXMLElement(s_dependencies_xml);
         // Find the element with the specified ID and remove it
         xElement.Descendants("Dependency") // Replace "YourElementName" with the actual name of your XML element
-              .Where(element => (string)element.Attribute("id") == id.ToString())
+              .Where(element => (string)element.Attribute("Id") == id.ToString())
               .Remove();
 
         // Save the changes back to the XML file
@@ -40,18 +40,32 @@ internal class DependencyImplementation : IDependency
     {
         System.Xml.Linq.XElement xElement = XMLTools.LoadListFromXMLElement(s_dependencies_xml);
         // Find the element with the specified ID and remove it
-        XElement foundElement = xElement.Elements("Dependency")
-                                        .FirstOrDefault(element => element.Element("Id").ToString() == id.ToString());
+
+        // Find the first element with the specified ID
+        XElement? foundElement = xElement.Elements("Dependency")
+                                        .FirstOrDefault(element => element.Element("Id") != null && (int)element.Element("Id") == id);
 
         if (foundElement == null)
         {
-            throw new DalDoesNotExistException($"Can't Read! Dependency with ID={id} does not exist");
+            // Log the error or handle it accordingly
+            Console.WriteLine($"Warning: No Dependency found with ID={id}");
+            return null; // Return null or handle the absence of the element
         }
+
+        // Use the ?. operator to avoid null reference exceptions
         int.TryParse(foundElement.Element("Id")?.Value, out int idValue);
         int.TryParse(foundElement.Element("DependentTask")?.Value, out int dependentValue);
         int.TryParse(foundElement.Element("DependentOnTask")?.Value, out int dependentOnValue);
 
-        return new Dependency(dependentValue, dependentOnValue);  
+        // Validate that the required values are not null
+        if (idValue == 0 || dependentValue == 0 || dependentOnValue == 0)
+        {
+            // Log the error or handle it accordingly
+            Console.WriteLine($"Error: One or more values not found for Dependency with ID={id}");
+            return null; // Return null or handle the missing values
+        }
+
+        return new Dependency(idValue, dependentValue, dependentOnValue);
     }
 
     public Dependency? Read(Func<Dependency, bool> filter)
@@ -120,13 +134,36 @@ internal class DependencyImplementation : IDependency
 
     public void Update(Dependency item)
     {
-        System.Xml.Linq.XElement xElement = XMLTools.LoadListFromXMLElement(s_dependencies_xml);
-        // Find the element with the specified ID and remove it
-        XElement elementToDelete = xElement.Descendants("Dependency") // Replace "YourElementName" with the actual name of your XML element
-                                      .FirstOrDefault(element => (string)element.Attribute("id") == item.Id.ToString());
-        elementToDelete.Remove();
+        int id = item.Id;
 
-        XMLTools.SaveListToXMLElement(xElement, s_dependencies_xml);
+        System.Xml.Linq.XElement xElement = XMLTools.LoadListFromXMLElement(s_dependencies_xml);
+
+        // Find the element with the specified ID and remove it
+        XElement elementToDelete = xElement.Elements("Dependency")
+                                        .FirstOrDefault(element => element.Element("Id") != null && (int)element.Element("Id") == id);
+        if(elementToDelete == null)
+        {
+            throw new DalDoesNotExistException($"Can't update! No Dependency  with matching ID {item.Id} found");
+        }
+        else 
+        {
+            elementToDelete.Remove();
+
+            // Create an XElement for the updated Dependency
+            XElement updatedElement = new XElement("Dependency",
+                new XElement("Id", item.Id),
+                new XElement("DependentTask", item.DependentTask),
+                new XElement("DependentOnTask", item.DependentOnTask)
+            );
+
+            // Add the updated element back to the XML
+            xElement.Element("ArrayOfDependency").Add(updatedElement);
+
+            // Save the modified XElement back to the same file, overwriting it
+            XMLTools.SaveListToXMLElement(xElement, s_dependencies_xml);
+        }
+
     }
+
 }
 
