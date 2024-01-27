@@ -179,7 +179,8 @@ internal class EngineerImplementation : IEngineer
                 throw new DalDoesNotExistException($"Can not update Engineer. Engineer with ID={item.Id} does not exist");
             }
 
-            engineers.Add(existingItem);
+            engineers.Remove(existingItem); 
+            engineers.Add(item);
 
             XMLTools.SaveListToXMLSerializer(engineers, s_engineers_xml);
 

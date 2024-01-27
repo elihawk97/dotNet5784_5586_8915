@@ -7,10 +7,10 @@ using DalXml;
 using System.ComponentModel;
 internal class Program
 {
-    static readonly IDal s_dal = new DalList(); //stage 2
+    //static readonly IDal s_dal = new DalList(); //stage 2
 
 
-    //static readonly IDal s_dal = new DalXml.DalXml();
+    static readonly IDal s_dal = new DalXml.DalXml();
 
     public static DO.Task taskInput()
     {
