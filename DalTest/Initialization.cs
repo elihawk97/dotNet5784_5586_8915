@@ -28,6 +28,11 @@ public static class Initialization
         */
         s_dal = dal ?? throw new NullReferenceException("DAL object can not be null!");
 
+        // Reset all of the Lists, used for the XML files to reset them for each test run
+        s_dal!.Task.Reset();
+        s_dal!.Dependency.Reset();
+        s_dal!.Engineer.Reset();
+
         // Call the private initialization methods
         createTasks();
         CreateEngineers();

@@ -17,6 +17,13 @@ public record Dependency
 
 
     /// <summary>
+    /// Default Constructor
+    /// </summary>
+    public Dependency()
+    {
+
+    }
+    /// <summary>
     /// Initializes a new instance of the Dependency class.
     /// </summary>
     /// <param name="Id">Personal unique ID of the Dependency.</param>
@@ -25,6 +32,19 @@ public record Dependency
     public Dependency(int dependentTask, int dependentOnTask)
     {
 
+        DependentTask = dependentTask;
+        DependentOnTask = dependentOnTask;
+    }
+
+    /// <summary>
+    /// Initializes a new instance of the Dependency class.
+    /// </summary>
+    /// <param name="Id">Id of the task</param>
+    /// <param name="dependentTask">The ID of the dependent task.</param>
+    /// <param name="dependentOnTask">The ID of the task on which it depends (Requisite).</param>
+    public Dependency(int id, int dependentTask, int dependentOnTask)
+    {
+        Id = id;
         DependentTask = dependentTask;
         DependentOnTask = dependentOnTask;
     }
