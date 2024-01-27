@@ -11,11 +11,11 @@
 public record Engineer
 {
     public int Id;
-    string? Name;
-    string? Email;
+    public string? Name;
+    public string? Email;
 
-    Enums.ExperienceLevel? EngineerExperience;
-    double Cost;
+    public Enums.ExperienceLevel? EngineerExperience;
+    public double Cost;
     public bool IsActive = true;
 
 
