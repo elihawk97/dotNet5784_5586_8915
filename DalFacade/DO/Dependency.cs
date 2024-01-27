@@ -17,6 +17,13 @@ public record Dependency
 
 
     /// <summary>
+    /// Default Constructor
+    /// </summary>
+    public Dependency()
+    {
+
+    }
+    /// <summary>
     /// Initializes a new instance of the Dependency class.
     /// </summary>
     /// <param name="dependentTask">The ID of the dependent task.</param>
