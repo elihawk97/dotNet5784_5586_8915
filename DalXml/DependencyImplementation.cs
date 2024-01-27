@@ -42,11 +42,6 @@ internal class DependencyImplementation : IDependency
         // Find the element with the specified ID and remove it
         XElement foundElement = xElement.Elements("Dependency")
                                         .FirstOrDefault(element => element.Element("Id").ToString() == id.ToString());
-
-        // Find the first element with the specified ID
-        XElement? foundElement = xElement.Elements("Dependency")
-                                        .FirstOrDefault(element => element.Element("Id") != null && (int)element.Element("Id") == id);
-
         if (foundElement == null)
         {
             // Log the error or handle it accordingly
