@@ -23,13 +23,12 @@ internal static class DataSource
         //Task 
         internal const int startTaskId = 0;
         private static int nextTaskId = startTaskId;
-        internal static int NextTaskId { get => nextTaskId++; }
+        internal static int NextTaskId {get => nextTaskId++;}
 
         //Dependency
         internal const int startDependencyId = 0;
         private static int nextDependencyId = startDependencyId;
         internal static int NextDependencyId { get => nextDependencyId++; }
-
 
         internal static DateTime StartDate { get;  set; } = DateTime.Now.AddDays(-(365 + 365));
         internal static DateTime EndDate { get;  set; } = DateTime.Now.AddDays(365 + 365);

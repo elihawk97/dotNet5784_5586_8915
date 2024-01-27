@@ -109,7 +109,7 @@ internal class EngineerImplementation : IEngineer
     /// </summary>
     public void Reset()
     {
-        DataSource.Engineers = new List<Engineer>();
+        DataSource.Engineers = new List<Engineer>(); 
     }
 
 
