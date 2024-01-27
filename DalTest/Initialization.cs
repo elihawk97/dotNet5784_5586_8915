@@ -37,7 +37,7 @@ public static class Initialization
     {
         
         // Creates 20 Names for Task
-        string name = "Dependency";
+        string name = "Task";
         string[] TaskNames = new string[20];
 
         for (int i = 1; i <= 20; i++)

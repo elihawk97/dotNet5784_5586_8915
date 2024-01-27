@@ -33,7 +33,8 @@ internal class Program
         DateTime projectedStartDate = DateTime.Parse(Console.ReadLine());
 
         Console.WriteLine("Enter actual start time (optional, leave blank if not applicable - MM/dd/yyyy HH:mm:ss):");
-        DateTime? actualStartTime = string.IsNullOrEmpty(Console.ReadLine()) ? (DateTime?)null : DateTime.Parse(Console.ReadLine());
+        string actualStartTimeInput = Console.ReadLine();
+        DateTime? actualStartTime = string.IsNullOrEmpty(actualStartTimeInput) ? (DateTime?)null : DateTime.Parse(actualStartTimeInput);
 
         Console.WriteLine("Enter task duration (HH:mm:ss):");
         TimeSpan duration = TimeSpan.Parse(Console.ReadLine());
@@ -42,7 +43,8 @@ internal class Program
         DateTime dealLine = DateTime.Parse(Console.ReadLine());
 
         Console.WriteLine("Enter actual end date (optional, leave blank if not applicable - MM/dd/yyyy HH:mm:ss):");
-        DateTime? actualEndDate = string.IsNullOrEmpty(Console.ReadLine()) ? (DateTime?)null : DateTime.Parse(Console.ReadLine());
+        string actualEndDateInput = Console.ReadLine();
+        DateTime? actualEndDate = string.IsNullOrEmpty(actualEndDateInput) ? (DateTime?)null : DateTime.Parse(actualEndDateInput);
 
         Console.WriteLine("Enter deliverables: (String)");
         string deliverables = Console.ReadLine();
@@ -377,10 +379,15 @@ public static T GetEntityInput<T>()
 
     public static void ResetInitialData()
     {
+        
         Console.Write("Do you really wish to Reset? (Y/N)"); //stage 3
         string? ans = Console.ReadLine() ?? throw new FormatException("Wrong input"); //stage 3
         if (ans == "Y")
         {
+            ResetEntities<DO.Task>();
+            ResetEntities<Engineer>();
+            ResetEntities<Dependency>();
+
             Initialization.Do(s_dal);
         }
     }
