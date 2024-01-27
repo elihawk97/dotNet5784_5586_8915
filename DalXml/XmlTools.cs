@@ -23,15 +23,26 @@ static class XMLTools
         double.TryParse((string?)element.Element(name), out var result) ? (double?)result : null;
     public static int? ToIntNullable(this XElement element, string name) =>
         int.TryParse((string?)element.Element(name), out var result) ? (int?)result : null;
+    public static int? ToNullableInt(this XElement element, string name)
+    {
+        return int.TryParse(element?.Element(name)?.Value, out var result) ? (int?)result : null;
+    }
     #endregion
+
+
 
     #region XmlConfig
     public static int GetAndIncreaseNextId(string data_config_xml, string elemName)
     {
         XElement root = XMLTools.LoadListFromXMLElement(data_config_xml);
-        int nextId = root.ToIntNullable(elemName) ?? throw new FormatException($"can't convert id.  {data_config_xml}, {elemName}");
+
+        // Attempt to get the value of NextId, or use a default value of 1 if it doesn't exist
+        int nextId = root.ToNullableInt(elemName) ?? 1;
+
+        // Update the XML with the new value
         root.Element(elemName)?.SetValue((nextId + 1).ToString());
         XMLTools.SaveListToXMLElement(root, data_config_xml);
+
         return nextId;
     }
     #endregion
