@@ -1,10 +1,8 @@
 ﻿using DalApi;
 using Dal;
 using DO;
-using System.Runtime.InteropServices;
-using DalTest;
-using DalXml; 
-using System.ComponentModel;
+
+namespace DalTest; 
 internal class Program
 {
     //static readonly IDal s_dal = new DalList(); //stage 2

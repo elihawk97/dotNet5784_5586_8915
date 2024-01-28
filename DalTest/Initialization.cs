@@ -1,19 +1,16 @@
-﻿namespace DalTest;
-
+﻿
 using DO;
 using DalApi;
 using System;
+namespace DalTest;
 
 
 public static class Initialization
 {
-    private static IDal? s_dal;
+     static IDal? s_dal;
 
-/*    private static ITask? s_dalTask; 
-    private static IEngineer? s_dalEngineer; 
-    private static IDependency? s_dalDependency;*/
 
-    private static readonly Random s_rand = new();
+     static readonly Random s_rand = new();
 
     public static void Do(IDal dal)
     {
@@ -80,7 +77,7 @@ public static class Initialization
             //Constructor for Task 
             try
             {
-                Task newTask = new(
+                DO.Task newTask = new(
                     Task,
                     description,
                     dateCreated,
@@ -153,7 +150,7 @@ public static class Initialization
         string name = "Dependency";
         string[] DependencyNames = new string[40];
         int[] validTaskIds = new int[40];
-        List<Task> tasks = (List<Task>)s_dal!.Task.ReadAll();
+        List<DO.Task> tasks = (List<DO.Task>)(s_dal!.Task.ReadAll().ToList());
         for(int i = 0; i < 20; i++)
         {
             validTaskIds[i] = tasks[i].Id;
