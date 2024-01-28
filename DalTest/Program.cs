@@ -294,6 +294,7 @@ public static T GetEntityInput<T>()
 
 
         DO.Dependency newDependency = new DO.Dependency(
+            Id,
             dependentTask,
             dependentOnTask
         );
@@ -330,7 +331,7 @@ public static T GetEntityInput<T>()
     public static void UseEntity<T>()
     {
         Console.WriteLine($@"Choose one of the following {typeof(T).Name}s to perform:
-                        0: Exit
+                        0: Exit sub-menu
                         1: Create {typeof(T).Name}
                         2: Read {typeof(T).Name}
                         3: Update {typeof(T).Name}
@@ -399,6 +400,7 @@ public static T GetEntityInput<T>()
         while (choice != 0)
         {
             Console.WriteLine(@"These are the options of interfaces you may interact with:
+                     0: Exit
                      1: Task
                      2: Engineer
                      3: Dependency
