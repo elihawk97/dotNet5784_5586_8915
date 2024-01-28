@@ -2,11 +2,7 @@
 
 using DO;
 using DalApi;
-using Dal;
 using System;
-using System.Net;
-using System.Data.Common;
-
 
 
 public static class Initialization
@@ -156,6 +152,12 @@ public static class Initialization
         // Creates 40 Names for Dependency
         string name = "Dependency";
         string[] DependencyNames = new string[40];
+        int[] validTaskIds = new int[40];
+        List<Task> tasks = (List<Task>)s_dal!.Task.ReadAll();
+        for(int i = 0; i < 20; i++)
+        {
+            validTaskIds[i] = tasks[i].Id;
+        }
 
         for (int i = 1; i <= 40; i++)
         {
@@ -165,21 +167,15 @@ public static class Initialization
         int count = 0;
         foreach (var dependencyName in DependencyNames)
         {
-            // Setting the Dependency Id
-     
-            /*           do
-                       {
-                           dependencyId = s_rand.Next(DependencyNames.Length);
-                       } while (s_dal!.Dependency.Read(dependencyId) != null);*/
 
             // Generating random dependencies for the task
-            int dependentTaskId = s_rand.Next(1, 21); // Assuming task Ids range from 1 to 20
-            int dependentOnTaskId = s_rand.Next(1, 21); // Assuming task Ids range from 1 to 20
+            int dependentTaskId = validTaskIds[s_rand.Next(1, 21)]; // Assuming task Ids range from 1 to 20
+            int dependentOnTaskId = validTaskIds[s_rand.Next(1, 21)]; // Assuming task Ids range from 1 to 20
 
             // Ensure that dependentTaskId and dependentOnTaskId are not the same
             while (dependentTaskId == dependentOnTaskId)
             {
-                dependentOnTaskId = s_rand.Next(1, 21);
+                dependentOnTaskId = validTaskIds[s_rand.Next(1, 21)];
             }
 
             // Creating Dependency object
