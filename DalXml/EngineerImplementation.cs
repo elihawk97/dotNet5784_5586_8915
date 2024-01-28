@@ -76,7 +76,7 @@ internal class EngineerImplementation : IEngineer
 
             Engineer? engineerToRead = engineers.FirstOrDefault(e => e.Id == id);
 
-            if (engineerToRead == null)
+            if (engineerToRead == null || engineerToRead.IsActive == false)
             {
                 throw new DalDoesNotExistException($"Engineer with ID {id} does not exist.");
             }
@@ -125,8 +125,6 @@ internal class EngineerImplementation : IEngineer
     {
         try
         {
-
-
             List<Engineer> engineers = XMLTools.LoadListFromXMLSerializer<Engineer>(s_engineers_xml);
 
             if (engineers.Count == 0)
@@ -134,18 +132,28 @@ internal class EngineerImplementation : IEngineer
                 throw new DalDoesNotExistException($"XML File is empty");
             }
 
-            return filter != null ? engineers.Where(filter) : engineers;
+            // Add a default filter for isActive = true
+            Func<Engineer, bool> isActiveFilter = engineer => engineer.IsActive;
 
+            // Apply user-provided filter if any
+
+            if (filter != null)
+            {
+                isActiveFilter = engineer => filter(engineer) && engineer.IsActive;
+            }
+
+            return engineers.Where(isActiveFilter);
         }
+
         catch (DalXMLFileLoadCreateException ex)
         {
             Console.WriteLine($"Error creating Engineer: {ex.Message}");
-            return null; 
+            return null;
         }
         catch (Exception ex)
         {
             Console.WriteLine($"Unexpected error creating task: {ex.Message}");
-            return null; 
+            return null;
         }
     }
 

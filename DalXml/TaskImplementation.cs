@@ -71,9 +71,9 @@ internal class TaskImplementation : ITask
 
             DO.Task? taskToRead = tasks.FirstOrDefault(e => e.Id == id);
 
-            if (taskToRead == null)
+            if (taskToRead == null || taskToRead.IsActive == false)
             {
-                throw new DalDoesNotExistException($"Task with ID {id} does not exist.");
+                throw new DalDoesNotExistException($"Task does not exist.");
             }
 
             return taskToRead;
@@ -98,10 +98,12 @@ internal class TaskImplementation : ITask
             List<DO.Task> tasks = XMLTools.LoadListFromXMLSerializer<DO.Task>(s_tasks_xml);
             DO.Task? taskToRead = tasks.FirstOrDefault(filter);
 
-            if (taskToRead == null)
+
+            if (taskToRead == null || taskToRead.IsActive == false)
             {
                 throw new DalDoesNotExistException($"Task does not exist.");
             }
+            
 
             return taskToRead;
         }
@@ -128,7 +130,16 @@ internal class TaskImplementation : ITask
                 throw new DalDoesNotExistException($"XML File is empty");
             }
 
-            return filter != null ? tasks.Where(filter) : tasks;
+            // Add a default filter for isActive = true
+            Func<DO.Task, bool> isActiveFilter = task => task.IsActive;
+
+            // Apply user-provided filter if any
+            if (filter != null)
+            {
+                isActiveFilter = task => filter(task) && task.IsActive;
+            }
+
+            return tasks.Where(isActiveFilter);
         }
         catch (DalXMLFileLoadCreateException ex)
         {
