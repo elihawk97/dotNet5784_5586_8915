@@ -102,7 +102,7 @@ internal class TaskImplementation : ITask
             }
 
             tasks.Remove(existingItem);
-            tasks.Add(existingItem);
+            tasks.Add(item);
 
             XMLTools.SaveListToXMLSerializer(tasks, s_tasks_xml);
     }

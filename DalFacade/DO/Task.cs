@@ -45,6 +45,23 @@ public record Task
     {
     }
 
+    public Task(int id, string nickName, string? description, DateTime dateCreated, DateTime projectedStartDate, DateTime? actualStartTime, TimeSpan? duration, DateTime deadLine, DateTime? actualEndDate, string? deliverables, string? notes, int? engineerID, Enums.ExperienceLevel difficultyLevel)
+    {
+        this.Id = id;
+        this.NickName = nickName;
+        this.Description = description;
+        this.IsMilestone = false;
+        this.DateCreated = dateCreated;
+        this.ProjectedStartDate = projectedStartDate;
+        this.ActualStartTime = actualStartTime;
+        this.Duration = duration;
+        this.DeadLine = deadLine;
+        this.ActualEndDate = actualEndDate;
+        this.Deliverables = deliverables;
+        this.Notes = notes;
+        this.DifficultyLevel = difficultyLevel;
+
+    }
     /// <summary>
     /// 
     /// </summary>

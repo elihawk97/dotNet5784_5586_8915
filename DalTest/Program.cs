@@ -13,7 +13,10 @@ internal class Program
     {
 
         Console.WriteLine("Enter data to create new task");
-        
+
+        Console.WriteLine("Enter dependency ID:");
+        int Id = int.Parse(Console.ReadLine());
+
         Console.WriteLine("Enter task nickname: (String)");
         string? nickName = Console.ReadLine();
 
@@ -56,6 +59,7 @@ internal class Program
         DO.Enums.ExperienceLevel level = (DO.Enums.ExperienceLevel)Enum.Parse(typeof(DO.Enums.ExperienceLevel), Console.ReadLine());
 
         DO.Task newTask = new DO.Task(
+            Id,
             nickName,
             description,
             dateCreated,
@@ -314,10 +318,11 @@ public static T GetEntityInput<T>()
         Console.WriteLine("Enter engineer cost:");
         double cost = double.Parse(Console.ReadLine());
 
-        Console.WriteLine("Enter engineer experience level (Junior/Mid/Senior):");
+        Console.WriteLine("Enter experience level (Novice, AdvancedBeginner, Competent, Proficient, Expert):");
         DO.Enums.ExperienceLevel level = (DO.Enums.ExperienceLevel)Enum.Parse(typeof(DO.Enums.ExperienceLevel), Console.ReadLine());
 
         DO.Engineer newEngineer = new DO.Engineer(
+            Id, 
             name,
             email,
             level,

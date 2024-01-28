@@ -29,6 +29,15 @@ public record Engineer
 
 
     }
+
+    public Engineer(int id, string? name, string? email, Enums.ExperienceLevel? engineerExperience, double cost)
+    {
+        Id = id;
+        Name = name;
+        Email = email;
+        EngineerExperience = engineerExperience;
+        Cost = cost;
+    }
     public Engineer(string? name, string? email, Enums.ExperienceLevel? engineerExperience, double cost)
     {
         Name = name;
