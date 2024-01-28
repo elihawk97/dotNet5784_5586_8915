@@ -11,9 +11,6 @@ internal class EngineerImplementation : IEngineer
 
     public int Create(Engineer entity)
     {
-
-        try
-        {
             List<Engineer> engineers = XMLTools.LoadListFromXMLSerializer<Engineer>(s_engineers_xml);
 
             int nextId = XMLTools.GetAndIncreaseNextId("data-config", "NextEngineerId");
@@ -22,27 +19,10 @@ internal class EngineerImplementation : IEngineer
 
             XMLTools.SaveListToXMLSerializer(engineers, s_engineers_xml);
             return nextId;
-
-        }
-
-        catch (DalXMLFileLoadCreateException ex)
-        {
-            Console.WriteLine($"Error creating Engineer: {ex.Message}");
-            return -1; 
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine($"Unexpected error creating task: {ex.Message}");
-            return -1; 
-        }
-
     }
 
     public void Delete(int id)
     {
-
-        try
-        {
             List<Engineer> engineers = XMLTools.LoadListFromXMLSerializer<Engineer>(s_engineers_xml);
 
             Engineer? engineerToDelete = engineers.FirstOrDefault(e => e.Id == id);
@@ -55,23 +35,10 @@ internal class EngineerImplementation : IEngineer
             engineerToDelete.IsActive = false;
 
             XMLTools.SaveListToXMLSerializer(engineers, s_engineers_xml);
-        }
-
-        catch (DalXMLFileLoadCreateException ex)
-        {
-            Console.WriteLine($"Error creating Engineer: {ex.Message}");
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine($"Unexpected error creating task: {ex.Message}");
-        }
-
     }
 
     public Engineer? Read(int id)
     {
-        try
-        {
             List<Engineer> engineers = XMLTools.LoadListFromXMLSerializer<Engineer>(s_engineers_xml);
 
             Engineer? engineerToRead = engineers.FirstOrDefault(e => e.Id == id);
@@ -82,23 +49,10 @@ internal class EngineerImplementation : IEngineer
             }
 
             return engineerToRead;
-        }
-        catch (DalXMLFileLoadCreateException ex)
-        {
-            Console.WriteLine($"Error creating Engineer: {ex.Message}");
-            return null; 
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine($"Unexpected error creating task: {ex.Message}");
-            return null; 
-        }
     }
 
     public Engineer? Read(Func<Engineer, bool> filter)
     {
-        try
-        {
             List<Engineer> engineers = XMLTools.LoadListFromXMLSerializer<Engineer>(s_engineers_xml);
             Engineer? engineerToRead = engineers.FirstOrDefault(filter);
 
@@ -108,23 +62,10 @@ internal class EngineerImplementation : IEngineer
             }
 
             return engineerToRead;
-        }
-        catch (DalXMLFileLoadCreateException ex)
-        {
-            Console.WriteLine($"Error creating Engineer: {ex.Message}");
-            return null; 
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine($"Unexpected error creating task: {ex.Message}");
-            return null; 
-        }
     }
 
     public IEnumerable<Engineer?> ReadAll(Func<Engineer, bool>? filter = null)
     {
-        try
-        {
             List<Engineer> engineers = XMLTools.LoadListFromXMLSerializer<Engineer>(s_engineers_xml);
 
             if (engineers.Count == 0)
@@ -143,44 +84,19 @@ internal class EngineerImplementation : IEngineer
             }
 
             return engineers.Where(isActiveFilter);
-        }
-
-        catch (DalXMLFileLoadCreateException ex)
-        {
-            Console.WriteLine($"Error creating Engineer: {ex.Message}");
-            return null;
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine($"Unexpected error creating task: {ex.Message}");
-            return null;
-        }
     }
 
     public void Reset()
     {
-        try { 
         List<Engineer> engineers = new List<Engineer>();
         XMLTools.SaveListToXMLSerializer(engineers, s_engineers_xml);
-        }
-        catch (DalXMLFileLoadCreateException ex)
-        {
-            Console.WriteLine($"Error creating Engineer: {ex.Message}");
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine($"Unexpected error creating task: {ex.Message}");
-        }
     }
 
     public void Update(Engineer item)
     {
-        try
-        {
             List<Engineer> engineers = XMLTools.LoadListFromXMLSerializer<Engineer>(s_engineers_xml);
 
             Engineer? existingItem = engineers.FirstOrDefault(e => e.Id == item.Id);
-
 
             if (existingItem == null)
             {
@@ -190,16 +106,6 @@ internal class EngineerImplementation : IEngineer
             engineers.Remove(existingItem); 
             engineers.Add(item);
 
-            XMLTools.SaveListToXMLSerializer(engineers, s_engineers_xml);
-
-        }
-        catch (DalXMLFileLoadCreateException ex)
-        {
-            Console.WriteLine($"Error creating Engineer: {ex.Message}");
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine($"Unexpected error creating task: {ex.Message}");
-        }
+            XMLTools.SaveListToXMLSerializer(engineers, s_engineers_xml);  
     }
 }
