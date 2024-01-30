@@ -12,14 +12,14 @@ public static class Initialization
 
      static readonly Random s_rand = new();
 
-    public static void Do(IDal dal)
+    public static void Do()
     {
         // Assign the arguments to access variables
         /*        s_dalTask = dalTask ?? throw new NullReferenceException("DAL Task cannot be null!");
                 s_dalEngineer = dalEngineer ?? throw new NullReferenceException("DAL Engineer cannot be null!");
                 s_dalDependency = dalDependency ?? throw new NullReferenceException("DAL Dependency cannot be null!");
         */
-        s_dal = dal ?? throw new NullReferenceException("DAL object can not be null!");
+        s_dal = DalApi.Factory.Get ?? throw new NullReferenceException("DAL object can not be null!");
 
         // Reset all of the Lists, used for the XML files to reset them for each test run
         s_dal!.Task.Reset();

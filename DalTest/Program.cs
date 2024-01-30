@@ -6,8 +6,9 @@ namespace DalTest;
 internal class Program
 {
     //static readonly IDal s_dal = new DalList(); //stage 2
-    
-    //static readonly IDal s_dal = new DalXml.DalXml();
+
+    //static readonly IDal s_dal = new DalXml.DalXml();//stage 3
+    static readonly IDal s_dal = Factory.Get; //stage 4
 
     public static DO.Task taskInput()
     {
@@ -391,14 +392,19 @@ public static T GetEntityInput<T>()
             ResetEntities<Engineer>();
             ResetEntities<Dependency>();
 
-            Initialization.Do(s_dal);
+            Initialization.Do();
         }
     }
 
 
     static void Main(string[] args)
     {
-        Initialization.Do(s_dal);
+        Console.Write("Would you like to create Initial data? (Y/N)"); //stage 3
+        string? ans = Console.ReadLine() ?? throw new FormatException("Wrong input"); //stage 3
+        if (ans == "Y") //stage 3
+                        //Initialization.Do(s_dal); //stage 2
+            Initialization.Do(); //stage 4
+
         int choice = 1;
         while (choice != 0)
         {
