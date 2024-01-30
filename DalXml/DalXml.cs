@@ -6,7 +6,7 @@ namespace DalXml;
 
 sealed internal class DalXml : IDal
 {
-    public static IDal Instance;
+    public static IDal Instance  = GetInstance();
     public ICrud<DO.Task> Task => new TaskImplementation();
     public ICrud<Engineer> Engineer => new EngineerImplementation();
     public ICrud<Dependency> Dependency => new DependencyImplementation();
@@ -31,7 +31,7 @@ sealed internal class DalXml : IDal
             // Use a lazy initializer to delay the creation of the instance until it is needed.
             lock (typeof(DalXml))
             {
-                if (Instance == null)
+            if (Instance == null)
                 {
                     Instance = new DalXml();
                 }
