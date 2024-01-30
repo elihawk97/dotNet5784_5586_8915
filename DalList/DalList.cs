@@ -1,11 +1,11 @@
 ﻿namespace Dal;
-
+ 
 using DalApi;
 using DO;
 
 sealed internal class DalList : IDal 
 {
-    public static IDal? Instance;
+    public static IDal? Instance = GetInstance();
     public ICrud<Task> Task =>  new TaskImplementation();
 
     public ICrud<Engineer> Engineer => new EngineerImplementation();
