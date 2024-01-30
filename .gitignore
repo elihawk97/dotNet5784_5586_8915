@@ -368,3 +368,4 @@ FodyWeavers.xsd
 /xml/engineers.xml
 /xml/tasks.xml
 /xml/dependencies.xml
+/dal-config.xml
