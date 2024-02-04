@@ -4,13 +4,13 @@ namespace BO;
 
 public class Engineer
 {
-    public int id; 
-    public string? name;
-    public string? email;
-    public ExperienceLevel level; 
+    public int Id { get; init; } 
+    public string? Name { get; set; }
+    public string? Email { get; set; }
+    public ExperienceLevel? Level { get; set; }
 
-    public double cost;
-    public Task task;
+    public double Cost { get; set; }
+    public Task? Task { get; set; }
 
 }
 

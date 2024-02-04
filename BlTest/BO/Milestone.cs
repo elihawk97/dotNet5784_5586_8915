@@ -6,20 +6,20 @@ namespace BO;
     public class Milestone
     {
     public int id { get; init; }
-    public string? name;
-    public string? description;
-    public DateOnly? dateCreated;
-    public TaskStatus status;
-    public DateTime? actualStartDate;
-    public DateTime? deadline;
-    public DateTime? actualEndDate;
-    public double progress;
-    public string? comments;
-    public TaskList dependencies; 
-    
+    public string? Name { get; set;}
+    public string? Description { get; set; }
+    public DateOnly? DateCreated { get; set; }
+    public TaskStatus Status { get; set; }
+    public DateTime? ActualStartDate { get; set; }
+    public DateTime? Deadline { get; set; }
+    public DateTime? ActualEndDate { get; set; }
+    public double Progress { get; set; }
+    public string? Comments { get; set; }
+    public TaskList? Dependencies { get; set; }
 
 
 
 
-    }
+
+}
 
