@@ -5,6 +5,8 @@ namespace BlImplementation;
 
 internal class EngineerImplementation : IEngineer
 {
+    private DalApi.IDal _dal = DalApi.Factory.Get;
+
     public void AddEngineer()
     {
         throw new NotImplementedException();
