@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 	<PropertyGroup>
 		<OutputType>Exe</OutputType>
 		<TargetFramework>net7.0</TargetFramework>
@@ -15,7 +15,6 @@
 	  <ProjectReference Include="..\DalTest\DalTest.csproj" />
 	</ItemGroup>
 	<ItemGroup>
-	  <Folder Include="BlApi\" />
 	  <Folder Include="BlImplementation\" />
 	</ItemGroup>
 </Project>
