@@ -16,12 +16,12 @@ internal class TaskImplementation : ITask
         throw new NotImplementedException();
     }
 
-    public System.Threading.Tasks.Task ReadTask(int id)
+    public BO.Task ReadTask(int id)
     {
         throw new NotImplementedException();
     }
 
-    public IEnumerable<System.Threading.Tasks.Task> ReadAll(Func<BO.Task, bool>? filter)
+    public IEnumerable<BO.Task> ReadAll(Func<BO.Task, bool>? filter)
     {
         throw new NotImplementedException();
     }
