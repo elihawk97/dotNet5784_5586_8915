@@ -6,11 +6,11 @@ namespace BlApi;
 public interface IEngineer
 {
     public IEnumerable<BO.Engineer> ReadAll(Func<BO.Engineer, bool> filter); 
-    public BO.Engineer ReadEngineer(int Id);
+    public BO.Engineer? ReadEngineer(int id);
 
-    public void AddEngineer();
+    public int Create(BO.Engineer item);
 
-    public void DeleteEngineer();
+    public void DeleteEngineer(int id);
     
     public void UpdateEngineer(BO.Engineer item);
 
