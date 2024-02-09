@@ -13,14 +13,14 @@ public class Task
     public string? Description { get; set; }
     public TaskStatus Status { get; set; }
     public TaskList? Dependencies { get; set; }
-    public DateTime DateCreated { get; set; }
-    public DateTime ProjectedStartDate { get; set; }
+    public DateTime? DateCreated { get; set; }
+    public DateTime? ProjectedStartDate { get; set; }
     public DateTime? ActualStartDate { get; set; }
-    public DateTime ProjectedEndDate { get; set; }
-    public DateTime Deadline { get; set; }
+    public DateTime? ProjectedEndDate { get; set; }
+    public DateTime? DeadLine { get; set; }
     public DateTime? ActualEndDate { get; set; }
     public string? Deliverable { get; set; }
-    public Engineer? Engineer { get; set; }
+    public Engineer? EngineerForTask { get; set; }
     public ExperienceLevel Level { get; set; }
     public string? Notes { get; set; }
     public Milestone? Milestone { get; set; }
@@ -42,10 +42,10 @@ public class Task
     ProjectedStartDate={ProjectedStartDate},
     ActualStartDate={ActualStartDate},
     ProjectedEndDate={ProjectedEndDate},
-    Deadline={Deadline},
+    Deadline={DeadLine},
     ActualEndDate={ActualEndDate},
     Deliverable={Deliverable},
-    Engineer={(Engineer != null ? Engineer.ToString() : "None")},
+    EngineerT={(EngineerForTask != null ? EngineerForTask.ToString() : "None")},
     Level={Level},
     Notes={Notes},
     Milestone={(Milestone != null ? Milestone.ToString() : "None")}

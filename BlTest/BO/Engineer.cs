@@ -3,7 +3,7 @@
 namespace BO; 
 
 /// <summary>
-/// Engineer class for the BO Layer
+/// EngineerForTask class for the BO Layer
 /// </summary>
 public class Engineer
 {

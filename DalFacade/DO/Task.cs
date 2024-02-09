@@ -26,15 +26,15 @@ public record Task
     public string? NickName;
     public string? Description;
     public bool IsMilestone = false;
-    public DateTime DateCreated;
-    public DateTime ProjectedStartDate;
+    public DateTime? DateCreated;
+    public DateTime? ProjectedStartDate;
     public DateTime? ActualStartTime;
     public TimeSpan? Duration;
-    public DateTime DeadLine;
+    public DateTime? DeadLine;
     public DateTime? ActualEndDate;
     public string? Deliverables; // may need to change field type
     public string? Notes;
-    public int? EngineerID;
+    public int EngineerID = 0;
     public Enums.ExperienceLevel DifficultyLevel;
     public bool IsActive = true;
 
@@ -45,7 +45,7 @@ public record Task
     {
     }
 
-    public Task(int id, string nickName, string? description, DateTime dateCreated, DateTime projectedStartDate, DateTime? actualStartTime, TimeSpan? duration, DateTime deadLine, DateTime? actualEndDate, string? deliverables, string? notes, int? engineerID, Enums.ExperienceLevel difficultyLevel)
+    public Task(int id, string nickName, string? description, DateTime? dateCreated, DateTime? projectedStartDate, DateTime? actualStartTime, TimeSpan? duration, DateTime? deadLine, DateTime? actualEndDate, string? deliverables, string? notes, int? engineerID, Enums.ExperienceLevel difficultyLevel)
     {
         this.Id = id;
         this.NickName = nickName;
