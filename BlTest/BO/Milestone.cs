@@ -19,7 +19,7 @@ namespace BO;
     public DateTime? ActualEndDate { get; set; }
     public double Progress { get; set; }
     public string? Comments { get; set; }
-    public TaskList? Dependencies { get; set; }
+    public TaskInList? Dependencies { get; set; }
 
     /// <summary>
     /// Over riding the default ToString method to format the data

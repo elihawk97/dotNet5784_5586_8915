@@ -1,8 +1,11 @@
 ﻿using BlApi;
 using BO;
+using DalApi;
 using DO;
+using System.ComponentModel.Design;
 using System.Net.NetworkInformation;
 using System.Reflection.Emit;
+using System.Threading.Tasks;
 using System.Xml.Linq;
 
 namespace BlImplementation;
@@ -15,21 +18,7 @@ internal class TaskImplementation : ITask
     {
         try
         {
-            TimeSpan duration = (TimeSpan)(task.ActualEndDate - task.ActualStartDate);
-            DO.Enums.ExperienceLevel doExperienceLevel = (DO.Enums.ExperienceLevel)task.Level;
-
-            // Check the dates make sence, note the project may start before the projected
-            // start date and finish before the deadline, and may finish after the deadline
-            if (task.DateCreated <= task.ProjectedStartDate ||
-                task.DateCreated <= task.ActualStartDate || task.DateCreated<= task.DeadLine
-                || task.ActualStartDate <= task.ActualEndDate)
-            {
-                throw new Exception BadDates();
-            }
-
-            DO.Task doTask = new DO.Task(task.Id, task.Name, task.Description, task.DateCreated,
-                task.ProjectedStartDate, task.ActualStartDate, duration, task.DeadLine, task.ActualEndDate,
-                task.Deliverable, task.Notes, task.EngineerForTask.Id, doExperienceLevel);
+            DO.Task doTask = taskCreater(task);
 
             int id = _dal.Task.Create(doTask);
         }
@@ -41,23 +30,50 @@ internal class TaskImplementation : ITask
 
     public void DeleteTask(int id)
     {
-
-        throw new NotImplementedException();
-
+        _dal.Task.Delete(id); 
     }
 
     public BO.Task ReadTask(int id)
     {
         DO.Task task = _dal.Task.Read(x => x.Id == id);
+        BO.Task boTask = taskDo_BO(task);
+        return boTask;
+    }
+
+    public IEnumerable<BO.Task> ReadAll(Func<BO.Task, bool>? filter)
+    {
+        IEnumerable<DO.Task> tasks = _dal.Task.ReadAll();
+        IEnumerable<BO.Task> boTasks = from task in tasks
+                                          select taskDo_BO(task);
+        if (filter != null){
+            boTasks = from task in boTasks
+                                           where filter(task)
+                                           select task;
+        }
+        return boTasks;
+    }
+
+    public void UpdateStartDate(int id, DateTime newStartTime)
+    {
+        DO.Task task = _dal.Task.Read(x => x.Id == id);
+        task.ActualStartTime = newStartTime; //Change the date of the task
+        _dal.Task.Delete(id); // Delete the old task with the old date
+        _dal.Task.Create(task);
+    }
+
+    public void UpdateTask(int id)
+    {
+        _dal.Task.Update(_dal.Task.Read(x => x.Id == id));
+    }
+
+
+    private BO.Task taskDo_BO(DO.Task task)
+    {
         DO.Engineer engineer = _dal.Engineer.Read(x => x.Id == task.EngineerID);
-        BO.Engineer engineerForBO = new BO.Engineer() { //Initialize the Engineer for this task
-            Id = engineer.Id,
-            Name = engineer.Name,
-            Email = engineer.Email,
-            Level = (BO.ExperienceLevel)engineer.EngineerExperience,
-            Cost = engineer.Cost
-        };
-        BO.Task boTask = new BO.Task() {
+        BO.Engineer engineerForBO = new BO.Engineer(engineer.Id, engineer.Name, engineer.Email,
+            (BO.ExperienceLevel)engineer.EngineerExperience, engineer.Cost);
+        BO.Task boTask = new BO.Task()
+        {
             Id = task.Id,
             Name = task.NickName,
             Description = task.Description,
@@ -73,21 +89,27 @@ internal class TaskImplementation : ITask
             Level = (BO.ExperienceLevel)task.DifficultyLevel,
             Notes = task.Notes,
         };
+
         return boTask;
     }
 
-    public IEnumerable<BO.Task> ReadAll(Func<BO.Task, bool>? filter)
+    private DO.Task taskCreater(BO.Task task)
     {
-        throw new NotImplementedException();
-    }
+        TimeSpan duration = (TimeSpan)(task.ActualEndDate - task.ActualStartDate);
+        DO.Enums.ExperienceLevel doExperienceLevel = (DO.Enums.ExperienceLevel)task.Level;
 
-    public void UpdateStartDate(int id, DateTime newStartTime)
-    {
-        throw new NotImplementedException();
-    }
+        // Check the dates make sence, note the project may start before the projected
+        // start date and finish before the deadline, and may finish after the deadline
+        if (task.DateCreated <= task.ProjectedStartDate ||
+        task.DateCreated <= task.ActualStartDate || task.DateCreated <= task.DeadLine
+        || task.ActualStartDate <= task.ActualEndDate)
+        {
+            throw new Exception BadDates();
+        }
+        DO.Task doTask = new DO.Task(task.Id, task.Name, task.Description, task.DateCreated,
+        task.ProjectedStartDate, task.ActualStartDate, duration, task.DeadLine, task.ActualEndDate,
+            task.Deliverable, task.Notes, task.EngineerForTask.Id, doExperienceLevel);
 
-    public void UpdateTask(int id)
-    {
-        throw new NotImplementedException();
+        return doTask;
     }
 }

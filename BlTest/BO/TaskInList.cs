@@ -7,7 +7,7 @@ namespace BO;
 /// <summary>
 /// List of Tasks for the BO Layer
 /// </summary>
-public class TaskList
+public class TaskInList
 {
 
     public int Id { get; init;}
