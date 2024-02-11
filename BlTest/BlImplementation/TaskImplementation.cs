@@ -7,10 +7,10 @@ using System.Net.NetworkInformation;
 using System.Reflection.Emit;
 using System.Threading.Tasks;
 using System.Xml.Linq;
-
+using DalList;
 namespace BlImplementation;
 
-internal class TaskImplementation : ITask
+internal class TaskImplementation : BlApi.ITask
 {
     private DalApi.IDal _dal = DalApi.Factory.Get;
 
@@ -56,6 +56,10 @@ internal class TaskImplementation : ITask
     public void UpdateStartDate(int id, DateTime newStartTime)
     {
         DO.Task task = _dal.Task.Read(x => x.Id == id);
+        if(newStartTime >= DalList.DataSource.config.StartDate)
+        {
+
+        }
         task.ActualStartTime = newStartTime; //Change the date of the task
         _dal.Task.Delete(id); // Delete the old task with the old date
         _dal.Task.Create(task);
@@ -105,6 +109,10 @@ internal class TaskImplementation : ITask
         || task.ActualStartDate <= task.ActualEndDate)
         {
             throw new Exception BadDates();
+        }
+        if (duration < projectEndDate - task.ActualStartDate)
+        {
+            throw new Exception ;
         }
         DO.Task doTask = new DO.Task(task.Id, task.Name, task.Description, task.DateCreated,
         task.ProjectedStartDate, task.ActualStartDate, duration, task.DeadLine, task.ActualEndDate,
