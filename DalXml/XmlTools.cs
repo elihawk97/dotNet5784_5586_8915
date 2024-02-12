@@ -1,9 +1,11 @@
 ﻿namespace Dal;
 
 using DO;
+using System.Security.Cryptography;
 using System.Xml;
 using System.Xml.Linq;
 using System.Xml.Serialization;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 static class XMLTools
 {
@@ -28,6 +30,15 @@ static class XMLTools
     #endregion
 
 
+    public static void SetProjectDates(DateTime Date, string elemName)
+    {
+        XElement root = XMLTools.LoadListFromXMLElement("data-config.xml");
+        root.Element(elemName)?.SetValue((Date));
+
+        XMLTools.SaveListToXMLElement(root, "data-config.xml");
+
+
+    }
 
     #region XmlConfig
     public static int GetAndIncreaseNextId(string data_config_xml, string elemName)

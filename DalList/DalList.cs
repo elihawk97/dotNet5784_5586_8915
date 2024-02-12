@@ -2,6 +2,8 @@
  
 using DalApi;
 using DO;
+using System;
+using System.Diagnostics.CodeAnalysis;
 
 sealed internal class DalList : IDal 
 {
@@ -12,6 +14,33 @@ sealed internal class DalList : IDal
 
     public ICrud<Dependency> Dependency => new DependencyImplementation();
 
+
+    public void SetProjectEndDate(DateTime? endDate)
+    {
+        if (endDate.HasValue)
+        {
+            DataSource.Config.EndDate = endDate.Value;
+        }
+        else
+        {
+            // Handle null value, throw an exception or log a message
+            throw new ArgumentNullException(nameof(endDate), "End date cannot be null.");
+        }
+    }
+
+    public void SetProjectStartDate(DateTime? startDate)
+    {
+        // Ensure startDate is not null before setting
+        if (startDate.HasValue)
+        {
+            DataSource.Config.StartDate = startDate.Value;
+        }
+        else
+        {
+            // Handle null value, throw an exception or log a message
+            throw new ArgumentNullException(nameof(startDate), "Start date cannot be null.");
+        }
+    }
     private DalList() { }
 
 
@@ -42,4 +71,15 @@ sealed internal class DalList : IDal
         return Instance;
     }
 
+    public DateTime getProjectStartDate()
+    {
+        return DataSource.Config.StartDate; 
+
+    }
+
+    public DateTime getProjectEndDate()
+    {
+        return DataSource.Config.StartDate; 
+
+    }
 }
