@@ -8,6 +8,7 @@ using System.Reflection.Emit;
 using System.Threading.Tasks;
 using System.Xml.Linq;
 using DalList;
+using System.Security.Cryptography;
 namespace BlImplementation;
 
 internal class TaskImplementation : BlApi.ITask
@@ -19,7 +20,10 @@ internal class TaskImplementation : BlApi.ITask
         try
         {
             DO.Task doTask = taskCreater(task);
-
+            IEnumerable<DO.Dependency> dependencies = from taskInList in task.Dependencies
+                                                      select new Dependency(doTask.Id, taskInList.Id);
+            IEnumerable<int> ids = from dependency in dependencies
+                                   select _dal.Dependency.Create(dependency);
             int id = _dal.Task.Create(doTask);
         }
         catch(Exception ex)
