@@ -12,7 +12,7 @@ public class Task
     public string? Name { get; set; }
     public string? Description { get; set; }
     public TaskStatus Status { get; set; }
-    public TaskInList? Dependencies { get; set; }
+    public List<TaskInList> Dependencies { get; set; }
     public DateTime? DateCreated { get; set; }
     public DateTime? ProjectedStartDate { get; set; }
     public DateTime? ActualStartDate { get; set; }

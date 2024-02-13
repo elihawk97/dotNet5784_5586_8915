@@ -7,7 +7,8 @@ using System.Net.NetworkInformation;
 using System.Reflection.Emit;
 using System.Threading.Tasks;
 using System.Xml.Linq;
-using DalList;
+using System.Security.Cryptography;
+using System.Reflection.Metadata;
 namespace BlImplementation;
 
 internal class TaskImplementation : BlApi.ITask
@@ -18,56 +19,114 @@ internal class TaskImplementation : BlApi.ITask
     {
         try
         {
+            if(task.Name == null)
+            {
+                throw new BlInvalidTaskCreation("Can't create the Task, name has not been set!");
+            }
             DO.Task doTask = taskCreater(task);
-
+            IEnumerable<DO.Dependency> dependencies = from taskInList in task.Dependencies
+                                                      select new Dependency(doTask.Id, taskInList.Id);
+            IEnumerable<int> ids = from dependency in dependencies
+                                   select _dal.Dependency.Create(dependency);
             int id = _dal.Task.Create(doTask);
         }
-        catch(Exception ex)
+        catch(InvalidTime ex)
         {
-            Console.WriteLine(ex);
+            throw new BlInvalidDateException("There is a problem with the dates of the task.", ex);
         }
     }
 
     public void DeleteTask(int id)
     {
-        _dal.Task.Delete(id); 
+        try
+        {
+            _dal.Task.Delete(id);
+        }
+        catch (DO.DalDoesNotExistException ex)
+        {
+            throw new BlDoesNotExistException($"There was an error deleting the task with id={id}", ex);
+        }
     }
 
     public BO.Task ReadTask(int id)
     {
-        DO.Task task = _dal.Task.Read(x => x.Id == id);
-        BO.Task boTask = taskDo_BO(task);
-        return boTask;
+        try {
+            DO.Task task = _dal.Task.Read(x => x.Id == id);
+            BO.Task boTask = taskDo_BO(task);
+            return boTask;
+        }
+        catch (DO.DalDoesNotExistException ex) {
+            throw new BO.BlDoesNotExistException($"Student with ID={id} already exists", ex);
+        } 
     }
 
-    public IEnumerable<BO.Task> ReadAll(Func<BO.Task, bool>? filter)
+    public IEnumerable<BO.Task> ReadAll(int engineerId)
     {
-        IEnumerable<DO.Task> tasks = _dal.Task.ReadAll();
-        IEnumerable<BO.Task> boTasks = from task in tasks
-                                          select taskDo_BO(task);
-        if (filter != null){
-            boTasks = from task in boTasks
-                                           where filter(task)
-                                           select task;
-        }
-        return boTasks;
+            try
+            {
+                DO.Engineer engineer = _dal.Engineer.Read(engineerId);
+                IEnumerable<BO.Task> tasks = from task in _dal.Task.ReadAll()
+                                         where (task.DifficultyLevel <= engineer.EngineerExperience && task.EngineerID == 0)
+                                         select taskDo_BO(task);
+
+                tasks = from task in tasks
+                        let idNum = task.Id
+                        from dependency in _dal.Dependency.ReadAll()
+                        where ((dependency.DependentTask == idNum  && _dal.Task.Read(dependency.DependentTask).IsActive == false) ||
+                                (dependency.DependentTask != idNum))
+                        select task;
+
+                return tasks;
+            }
+            catch(DalDoesNotExistException ex)
+            {
+                throw new BO.BlDoesNotExistException("Can't Read-All The Task list is empty!", ex);
+            }
     }
 
     public void UpdateStartDate(int id, DateTime newStartTime)
     {
-        DO.Task task = _dal.Task.Read(x => x.Id == id);
-        if(newStartTime >= DalList.DataSource.config.StartDate)
+        try
         {
+            DO.Task task = _dal.Task.Read(x => x.Id == id);
+            if (newStartTime < _dal.getProjectStartDate() || newStartTime > _dal.getProjectEndDate())
+            {
+                throw new BlInvalidDateException("Date entered violates the time window of the project!");
+            }
+            if (task.NickName == null)
+            {
+                throw new BlDoesNotExistException("Task does not exist!");
+            }
+            task.ActualStartTime = newStartTime; //Change the date of the task
+            _dal.Task.Delete(id); // Delete the old task with the old date
+            _dal.Task.Create(task);
+        }
+        catch (DO.DalDoesNotExistException ex)
+        {
+            throw new BlInvalidDateException("Date entered is invalid!", ex);
+        }
+        catch(DO.InvalidTime ex)
+        {
+            throw new BlInvalidDateException("Date entered is invalid!", ex);
 
         }
-        task.ActualStartTime = newStartTime; //Change the date of the task
-        _dal.Task.Delete(id); // Delete the old task with the old date
-        _dal.Task.Create(task);
     }
 
-    public void UpdateTask(int id)
+    public void UpdateTask(int id, BO.Task boTask)
     {
-        _dal.Task.Update(_dal.Task.Read(x => x.Id == id));
+        /// TODO have this ask for the proper fields and actaully update the object
+        /// right now this just deletes and adds the same object
+        try
+        {
+            DO.Task doTask = _dal.Task.Read(x => x.Id == id);
+            DO.Task doNewTask = taskCreater(boTask);
+            _dal.Task.Delete(id);
+            _dal.Task.Update(doNewTask);
+        }
+        catch(DalDoesNotExistException ex)
+        {
+            throw new BO.BlDoesNotExistException($"Can't update Task with id={id}, no such Task exists!", ex);
+        }
     }
 
 
@@ -108,11 +167,12 @@ internal class TaskImplementation : BlApi.ITask
         task.DateCreated <= task.ActualStartDate || task.DateCreated <= task.DeadLine
         || task.ActualStartDate <= task.ActualEndDate)
         {
-            throw new Exception BadDates();
+            throw new BlInvalidDateException("There is an error with dates entered");
         }
-        if (duration < projectEndDate - task.ActualStartDate)
+        if (duration > _dal.getProjectEndDate() - task.ActualStartDate)
         {
-            throw new Exception ;
+            throw new BlInvalidDateException("The task takes too long, it will finish after the project's" +
+                " final start date");
         }
         DO.Task doTask = new DO.Task(task.Id, task.Name, task.Description, task.DateCreated,
         task.ProjectedStartDate, task.ActualStartDate, duration, task.DeadLine, task.ActualEndDate,
@@ -120,4 +180,14 @@ internal class TaskImplementation : BlApi.ITask
 
         return doTask;
     }
+
+
+
+
+
+
+
 }
+
+
+

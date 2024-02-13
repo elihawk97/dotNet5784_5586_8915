@@ -31,7 +31,6 @@ public record Dependency
     /// <param name="dependentOnTask">The ID of the task on which it depends (Requisite).</param>
     public Dependency(int dependentTask, int dependentOnTask)
     {
-
         DependentTask = dependentTask;
         DependentOnTask = dependentOnTask;
     }

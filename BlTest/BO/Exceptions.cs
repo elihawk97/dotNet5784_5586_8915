@@ -16,6 +16,24 @@ public class BlNullPropertyException : Exception
 }
 
 
+[Serializable]
+public class BlInvalidDateException : Exception
+{
+    public BlInvalidDateException(string? message) : base(message) { }
+    public BlInvalidDateException(string? message, Exception innerException) :
+    base(message, innerException)
+    { }
+}
+
+
+[Serializable]
+public class BlInvalidTaskCreation : Exception
+{
+    public BlInvalidTaskCreation(string? message) : base(message) { }
+    public BlInvalidTaskCreation(string? message, Exception innerException) :
+    base(message, innerException)
+    { }
+}
 
 
 
