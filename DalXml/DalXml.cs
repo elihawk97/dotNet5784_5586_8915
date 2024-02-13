@@ -1,5 +1,7 @@
-﻿using DalApi;
+﻿using Dal;
+using DalApi;
 using DO;
+using System.Data.Common;
 using System.Diagnostics;
 
 namespace DalXml;
@@ -39,6 +41,26 @@ sealed internal class DalXml : IDal
         }
 
         return Instance;
+    }
+
+    public void SetProjectEndDate(DateTime endDate)
+    {
+        XMLTools.SetProjectDates(endDate, "EndDate");
+    }
+
+    public void SetProjectStartDate(DateTime startDate)
+    {
+        XMLTools.SetProjectDates(startDate, "StartDate");
+    }
+
+    public DateTime GetProjectStartDate()
+    {
+        return Config.ProjectStartDate;
+    }
+
+    public DateTime GetProjectEndDate()
+    {
+        return Config.ProjectEndDate; 
     }
 }
 

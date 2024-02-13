@@ -8,9 +8,9 @@ public interface IDal
     ICrud<DO.Engineer> Engineer { get; }
     ICrud<DO.Dependency> Dependency { get; }
 
-    void SetProjectEndDate(DateTime? endDate);
-    void SetProjectStartDate(DateTime? startDate);
+    void SetProjectEndDate(DateTime endDate);
+    void SetProjectStartDate(DateTime startDate);
 
-    DateTime getProjectStartDate();
-    DateTime getProjectEndDate(); 
+    DateTime GetProjectStartDate();
+    DateTime GetProjectEndDate(); 
 }

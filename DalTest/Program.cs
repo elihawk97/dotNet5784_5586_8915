@@ -395,10 +395,49 @@ public static T GetEntityInput<T>()
             Initialization.Do();
         }
     }
+    
+    public static void SetProjectDates()
+    {
+
+        try
+        {
+            Console.WriteLine("Please enter the project start date: ");
+            string? date = Console.ReadLine();
+
+            DateTime startDate;
+
+            if (date != null)
+            {
+                startDate = DateTime.Parse(date);
+                s_dal.SetProjectStartDate(startDate);
+            }
+
+
+            Console.WriteLine("Please enter the project end date: ");
+            date = Console.ReadLine();
+
+
+            DateTime endDate;
+
+            if (date != null)
+            {
+                endDate = DateTime.Parse(date);
+                s_dal.SetProjectEndDate(endDate);
+            }
+        }
+
+        catch (Exception ex)
+        {
+            Console.WriteLine("An error occurred: " + ex.Message);
+        }
+    }
 
 
     static void Main(string[] args)
     {
+
+        SetProjectDates(); 
+
         Console.Write("Would you like to create Initial data? (Y/N)"); //stage 3
         string? ans = Console.ReadLine() ?? throw new FormatException("Wrong input"); //stage 3
         if (ans == "Y") //stage 3
@@ -408,21 +447,6 @@ public static T GetEntityInput<T>()
         int choice = 1;
         while (choice != 0)
         {
-
-            Console.WriteLine("Please enter the project start date: ");
-            string date = Console.ReadLine();
-            DateTime? startDate = string.IsNullOrEmpty(date) ? (DateTime?)null : DateTime.Parse(date);
-
-            s_dal.SetProjectStartDate(startDate);
-
-
-            Console.WriteLine("Please enter the project start date: ");
-            date = Console.ReadLine();
-            DateTime? endDate = string.IsNullOrEmpty(date) ? (DateTime?)null : DateTime.Parse(date);
-
-            s_dal.SetProjectStartDate(endDate);
-
-
             Console.WriteLine(@"These are the options of interfaces you may interact with:
                      0: Exit
                      1: Task
@@ -430,9 +454,6 @@ public static T GetEntityInput<T>()
                      3: Dependency
                      4: Optional: Reset Initial Data
                     ");
-
-
-           
 
             choice = int.Parse(Console.ReadLine());
             switch (choice)
@@ -453,8 +474,14 @@ public static T GetEntityInput<T>()
                     choice = 0;
                     break;
             }
+
+            Console.WriteLine(s_dal.GetProjectStartDate().ToString());
+            Console.WriteLine(s_dal.GetProjectEndDate().ToString());
+
         }
     }
+
+
 }
 
 

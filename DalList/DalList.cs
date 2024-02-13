@@ -15,31 +15,14 @@ sealed internal class DalList : IDal
     public ICrud<Dependency> Dependency => new DependencyImplementation();
 
 
-    public void SetProjectEndDate(DateTime? endDate)
+    public void SetProjectEndDate(DateTime endDate)
     {
-        if (endDate.HasValue)
-        {
-            DataSource.Config.EndDate = endDate.Value;
-        }
-        else
-        {
-            // Handle null value, throw an exception or log a message
-            throw new ArgumentNullException(nameof(endDate), "End date cannot be null.");
-        }
+            DataSource.Config.EndDate = endDate;
     }
 
-    public void SetProjectStartDate(DateTime? startDate)
+    public void SetProjectStartDate(DateTime startDate)
     {
-        // Ensure startDate is not null before setting
-        if (startDate.HasValue)
-        {
-            DataSource.Config.StartDate = startDate.Value;
-        }
-        else
-        {
-            // Handle null value, throw an exception or log a message
-            throw new ArgumentNullException(nameof(startDate), "Start date cannot be null.");
-        }
+        DataSource.Config.StartDate = startDate;
     }
     private DalList() { }
 
@@ -71,15 +54,14 @@ sealed internal class DalList : IDal
         return Instance;
     }
 
-    public DateTime getProjectStartDate()
+  
+    public DateTime GetProjectStartDate()
     {
-        return DataSource.Config.StartDate; 
-
+        return DataSource.Config.StartDate;
     }
 
-    public DateTime getProjectEndDate()
+    public DateTime GetProjectEndDate()
     {
-        return DataSource.Config.StartDate; 
-
+        return DataSource.Config.EndDate;
     }
 }

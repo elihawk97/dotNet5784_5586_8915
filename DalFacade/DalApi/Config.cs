@@ -27,8 +27,9 @@ static class Config
   throw new DalConfigException("<dal-packages> element is missing");
         s_dalPackages = (from item in packages
                          let pkg = item.Value
-                         let ns = item.Attribute("namespace")?.Value ?? "Dal"
-                         let cls = item.Attribute("class")?.Value ?? pkg
+                         let ns = item.Attribute(s_dalName)?.Value ?? "Dal"
+
+                         let cls = item.Attribute(s_dalName)?.Value ?? pkg
                          select (item.Name, new DalImplementation(pkg, ns, cls))
                         ).ToDictionary(p => "" + p.Name, p => p.Item2);
     }
