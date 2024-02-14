@@ -1,6 +1,6 @@
-﻿using BlApi;
-using DalApi;
+﻿using DalApi;
 using DO;
+using BO;
 using System.Globalization;
 
 namespace BlTest;
@@ -10,7 +10,7 @@ internal class Program
     static readonly BlApi.IBl s_bl = BlApi.Factory.Get();
 
 
-    public static DO.Task taskInput()
+    public static BO.Task taskInput()
     {
         Console.WriteLine("Enter data to create a new task:");
 
@@ -103,20 +103,19 @@ internal class Program
             return null;
         }
 
-        DO.Enums.ExperienceLevel level;
-        if (!Enum.TryParse<DO.Enums.ExperienceLevel>(Console.ReadLine(), out level))
+        BO.Enums.ExperienceLevel level;
+        if (!Enum.TryParse<BO.Enums.ExperienceLevel>(Console.ReadLine(), out level))
         {
             Console.WriteLine("Invalid input for experience level. Please enter a valid option.");
             return null;
         }
-        DO.Task newTask = new DO.Task(
+        BO.Task newTask = new BO.Task(
             nickName,
             description,
-            new List<DO.TaskInList>(), // Dependencies can be added later
+            new List<BO.TaskInList>(), // Dependencies can be added later
             dateCreated,
             projectedStartDate,
             actualStartTime,
-            duration,
             deadline,
             actualEndDate,
             deliverables,
@@ -131,11 +130,11 @@ internal class Program
 
     public static T GetEntityInput<T>()
     {
-        if (typeof(T) == typeof(DO.Task))
+        if (typeof(T) == typeof(BO.Task))
         {
             return (T)(object)taskInput();
         }
-        else if (typeof(T) == typeof(DO.Engineer))
+        else if (typeof(T) == typeof(BO.Engineer))
         {
             return (T)(object)EngineerInput();
         }
@@ -150,13 +149,13 @@ internal class Program
 
         try
         {
-            if (typeof(T) == typeof(DO.Task))
+            if (typeof(T) == typeof(BO.Task))
             {
-                s_bl.Task.Create(newEntity as DO.Task);
+                s_bl.Task.Create(newEntity as BO.Task);
             }
-            else if (typeof(T) == typeof(DO.Engineer))
+            else if (typeof(T) == typeof(BO.Engineer))
             {
-                s_bl.Engineer.Create(newEntity as DO.Engineer);
+                s_bl.Engineer.Create(newEntity as BO.Engineer);
             }
             else
             {
@@ -176,14 +175,14 @@ internal class Program
 
         try
         {
-            if (typeof(T) == typeof(DO.Task))
+            if (typeof(T) == typeof(BO.Task))
             {
-                DO.Task? entityToRead = s_bl.Task.Read(id);
+                BO.Task? entityToRead = s_bl.Task.Read(id);
                 Console.WriteLine(entityToRead);
             }
-            else if (typeof(T) == typeof(DO.Engineer))
+            else if (typeof(T) == typeof(BO.Engineer))
             {
-                DO.Engineer? entityToRead = s_bl.Engineer.Read(id);
+                BO.Engineer? entityToRead = s_bl.Engineer.Read(id);
                 Console.WriteLine(entityToRead);
             }
             else
@@ -203,11 +202,11 @@ internal class Program
         {
             IEnumerable<T?> itemList;
 
-            if (typeof(T) == typeof(DO.Task))
+            if (typeof(T) == typeof(BO.Task))
             {
                 itemList = s_bl.Task.ReadAll().Cast<T>();
             }
-            else if (typeof(T) == typeof(DO.Engineer))
+            else if (typeof(T) == typeof(BO.Engineer))
             {
                 itemList = s_bl.Engineer.ReadAll().Cast<T>();
             }
@@ -242,14 +241,14 @@ internal class Program
             Console.WriteLine($"Enter the id of the {typeof(T).Name} you wish to update");
             int id = int.Parse(Console.ReadLine());
 
-            if (typeof(T) == typeof(DO.Task))
+            if (typeof(T) == typeof(BO.Task))
             {
-                DO.Task updateItem = GetEntityInput<DO.Task>();
+                BO.Task updateItem = GetEntityInput<BO.Task>();
                 s_bl.Task.Update(updateItem);
             }
-            else if (typeof(T) == typeof(DO.Engineer))
+            else if (typeof(T) == typeof(BO.Engineer))
             {
-                DO.Engineer updateItem = GetEntityInput<DO.Engineer>();
+                BO.Engineer updateItem = GetEntityInput<BO.Engineer>();
                 s_bl.Engineer.Update(updateItem);
             }
             else
@@ -270,11 +269,11 @@ internal class Program
             Console.WriteLine($"Enter the id of the {typeof(T).Name} you wish to delete");
             int id = int.Parse(Console.ReadLine());
 
-            if (typeof(T) == typeof(DO.Task))
+            if (typeof(T) == typeof(BO.Task))
             {
                 s_bl.Task.Delete(id);
             }
-            else if (typeof(T) == typeof(DO.Engineer))
+            else if (typeof(T) == typeof(BO.Engineer))
             {
                 s_bl.Engineer.Delete(id);
             }
@@ -290,11 +289,11 @@ internal class Program
     }
     public static void ResetEntities<T>()
     {
-        if (typeof(T) == typeof(DO.Task))
+        if (typeof(T) == typeof(BO.Task))
         {
             s_bl.Task.Reset();
         }
-        else if (typeof(T) == typeof(DO.Engineer))
+        else if (typeof(T) == typeof(BO.Engineer))
         {
             s_bl.Engineer.Reset();
         }
@@ -306,7 +305,7 @@ internal class Program
 
 
 
-    public static DO.Engineer EngineerInput()
+    public static BO.Engineer EngineerInput()
     {
         Console.WriteLine("Enter data to create a new engineer:");
         Console.WriteLine("Enter engineer ID:");
@@ -319,16 +318,16 @@ internal class Program
         string email = Console.ReadLine();
 
         Console.WriteLine("Enter experience level (Novice, AdvancedBeginner, Competent, Proficient, Expert):");
-        DO.Enums.ExperienceLevel? level = (DO.Enums.ExperienceLevel?)Enum.Parse(typeof(DO.Enums.ExperienceLevel), Console.ReadLine());
+        BO.Enums.ExperienceLevel? level = (BO.Enums.ExperienceLevel?)Enum.Parse(typeof(BO.Enums.ExperienceLevel), Console.ReadLine());
 
         Console.WriteLine("Enter engineer cost:");
         double cost = double.Parse(Console.ReadLine());
 
         string taskInput = Console.ReadLine();
-        DO.Task? task = null; //Don't assign the engineer to a task at this point
+        BO.Task? task = null; //Don't assign the engineer to a task at this point
 
 
-        DO.Engineer newEngineer = new DO.Engineer(
+        BO.Engineer newEngineer = new BO.Engineer(
             id,
             name,
             email,
@@ -396,7 +395,7 @@ internal class Program
         string? ans = Console.ReadLine() ?? throw new FormatException("Wrong input"); //stage 3
         if (ans == "Y")
         {
-            ResetEntities<DO.Task>();
+            ResetEntities<BO.Task>();
             ResetEntities<Engineer>();
             ResetEntities<Dependency>();
 
@@ -445,10 +444,10 @@ internal class Program
             switch (choice)
             {
                 case 1:
-                    UseEntity<DO.Task>();
+                    UseEntity<BO.Task>();
                     break;
                 case 2:
-                    UseEntity<DO.Engineer>();
+                    UseEntity<BO.Engineer>();
                     break;
                 case 4:
                     ResetInitialData();
