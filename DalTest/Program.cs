@@ -1,9 +1,8 @@
 ﻿using DalApi;
 using Dal;
 using DO;
-using System.Text.RegularExpressions;
 
-namespace DalTest; 
+namespace DalTest;
 internal class Program
 {
     //static readonly IDal s_dal = new DalList(); //stage 2
@@ -54,7 +53,7 @@ internal class Program
         Console.WriteLine("Enter additional notes: (String)");
         string notes = Console.ReadLine();
 
-        Console.WriteLine("Enter engineer ID:" );
+        Console.WriteLine("Enter engineer ID:");
         int engineerID = int.Parse(Console.ReadLine());
 
         Console.WriteLine("Enter experience level (Novice, AdvancedBeginner, Competent, Proficient, Expert):");
@@ -78,7 +77,7 @@ internal class Program
         return newTask;
     }
 
-public static T GetEntityInput<T>()
+    public static T GetEntityInput<T>()
     {
         if (typeof(T) == typeof(DO.Task))
         {
@@ -97,7 +96,7 @@ public static T GetEntityInput<T>()
             throw new NotSupportedException($"Unsupported entity type: {typeof(T).Name}");
         }
     }
-    public static void CreateEntity<T>() 
+    public static void CreateEntity<T>()
     {
         T newEntity = GetEntityInput<T>();
 
@@ -308,77 +307,30 @@ public static T GetEntityInput<T>()
     public static DO.Engineer EngineerInput()
     {
         Console.WriteLine("Enter data to create a new engineer:");
+        Console.WriteLine("Enter engineer ID:");
+        int Id = int.Parse(Console.ReadLine());
 
-        bool validInput = false;
-        int id = 0;
-        string name = null;
-        string email = null;
-        DO.Enums.ExperienceLevel? level = null;
-        double cost = 0;
-        string taskInput = null;
-        DO.Task? task = null;
+        Console.WriteLine("Enter engineer name:");
+        string name = Console.ReadLine();
 
-        while (!validInput)
-        {
-            validInput = true; // Assume success initially
+        Console.WriteLine("Enter engineer email:");
+        string email = Console.ReadLine();
 
-            // Input: ID
-            Console.WriteLine("Enter engineer ID:");
-            if (!int.TryParse(Console.ReadLine(), out id))
-            {
-                Console.WriteLine("Invalid ID format. Please enter a valid integer.");
-                validInput = false;
-            }
+        Console.WriteLine("Enter engineer cost:");
+        double cost = double.Parse(Console.ReadLine());
 
-            // Input: Name
-            Console.WriteLine("Enter engineer name:");
-            name = Console.ReadLine();
-            if (string.IsNullOrEmpty(name))
-            {
-                Console.WriteLine("Name cannot be empty. Please enter a valid name.");
-                validInput = false;
-            }
-
-            // Input: Email
-            Console.WriteLine("Enter engineer email:");
-            email = Console.ReadLine();
-            if (!IsValidEmail(email)) // Define IsValidEmail logic
-            {
-                Console.WriteLine("Invalid email format. Please enter a valid email address.");
-                validInput = false;
-            }
-
-            // Input: Experience Level
-            Console.WriteLine("Enter experience level (Novice, AdvancedBeginner, Competent, Proficient, Expert):");
-            if (!Enum.TryParse<DO.Enums.ExperienceLevel>(Console.ReadLine(), out level))
-            {
-                Console.WriteLine("Invalid experience level. Please enter one of the listed options.");
-                validInput = false;
-            }
-
-            // Input: Cost
-            Console.WriteLine("Enter engineer cost:");
-            if (!double.TryParse(Console.ReadLine(), out cost))
-            {
-                Console.WriteLine("Invalid cost format. Please enter a valid decimal number.");
-                validInput = false;
-            }
-
-            // Don't initialize task at this point
-            task = null;
-        }
+        Console.WriteLine("Enter experience level (Novice, AdvancedBeginner, Competent, Proficient, Expert):");
+        DO.Enums.ExperienceLevel level = (DO.Enums.ExperienceLevel)Enum.Parse(typeof(DO.Enums.ExperienceLevel), Console.ReadLine());
 
         DO.Engineer newEngineer = new DO.Engineer(
-            id,
+            Id,
             name,
             email,
             level,
             cost
         );
-
         return newEngineer;
     }
-
 
     public static void UseEntity<T>()
     {
@@ -431,7 +383,7 @@ public static T GetEntityInput<T>()
 
     public static void ResetInitialData()
     {
-        
+
         Console.Write("Do you really wish to Reset? (Y/N)"); //stage 3
         string? ans = Console.ReadLine() ?? throw new FormatException("Wrong input"); //stage 3
         if (ans == "Y")
@@ -444,37 +396,48 @@ public static T GetEntityInput<T>()
         }
     }
 
-    private static bool IsValidEmail(string email)
+    public static void SetProjectDates()
     {
-        // Basic checks with a regular expression (allows most common formats)
-        const string emailPattern = @"^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$";
 
-        // Additional checks (feel free to adjust based on your needs)
-        if (string.IsNullOrEmpty(email))
+        try
         {
-            return false; // Empty email
+            Console.WriteLine("Please enter the project start date: ");
+            string? date = Console.ReadLine();
+
+            DateTime startDate;
+
+            if (date != null)
+            {
+                startDate = DateTime.Parse(date);
+                s_dal.SetProjectStartDate(startDate);
+            }
+
+
+            Console.WriteLine("Please enter the project end date: ");
+            date = Console.ReadLine();
+
+
+            DateTime endDate;
+
+            if (date != null)
+            {
+                endDate = DateTime.Parse(date);
+                s_dal.SetProjectEndDate(endDate);
+            }
         }
 
-        if (email.Length > 254)
+        catch (Exception ex)
         {
-            return false; // Too long
+            Console.WriteLine("An error occurred: " + ex.Message);
         }
-
-        if (!Regex.IsMatch(email, emailPattern))
-        {
-            return false; // Basic format check failed
-        }
-
-        // Consider adding checks for:
-        // - Specific disallowed characters (e.g., consecutive dots, leading/trailing dots)
-        // - TLD existence (using external services or databases)
-
-        return true;
     }
 
 
     static void Main(string[] args)
     {
+
+        SetProjectDates();
+
         Console.Write("Would you like to create Initial data? (Y/N)"); //stage 3
         string? ans = Console.ReadLine() ?? throw new FormatException("Wrong input"); //stage 3
         if (ans == "Y") //stage 3
@@ -484,21 +447,6 @@ public static T GetEntityInput<T>()
         int choice = 1;
         while (choice != 0)
         {
-
-            Console.WriteLine("Please enter the project start date: ");
-            string date = Console.ReadLine();
-            DateTime? startDate = string.IsNullOrEmpty(date) ? (DateTime?)null : DateTime.Parse(date);
-
-            s_dal.SetProjectStartDate(startDate);
-
-
-            Console.WriteLine("Please enter the project start date: ");
-            date = Console.ReadLine();
-            DateTime? endDate = string.IsNullOrEmpty(date) ? (DateTime?)null : DateTime.Parse(date);
-
-            s_dal.SetProjectStartDate(endDate);
-
-
             Console.WriteLine(@"These are the options of interfaces you may interact with:
                      0: Exit
                      1: Task
@@ -506,9 +454,6 @@ public static T GetEntityInput<T>()
                      3: Dependency
                      4: Optional: Reset Initial Data
                     ");
-
-
-           
 
             choice = int.Parse(Console.ReadLine());
             switch (choice)
@@ -524,13 +469,17 @@ public static T GetEntityInput<T>()
                     break;
                 case 4:
                     ResetInitialData();
-                    break; 
+                    break;
                 default:
                     choice = 0;
                     break;
             }
+
+            Console.WriteLine(s_dal.GetProjectStartDate().ToString());
+            Console.WriteLine(s_dal.GetProjectEndDate().ToString());
+
         }
     }
+
+
 }
-
-
