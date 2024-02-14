@@ -1,6 +1,7 @@
 ﻿using DalApi;
 using Dal;
 using DO;
+using System.Text.RegularExpressions;
 
 namespace DalTest; 
 internal class Program
@@ -303,34 +304,81 @@ public static T GetEntityInput<T>()
         );
         return newDependency;
     }
-  
+
     public static DO.Engineer EngineerInput()
     {
         Console.WriteLine("Enter data to create a new engineer:");
-        Console.WriteLine("Enter engineer ID:");
-        int Id = int.Parse(Console.ReadLine());
 
-        Console.WriteLine("Enter engineer name:");
-        string name = Console.ReadLine();
+        bool validInput = false;
+        int id = 0;
+        string name = null;
+        string email = null;
+        DO.Enums.ExperienceLevel? level = null;
+        double cost = 0;
+        string taskInput = null;
+        DO.Task? task = null;
 
-        Console.WriteLine("Enter engineer email:");
-        string email = Console.ReadLine();
+        while (!validInput)
+        {
+            validInput = true; // Assume success initially
 
-        Console.WriteLine("Enter engineer cost:");
-        double cost = double.Parse(Console.ReadLine());
+            // Input: ID
+            Console.WriteLine("Enter engineer ID:");
+            if (!int.TryParse(Console.ReadLine(), out id))
+            {
+                Console.WriteLine("Invalid ID format. Please enter a valid integer.");
+                validInput = false;
+            }
 
-        Console.WriteLine("Enter experience level (Novice, AdvancedBeginner, Competent, Proficient, Expert):");
-        DO.Enums.ExperienceLevel level = (DO.Enums.ExperienceLevel)Enum.Parse(typeof(DO.Enums.ExperienceLevel), Console.ReadLine());
+            // Input: Name
+            Console.WriteLine("Enter engineer name:");
+            name = Console.ReadLine();
+            if (string.IsNullOrEmpty(name))
+            {
+                Console.WriteLine("Name cannot be empty. Please enter a valid name.");
+                validInput = false;
+            }
+
+            // Input: Email
+            Console.WriteLine("Enter engineer email:");
+            email = Console.ReadLine();
+            if (!IsValidEmail(email)) // Define IsValidEmail logic
+            {
+                Console.WriteLine("Invalid email format. Please enter a valid email address.");
+                validInput = false;
+            }
+
+            // Input: Experience Level
+            Console.WriteLine("Enter experience level (Novice, AdvancedBeginner, Competent, Proficient, Expert):");
+            if (!Enum.TryParse<DO.Enums.ExperienceLevel>(Console.ReadLine(), out level))
+            {
+                Console.WriteLine("Invalid experience level. Please enter one of the listed options.");
+                validInput = false;
+            }
+
+            // Input: Cost
+            Console.WriteLine("Enter engineer cost:");
+            if (!double.TryParse(Console.ReadLine(), out cost))
+            {
+                Console.WriteLine("Invalid cost format. Please enter a valid decimal number.");
+                validInput = false;
+            }
+
+            // Don't initialize task at this point
+            task = null;
+        }
 
         DO.Engineer newEngineer = new DO.Engineer(
-            Id, 
+            id,
             name,
             email,
             level,
             cost
         );
+
         return newEngineer;
     }
+
 
     public static void UseEntity<T>()
     {
@@ -394,6 +442,34 @@ public static T GetEntityInput<T>()
 
             Initialization.Do();
         }
+    }
+
+    private static bool IsValidEmail(string email)
+    {
+        // Basic checks with a regular expression (allows most common formats)
+        const string emailPattern = @"^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$";
+
+        // Additional checks (feel free to adjust based on your needs)
+        if (string.IsNullOrEmpty(email))
+        {
+            return false; // Empty email
+        }
+
+        if (email.Length > 254)
+        {
+            return false; // Too long
+        }
+
+        if (!Regex.IsMatch(email, emailPattern))
+        {
+            return false; // Basic format check failed
+        }
+
+        // Consider adding checks for:
+        // - Specific disallowed characters (e.g., consecutive dots, leading/trailing dots)
+        // - TLD existence (using external services or databases)
+
+        return true;
     }
 
 
