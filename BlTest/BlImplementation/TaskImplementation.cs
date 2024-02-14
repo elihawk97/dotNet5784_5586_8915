@@ -1,7 +1,7 @@
 ﻿using BlApi;
+using DO;
 using BO;
 using DalApi;
-using DO;
 using System.ComponentModel.Design;
 using System.Net.NetworkInformation;
 using System.Reflection.Emit;
@@ -134,14 +134,13 @@ internal class TaskImplementation : BlApi.ITask
     {
         DO.Engineer engineer = _dal.Engineer.Read(x => x.Id == task.EngineerID);
         BO.Engineer engineerForBO = new BO.Engineer(engineer.Id, engineer.Name, engineer.Email,
-            (BO.ExperienceLevel)engineer.EngineerExperience, engineer.Cost);
+            (ExperienceLevel)engineer.EngineerExperience, engineer.Cost);
         BO.Task boTask = new BO.Task()
         {
             Id = task.Id,
             Name = task.NickName,
             Description = task.Description,
             DateCreated = task.DateCreated,
-            //Milestone = false, FIX
             ProjectedStartDate = task.ProjectedStartDate,
             ProjectedEndDate = task.ProjectedStartDate + task.Duration,
             ActualStartDate = task.ActualStartTime,
@@ -149,7 +148,7 @@ internal class TaskImplementation : BlApi.ITask
             ActualEndDate = task.ActualEndDate,
             Deliverable = task.Deliverables,
             EngineerForTask = engineerForBO,//get engineer based off of the ID
-            Level = (BO.ExperienceLevel)task.DifficultyLevel,
+            Level = (ExperienceLevel)task.DifficultyLevel,
             Notes = task.Notes,
         };
 
