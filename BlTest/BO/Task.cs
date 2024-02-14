@@ -1,14 +1,11 @@
-﻿
-using DO;
-
+﻿using DO;
 namespace BO;
 
 /// <summary>
 /// Task class for the BO layer
 /// </summary>
 public class Task
-{
-    public int Id { get; init; }
+{    public int Id { get; init; }
     public string? Name { get; set; }
     public string? Description { get; set; }
     public TaskStatus Status { get; set; }
@@ -24,6 +21,26 @@ public class Task
     public ExperienceLevel Level { get; set; }
     public string? Notes { get; set; }
     public Milestone? Milestone { get; set; }
+
+    /// <summary>
+    /// Default constructor
+    /// </summary>
+    public Task() { }
+    public Task( string? name, string? description, List<BO.TaskInList> tasksDependencies, DateTime? dateCreated, DateTime? projectedStartDate, DateTime? actualStartDate, DateTime? deadLine, DateTime? actualEndDate, string? deliverable, string? notes, Enums.ExperienceLevel experienceLevel)
+    {
+        Id = 0;
+        Name = name;
+        this.Level = (ExperienceLevel)experienceLevel;
+        Dependencies = tasksDependencies;
+        Description = description;
+        DateCreated = dateCreated;
+        ProjectedStartDate = projectedStartDate;
+        ActualStartDate = actualStartDate;
+        DeadLine = deadLine;
+        ActualEndDate = actualEndDate;
+        Deliverable = deliverable;
+        Notes = notes;
+    }
 
     /// <summary>
     /// Over riding the default ToString method to format the data
