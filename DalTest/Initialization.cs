@@ -1,5 +1,4 @@
-﻿
-using DO;
+﻿using DO;
 using DalApi;
 using System;
 namespace DalTest;
