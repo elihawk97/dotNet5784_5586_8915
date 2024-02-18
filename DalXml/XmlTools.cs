@@ -33,11 +33,9 @@ static class XMLTools
     public static void SetProjectDates(DateTime? Date, string elemName)
     {
         XElement root = XMLTools.LoadListFromXMLElement("data-config.xml");
-        root.Element(elemName)?.SetValue((Date));
+        root.Element(elemName)?.SetValue(Date.ToString("dd-MM-yyyy")); // Convert DateTime to string using a specific format
 
         XMLTools.SaveListToXMLElement(root, "data-config.xml");
-
-
     }
 
     #region XmlConfig
