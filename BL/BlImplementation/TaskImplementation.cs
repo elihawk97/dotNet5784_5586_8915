@@ -1,14 +1,5 @@
-﻿using BlApi;
-using DO;
+﻿using DO;
 using BO;
-using DalApi;
-using System.ComponentModel.Design;
-using System.Net.NetworkInformation;
-using System.Reflection.Emit;
-using System.Threading.Tasks;
-using System.Xml.Linq;
-using System.Security.Cryptography;
-using System.Reflection.Metadata;
 namespace BlImplementation;
 
 internal class TaskImplementation : BlApi.ITask
@@ -129,12 +120,16 @@ internal class TaskImplementation : BlApi.ITask
         }
     }
 
+    public void Reset()
+    {
+        _dal.Task.Reset();
+    }
 
     private BO.Task taskDo_BO(DO.Task task)
     {
         DO.Engineer engineer = _dal.Engineer.Read(x => x.Id == task.EngineerID);
         BO.Engineer engineerForBO = new BO.Engineer(engineer.Id, engineer.Name, engineer.Email,
-            (ExperienceLevel)engineer.EngineerExperience, engineer.Cost);
+            (BO.Enums.ExperienceLevel)engineer.EngineerExperience, engineer.Cost);
         BO.Task boTask = new BO.Task()
         {
             Id = task.Id,
@@ -148,7 +143,7 @@ internal class TaskImplementation : BlApi.ITask
             ActualEndDate = task.ActualEndDate,
             Deliverable = task.Deliverables,
             EngineerForTask = engineerForBO,//get engineer based off of the ID
-            Level = (ExperienceLevel)task.DifficultyLevel,
+            Level = (BO.Enums.ExperienceLevel)task.DifficultyLevel,
             Notes = task.Notes,
         };
 

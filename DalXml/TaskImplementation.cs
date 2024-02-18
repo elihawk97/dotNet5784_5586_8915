@@ -3,7 +3,7 @@ using DO;
 using DalApi;
 using Dal;
 using static System.Runtime.InteropServices.JavaScript.JSType;
-namespace DalXml;
+namespace Dal;
 
 internal class TaskImplementation : ITask
 {

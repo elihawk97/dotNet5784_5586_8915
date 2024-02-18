@@ -18,7 +18,7 @@ public class Task
     public DateTime? ActualEndDate { get; set; }
     public string? Deliverable { get; set; }
     public Engineer? EngineerForTask { get; set; }
-    public ExperienceLevel Level { get; set; }
+    public Enums.ExperienceLevel Level { get; set; }
     public string? Notes { get; set; }
     public Milestone? Milestone { get; set; }
 
@@ -30,7 +30,7 @@ public class Task
     {
         Id = 0;
         Name = name;
-        this.Level = (ExperienceLevel)experienceLevel;
+        this.Level = (Enums.ExperienceLevel)experienceLevel;
         Dependencies = tasksDependencies;
         Description = description;
         DateCreated = dateCreated;
@@ -41,6 +41,7 @@ public class Task
         Deliverable = deliverable;
         Notes = notes;
     }
+
 
     /// <summary>
     /// Over riding the default ToString method to format the data

@@ -4,7 +4,7 @@ using DO;
 using System.Data.Common;
 using System.Diagnostics;
 
-namespace DalXml;
+namespace Dal;
 
 sealed internal class DalXml : IDal
 {

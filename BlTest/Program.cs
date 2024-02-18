@@ -8,8 +8,7 @@ namespace BlTest;
 internal class Program
 {
     static readonly BlApi.IBl s_bl = BlApi.Factory.Get();
-
-
+    static int curEngineer = 0;
     public static BO.Task taskInput()
     {
         Console.WriteLine("Enter data to create a new task:");
@@ -56,11 +55,12 @@ internal class Program
             return null;
         }
 
-        DateTime? actualStartTime = null;
+        DateTime actualStartTime;
         string actualStartTimeInput = Console.ReadLine();
+        bool timeParsed = DateTime.TryParseExact(actualStartTimeInput, "MM/dd/yyyy HH:mm:ss", null, DateTimeStyles.None, out actualStartTime);
         if (!string.IsNullOrEmpty(actualStartTimeInput))
         {
-            if (!DateTime.TryParseExact(actualStartTimeInput, "MM/dd/yyyy HH:mm:ss", null, DateTimeStyles.None, out actualStartTime))
+            if (!timeParsed)
             {
                 Console.WriteLine("Invalid date format. Please enter a valid date in MM/dd/yyyy HH:mm:ss format.");
                 return null;
@@ -81,15 +81,12 @@ internal class Program
             return null;
         }
 
-        DateTime? actualEndDate = null;
-        string actualEndDateInput = Console.ReadLine();
-        if (!string.IsNullOrEmpty(actualEndDateInput))
+        DateTime actualEndDate;
+
+        if (!DateTime.TryParseExact(Console.ReadLine(), "MM/dd/yyyy HH:mm:ss", null, DateTimeStyles.None, out actualEndDate))
         {
-            if (!DateTime.TryParseExact(actualEndDateInput, "MM/dd/yyyy HH:mm:ss", null, DateTimeStyles.None, out actualEndDate))
-            {
-                Console.WriteLine("Invalid date format. Please enter a valid date in MM/dd/yyyy HH:mm:ss format.");
-                return null;
-            }
+            Console.WriteLine("Invalid date format. Please enter a valid date in MM/dd/yyyy HH:mm:ss format.");
+            return null;
         }
 
         string deliverables = Console.ReadLine();
@@ -120,8 +117,7 @@ internal class Program
             actualEndDate,
             deliverables,
             notes,
-            engineerID,
-            level
+            level            
         );
 
         return newTask;
@@ -151,7 +147,7 @@ internal class Program
         {
             if (typeof(T) == typeof(BO.Task))
             {
-                s_bl.Task.Create(newEntity as BO.Task);
+                s_bl.Task.CreateTask(newEntity as BO.Task);
             }
             else if (typeof(T) == typeof(BO.Engineer))
             {
@@ -177,12 +173,12 @@ internal class Program
         {
             if (typeof(T) == typeof(BO.Task))
             {
-                BO.Task? entityToRead = s_bl.Task.Read(id);
+                BO.Task? entityToRead = s_bl.Task.ReadTask(id);
                 Console.WriteLine(entityToRead);
             }
             else if (typeof(T) == typeof(BO.Engineer))
             {
-                BO.Engineer? entityToRead = s_bl.Engineer.Read(id);
+                BO.Engineer? entityToRead = s_bl.Engineer.ReadEngineer(id);
                 Console.WriteLine(entityToRead);
             }
             else
@@ -204,11 +200,11 @@ internal class Program
 
             if (typeof(T) == typeof(BO.Task))
             {
-                itemList = s_bl.Task.ReadAll().Cast<T>();
+                itemList = s_bl.Task.ReadAll(curEngineer).Cast<T>();
             }
             else if (typeof(T) == typeof(BO.Engineer))
             {
-                itemList = s_bl.Engineer.ReadAll().Cast<T>();
+                itemList = s_bl.Engineer.ReadAll(null).Cast<T>();
             }
             else
             {
@@ -244,12 +240,12 @@ internal class Program
             if (typeof(T) == typeof(BO.Task))
             {
                 BO.Task updateItem = GetEntityInput<BO.Task>();
-                s_bl.Task.Update(updateItem);
+                s_bl.Task.UpdateTask(updateItem.Id,updateItem);
             }
             else if (typeof(T) == typeof(BO.Engineer))
             {
                 BO.Engineer updateItem = GetEntityInput<BO.Engineer>();
-                s_bl.Engineer.Update(updateItem);
+                s_bl.Engineer.UpdateEngineer(updateItem);
             }
             else
             {
@@ -271,11 +267,11 @@ internal class Program
 
             if (typeof(T) == typeof(BO.Task))
             {
-                s_bl.Task.Delete(id);
+                s_bl.Task.DeleteTask(id);
             }
             else if (typeof(T) == typeof(BO.Engineer))
             {
-                s_bl.Engineer.Delete(id);
+                s_bl.Engineer.DeleteEngineer(id);
             }
             else
             {
@@ -395,11 +391,11 @@ internal class Program
         string? ans = Console.ReadLine() ?? throw new FormatException("Wrong input"); //stage 3
         if (ans == "Y")
         {
-            ResetEntities<BO.Task>();
-            ResetEntities<Engineer>();
-            ResetEntities<Dependency>();
+            ResetEntities<DO.Task>();
+            ResetEntities<DO.Engineer>();
+            ResetEntities<DO.Dependency>();
 
-            Initialization.Do();
+            DalTest.Initialization.Do(); //TODO
         }
     }
 
@@ -408,10 +404,9 @@ internal class Program
     {
         Console.Write("Would you like to create Initial data? (Y/N)"); //stage 3
         string? ans = Console.ReadLine() ?? throw new FormatException("Wrong input"); //stage 3
-        if (ans == "Y") //stage 3
-                        //Initialization.Do(s_bl); //stage 2
-            Initialization.Do(); //stage 4
-
+        if (ans == "Y") { 
+            DalTest.Initialization.Do();
+        }
         int choice = 1;
         while (choice != 0)
         {
@@ -420,14 +415,14 @@ internal class Program
             string date = Console.ReadLine();
             DateTime? startDate = string.IsNullOrEmpty(date) ? (DateTime?)null : DateTime.Parse(date);
 
-            s_bl.SetProjectStartDate(startDate);
+            s_bl.Tools.SetProjectStartDate(startDate);
 
 
             Console.WriteLine("Please enter the project start date: ");
             date = Console.ReadLine();
             DateTime? endDate = string.IsNullOrEmpty(date) ? (DateTime?)null : DateTime.Parse(date);
 
-            s_bl.SetProjectStartDate(endDate);
+            s_bl.Tools.SetProjectStartDate(endDate);
 
 
             Console.WriteLine(@"These are the options of interfaces you may interact with:

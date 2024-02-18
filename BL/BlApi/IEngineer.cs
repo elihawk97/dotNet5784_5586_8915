@@ -14,5 +14,7 @@ public interface IEngineer
     
     public void UpdateEngineer(BO.Engineer item);
 
+    public void Reset();
+
 
 }

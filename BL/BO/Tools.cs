@@ -5,8 +5,10 @@ using System.Text;
 
 namespace BO
 {
+
     public static class Tools
     {
+
         public static string ToStringProperty<T>(this T obj)
         {
             StringBuilder result = new StringBuilder();

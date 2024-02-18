@@ -3,7 +3,7 @@ using DO;
 using DalApi;
 using Dal;
 
-namespace DalXml;
+namespace Dal;
 
 internal class EngineerImplementation : IEngineer
 {

@@ -4,7 +4,7 @@ using DalApi;
 using Dal;
 using System.Xml.Linq;
 
-namespace DalXml;
+namespace Dal;
 
 internal class DependencyImplementation : IDependency
 {

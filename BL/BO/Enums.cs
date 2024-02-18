@@ -1,21 +1,24 @@
 ﻿namespace BO;
 
-public enum ExperienceLevel
+public class Enums
 {
-    Novice,
-    AdvancedBeginner,
-    Competent,
-    Proficient,
-    Expert
+    public enum ExperienceLevel
+    {
+        Novice,
+        AdvancedBeginner,
+        Competent,
+        Proficient,
+        Expert
 
-}
+    }
 
-public enum TaskStatus
-{
-    Unscheduled,
-    Scheduled,
-    OnTrack, 
-    InJeopardy,
-    Done
+    public enum TaskStatus
+    {
+        Unscheduled,
+        Scheduled,
+        OnTrack,
+        InJeopardy,
+        Done
 
+    }
 }
