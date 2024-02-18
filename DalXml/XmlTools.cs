@@ -1,6 +1,11 @@
 ﻿namespace Dal;
 
 using DO;
+using System.Net.NetworkInformation;
+using System.Reflection.Metadata;
+using System.Runtime.CompilerServices;
+using System.Security;
+using System;
 using System.Security.Cryptography;
 using System.Xml;
 using System.Xml.Linq;
@@ -28,15 +33,45 @@ static class XMLTools
         return int.TryParse(element?.Element(name)?.Value, out var result) ? (int?)result : null;
     }
     #endregion
-
-
     public static void SetProjectDates(DateTime? Date, string elemName)
     {
-        XElement root = XMLTools.LoadListFromXMLElement("data-config.xml");
-        root.Element(elemName)?.SetValue(Date.ToString("dd-MM-yyyy")); // Convert DateTime to string using a specific format
-
-        XMLTools.SaveListToXMLElement(root, "data-config.xml");
+        try
+        {
+            if (Date.HasValue)
+            {
+                XElement root = XMLTools.LoadListFromXMLElement("data-config");
+                if (root != null)
+                {
+                    XElement element = root.Element(elemName);
+                    if (element != null)
+                    {
+                        element.SetValue(Date.Value.ToString("MM/dd/yyyy"));
+                        XMLTools.SaveListToXMLElement(root, "data-config");
+                        Console.WriteLine($"Successfully set {elemName} to {Date.Value.ToString("MM/dd/yyyy")}");
+                        return; // Exit the method after successful execution
+                    }
+                    Console.WriteLine($"Element {elemName} not found in the XML file.");
+                }
+                else
+                {
+                    Console.WriteLine("Failed to load XML file.");
+                }
+            }
+            else
+            {
+                Console.WriteLine("Date parameter is null.");
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"An error occurred while setting {elemName}: {ex.Message}");
+        }
     }
+
+
+
+
+
 
     #region XmlConfig
     public static int GetAndIncreaseNextId(string data_config_xml, string elemName)

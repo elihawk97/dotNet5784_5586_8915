@@ -55,12 +55,12 @@ sealed internal class DalList : IDal
     }
 
   
-    public DateTime? GetProjectStartDate()
+    public DateTime? getProjectStartDate()
     {
         return DataSource.Config.StartDate;
     }
 
-    public DateTime? GetProjectEndDate()
+    public DateTime? getProjectEndDate()
     {
         return DataSource.Config.EndDate;
     }
