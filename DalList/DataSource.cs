@@ -30,8 +30,8 @@ internal static class DataSource
         private static int nextDependencyId = startDependencyId;
         internal static int NextDependencyId { get => nextDependencyId++; }
 
-        internal static DateTime StartDate { get;  set; } = DateTime.Now.AddDays(-(365 + 365));
-        internal static DateTime EndDate { get;  set; } = DateTime.Now.AddDays(365 + 365);
+        internal static DateTime? StartDate { get;  set; } = DateTime.Now.AddDays(-(365 + 365));
+        internal static DateTime? EndDate { get;  set; } = DateTime.Now.AddDays(365 + 365);
     }
 
         

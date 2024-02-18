@@ -15,12 +15,12 @@ sealed internal class DalList : IDal
     public ICrud<Dependency> Dependency => new DependencyImplementation();
 
 
-    public void SetProjectEndDate(DateTime endDate)
+    public void SetProjectEndDate(DateTime? endDate)
     {
             DataSource.Config.EndDate = endDate;
     }
 
-    public void SetProjectStartDate(DateTime startDate)
+    public void SetProjectStartDate(DateTime? startDate)
     {
         DataSource.Config.StartDate = startDate;
     }
@@ -55,12 +55,12 @@ sealed internal class DalList : IDal
     }
 
   
-    public DateTime GetProjectStartDate()
+    public DateTime? GetProjectStartDate()
     {
         return DataSource.Config.StartDate;
     }
 
-    public DateTime GetProjectEndDate()
+    public DateTime? GetProjectEndDate()
     {
         return DataSource.Config.EndDate;
     }

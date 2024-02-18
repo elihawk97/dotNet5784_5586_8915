@@ -11,12 +11,12 @@ namespace BL.BlImplementation
         private DalApi.IDal _dal = DalApi.Factory.Get;
 
 
-        public DateTime getProjectEndDate()
+        public DateTime? getProjectEndDate()
         {
             return _dal.getProjectEndDate();
         }
 
-        public DateTime getProjectStartDate()
+        public DateTime? getProjectStartDate()
         {
             return _dal.getProjectStartDate();
         }
