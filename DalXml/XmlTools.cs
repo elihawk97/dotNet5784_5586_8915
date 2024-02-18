@@ -30,7 +30,7 @@ static class XMLTools
     #endregion
 
 
-    public static void SetProjectDates(DateTime Date, string elemName)
+    public static void SetProjectDates(DateTime? Date, string elemName)
     {
         XElement root = XMLTools.LoadListFromXMLElement("data-config.xml");
         root.Element(elemName)?.SetValue((Date));

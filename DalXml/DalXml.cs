@@ -1,12 +1,14 @@
-﻿using DalApi;
+﻿using Dal;
+using DalApi;
 using DO;
+using System.Data.Common;
 using System.Diagnostics;
 
 namespace DalXml;
 
 sealed internal class DalXml : IDal
 {
-    public static IDal Instance  = GetInstance();
+    public static IDal Instance = GetInstance();
     public ICrud<DO.Task> Task => new TaskImplementation();
     public ICrud<Engineer> Engineer => new EngineerImplementation();
     public ICrud<Dependency> Dependency => new DependencyImplementation();
@@ -31,7 +33,7 @@ sealed internal class DalXml : IDal
             // Use a lazy initializer to delay the creation of the instance until it is needed.
             lock (typeof(DalXml))
             {
-            if (Instance == null)
+                if (Instance == null)
                 {
                     Instance = new DalXml();
                 }
@@ -40,5 +42,24 @@ sealed internal class DalXml : IDal
 
         return Instance;
     }
-}
 
+    public void SetProjectEndDate(DateTime? endDate)
+    {
+        XMLTools.SetProjectDates(endDate, "EndDate");
+    }
+
+    public void SetProjectStartDate(DateTime? startDate)
+    {
+        XMLTools.SetProjectDates(startDate, "StartDate");
+    }
+
+    public DateTime getProjectStartDate()
+    {
+        return Config.ProjectStartDate;
+    }
+
+    public DateTime getProjectEndDate()
+    {
+        return Config.ProjectEndDate;
+    }
+}

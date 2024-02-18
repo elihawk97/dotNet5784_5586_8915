@@ -475,8 +475,8 @@ internal class Program
                     break;
             }
 
-            Console.WriteLine(s_dal.GetProjectStartDate().ToString());
-            Console.WriteLine(s_dal.GetProjectEndDate().ToString());
+            Console.WriteLine(s_dal.getProjectStartDate().ToString());
+            Console.WriteLine(s_dal.getProjectEndDate().ToString());
 
         }
     }
