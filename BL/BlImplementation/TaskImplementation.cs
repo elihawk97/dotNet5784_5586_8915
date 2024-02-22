@@ -47,27 +47,52 @@ internal class TaskImplementation : BlApi.ITask
             return boTask;
         }
         catch (DO.DalDoesNotExistException ex) {
-            throw new BO.BlDoesNotExistException($"Student with ID={id} already exists", ex);
+            throw new BO.BlDoesNotExistException($"Engineer with ID={id} already exists", ex);
         } 
+    }
+    public BO.Task ReadTask(Func<DO.Task, int, bool> filter, int engineerId)
+    {
+        try
+        {
+            IEnumerable<BO.Task> tasks = from task in _dal.Task.ReadAll()
+                                         where (filter(task, engineerId))
+                                         select taskDo_BO(task);
+            List<BO.Task>taskList = tasks.ToList();
+            return taskList[0];
+        }
+        catch (DO.DalDoesNotExistException ex)
+        {
+            throw new BO.BlDoesNotExistException($"Engineer with these constraints does not exist", ex);
+        }
     }
 
     public IEnumerable<BO.Task> ReadAll(int engineerId)
     {
             try
             {
-                DO.Engineer engineer = _dal.Engineer.Read(engineerId);
-                IEnumerable<BO.Task> tasks = from task in _dal.Task.ReadAll()
-                                         where (task.DifficultyLevel <= engineer.EngineerExperience && task.EngineerID == 0)
-                                         select taskDo_BO(task);
+            IEnumerable<BO.Task> tasks = null;
+                if (engineerId != 0)
+                {
+                    DO.Engineer engineer = _dal.Engineer.Read(engineerId);
+                    tasks = from task in _dal.Task.ReadAll()
+                                                 where (task.DifficultyLevel <= engineer.EngineerExperience && task.EngineerID == 0)
+                                                 select taskDo_BO(task);
 
-                tasks = from task in tasks
-                        let idNum = task.Id
-                        from dependency in _dal.Dependency.ReadAll()
-                        where ((dependency.DependentTask == idNum  && _dal.Task.Read(dependency.DependentTask).IsActive == false) ||
-                                (dependency.DependentTask != idNum))
-                        select task;
+                    tasks = from task in tasks
+                            let idNum = task.Id
+                            from dependency in _dal.Dependency.ReadAll()
+                            where ((dependency.DependentTask == idNum && _dal.Task.Read(dependency.DependentTask).IsActive == false) ||
+                                    (dependency.DependentTask != idNum))
+                            select task;
 
-                return tasks;
+                    return tasks;
+                }
+
+            tasks = from task in _dal.Task.ReadAll()
+                    select taskDo_BO(task);
+                   return tasks; 
+
+                
             }
             catch(DalDoesNotExistException ex)
             {
@@ -89,8 +114,7 @@ internal class TaskImplementation : BlApi.ITask
                 throw new BlDoesNotExistException("Task does not exist!");
             }
             task.ActualStartTime = newStartTime; //Change the date of the task
-            _dal.Task.Delete(id); // Delete the old task with the old date
-            _dal.Task.Create(task);
+            _dal.Task.Update(task);
         }
         catch (DO.DalDoesNotExistException ex)
         {
@@ -127,9 +151,18 @@ internal class TaskImplementation : BlApi.ITask
 
     private BO.Task taskDo_BO(DO.Task task)
     {
-        DO.Engineer engineer = _dal.Engineer.Read(x => x.Id == task.EngineerID);
-        BO.Engineer engineerForBO = new BO.Engineer(engineer.Id, engineer.Name, engineer.Email,
+        DO.Engineer engineer;
+        BO.Engineer engineerForBO;
+        try
+        {
+             engineer = _dal.Engineer.Read(x => x.Id == task.EngineerID);
+            engineerForBO = new BO.Engineer(engineer.Id, engineer.Name, engineer.Email,
             (BO.Enums.ExperienceLevel)engineer.EngineerExperience, engineer.Cost);
+        }
+        catch (DalDoesNotExistException ex)
+        { engineerForBO = null;     }
+
+        
         BO.Task boTask = new BO.Task()
         {
             Id = task.Id,
@@ -167,6 +200,10 @@ internal class TaskImplementation : BlApi.ITask
         {
             throw new BlInvalidDateException("The task takes too long, it will finish after the project's" +
                 " final start date");
+        }
+        if(task.EngineerForTask.Level!=null && task.Level > task.EngineerForTask.Level)
+        {
+            throw new BlEngineerCantTakeTask($"Engineer with ID={task.EngineerForTask.Id} expertise level is not high enough.");
         }
         DO.Task doTask = new DO.Task(task.Id, task.Name, task.Description, task.DateCreated,
         task.ProjectedStartDate, task.ActualStartDate, duration, task.DeadLine, task.ActualEndDate,

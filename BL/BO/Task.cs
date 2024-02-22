@@ -63,7 +63,7 @@ public class Task
     Deadline={DeadLine},
     ActualEndDate={ActualEndDate},
     Deliverable={Deliverable},
-    EngineerT={(EngineerForTask != null ? EngineerForTask.ToString() : "None")},
+    EngineerTask={(EngineerForTask != null ? EngineerForTask.Id : "None")},
     Level={Level},
     Notes={Notes},
     Milestone={(Milestone != null ? Milestone.ToString() : "None")}

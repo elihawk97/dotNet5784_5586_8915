@@ -30,6 +30,7 @@ public static class Initialization
         CreateEngineers();
         CreateDependencys();
     }
+
     private static void createTasks()
     {
         
@@ -41,17 +42,20 @@ public static class Initialization
         {
             TaskNames[i - 1] = $"{name} {i}";
         }
+        int counter = 0;
+        int timeWindow = 0;
+        int spacer = 10;
         // ADD in end and start date
         foreach (var Task in TaskNames)
         {
 
-            int randomAmountOfDays = s_rand.Next(1, 357);
+            int randomAmountOfDays = s_rand.Next(1, 10);
 
             //Project is Created within at least one year of the current date
             DateTime dateCreated = DateTime.Now.AddDays(-randomAmountOfDays);
 
             //Project is projected to start at least one year after the current date
-            DateTime projectedStartDate = DateTime.Now.AddDays(randomAmountOfDays);
+            DateTime projectedStartDate = DateTime.Now.AddDays(randomAmountOfDays + timeWindow*10);
 
             //Project is actually started at most 15 days after the projected start date
             DateTime? actualStartTime = projectedStartDate.AddDays(s_rand.Next(1, 16));
@@ -95,7 +99,11 @@ public static class Initialization
             {
                 Console.WriteLine(ex);
             }
-
+            if(counter%5 == 0)
+            {
+                timeWindow += 1;
+            }
+            counter += 1;
   
         }
 

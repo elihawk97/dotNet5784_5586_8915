@@ -16,17 +16,17 @@ internal static class DataSource
         // Internal static fields for auto-incremental identifier fields
 
         //Engineer
-        internal const int startEngineerId = 0;
+        internal const int startEngineerId = 1;
         private static int nextEngineerId = startEngineerId;
         internal static int NextEngineerId { get => nextEngineerId++; }
 
-        //Task 
-        internal const int startTaskId = 0;
+        //Task
+        internal const int startTaskId = 1;
         private static int nextTaskId = startTaskId;
         internal static int NextTaskId {get => nextTaskId++;}
 
         //Dependency
-        internal const int startDependencyId = 0;
+        internal const int startDependencyId = 1;
         private static int nextDependencyId = startDependencyId;
         internal static int NextDependencyId { get => nextDependencyId++; }
 

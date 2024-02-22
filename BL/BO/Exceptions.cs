@@ -36,6 +36,16 @@ public class BlInvalidTaskCreation : Exception
 }
 
 
+[Serializable]
+public class BlEngineerCantTakeTask : Exception
+{
+    public BlEngineerCantTakeTask(string? message) : base(message) { }
+    public BlEngineerCantTakeTask(string? message, Exception innerException) :
+    base(message, innerException)
+    { }
+}
+
+
 
 /*
 

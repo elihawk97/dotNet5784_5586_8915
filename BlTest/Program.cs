@@ -2,95 +2,100 @@
 using DO;
 using BO;
 using System.Globalization;
+using System.Runtime.InteropServices;
+using System.Reflection.Emit;
 
 namespace BlTest;
 
 internal class Program
 {
-    static readonly BlApi.IBl s_bl = BlApi.Factory.Get();
-    static int curEngineer = 0;
+    public static readonly BlApi.IBl s_bl = BlApi.Factory.Get();
+    public static int curEngineer = 0;
     public static BO.Task taskInput()
     {
         Console.WriteLine("Enter data to create a new task:");
-
+        Console.WriteLine("Enter ID integer:");
         int id;
         if (!int.TryParse(Console.ReadLine(), out id))
         {
             Console.WriteLine("Invalid input for dependency ID. Please enter a valid integer.");
             return null;
         }
-
+        Console.WriteLine("Enter name string:");
         string? nickName = Console.ReadLine();
         if (string.IsNullOrEmpty(nickName))
         {
             Console.WriteLine("Nickname cannot be empty. Please enter a valid name.");
             return null;
         }
-
+        Console.WriteLine("Enter description string:");
         string? description = Console.ReadLine();
         if (string.IsNullOrEmpty(description))
         {
             Console.WriteLine("Description cannot be empty. Please enter a valid description.");
             return null;
         }
-
+        Console.WriteLine("Enter isMilestone bool:");
         bool isMilestone;
         if (!bool.TryParse(Console.ReadLine(), out isMilestone))
         {
             Console.WriteLine("Invalid input for milestone flag. Please enter True or False.");
             return null;
         }
-
+        Console.WriteLine("Enter date created MM/dd/yyyy:");
         DateTime dateCreated;
-        if (!DateTime.TryParseExact(Console.ReadLine(), "MM/dd/yyyy HH:mm:ss", null, DateTimeStyles.None, out dateCreated))
+        if (!DateTime.TryParseExact(Console.ReadLine(), "MM/dd/yyyy", null, DateTimeStyles.None, out dateCreated))
         {
-            Console.WriteLine("Invalid date format. Please enter a valid date in MM/dd/yyyy HH:mm:ss format.");
+            Console.WriteLine("Invalid date format. Please enter a valid date in MM/dd/yyyy format.");
             return null;
         }
-
+        Console.WriteLine("Enter projectedStartDate MM/dd/yyyy:");
         DateTime projectedStartDate;
-        if (!DateTime.TryParseExact(Console.ReadLine(), "MM/dd/yyyy HH:mm:ss", null, DateTimeStyles.None, out projectedStartDate))
+        if (!DateTime.TryParseExact(Console.ReadLine(), "MM/dd/yyyy", null, DateTimeStyles.None, out projectedStartDate))
         {
-            Console.WriteLine("Invalid date format. Please enter a valid date in MM/dd/yyyy HH:mm:ss format.");
+            Console.WriteLine("Invalid date format. Please enter a valid date in MM/dd/yyyy format.");
             return null;
         }
-
+        Console.WriteLine("Enter actualStartTime MM/dd/yyyy:");
         DateTime actualStartTime;
         string actualStartTimeInput = Console.ReadLine();
-        bool timeParsed = DateTime.TryParseExact(actualStartTimeInput, "MM/dd/yyyy HH:mm:ss", null, DateTimeStyles.None, out actualStartTime);
+        bool timeParsed = DateTime.TryParseExact(actualStartTimeInput, "MM/dd/yyyy", null, DateTimeStyles.None, out actualStartTime);
         if (!string.IsNullOrEmpty(actualStartTimeInput))
         {
             if (!timeParsed)
             {
-                Console.WriteLine("Invalid date format. Please enter a valid date in MM/dd/yyyy HH:mm:ss format.");
+                Console.WriteLine("Invalid date format. Please enter a valid date in MM/dd/yyyy  format.");
                 return null;
             }
         }
 
+        Console.WriteLine("Enter Duration hh:mm:ss format:");
         TimeSpan duration;
-        if (!TimeSpan.TryParseExact(Console.ReadLine(), "hh\\:mm\\:ss", null, out duration))
+        if (!TimeSpan.TryParseExact(Console.ReadLine(), "hh:mm:ss", null, out duration))
         {
             Console.WriteLine("Invalid duration format. Please enter a valid duration in HH:mm:ss format.");
             return null;
         }
 
+        Console.WriteLine("Enter deadline MM/dd/yyyy:");
         DateTime deadline;
-        if (!DateTime.TryParseExact(Console.ReadLine(), "MM/dd/yyyy HH:mm:ss", null, DateTimeStyles.None, out deadline))
+        if (!DateTime.TryParseExact(Console.ReadLine(), "MM/dd/yyyy", null, DateTimeStyles.None, out deadline))
         {
-            Console.WriteLine("Invalid date format. Please enter a valid date in MM/dd/yyyy HH:mm:ss format.");
+            Console.WriteLine("Invalid date format. Please enter a valid date in MM/dd/yyyy  format.");
             return null;
         }
 
+        Console.WriteLine("Enter actualEndDate MM/dd/yyyy:");
         DateTime actualEndDate;
-
-        if (!DateTime.TryParseExact(Console.ReadLine(), "MM/dd/yyyy HH:mm:ss", null, DateTimeStyles.None, out actualEndDate))
+        if (!DateTime.TryParseExact(Console.ReadLine(), "MM/dd/yyyy", null, DateTimeStyles.None, out actualEndDate))
         {
-            Console.WriteLine("Invalid date format. Please enter a valid date in MM/dd/yyyy HH:mm:ss format.");
+            Console.WriteLine("Invalid date format. Please enter a valid date in MM/dd/yyyy  format.");
             return null;
         }
-
+        Console.WriteLine("Enter deliverables:");
         string deliverables = Console.ReadLine();
 
+        Console.WriteLine("Enter notes:");
         string notes = Console.ReadLine();
 
         int engineerID;
@@ -117,7 +122,7 @@ internal class Program
             actualEndDate,
             deliverables,
             notes,
-            level            
+            level
         );
 
         return newTask;
@@ -141,10 +146,11 @@ internal class Program
     }
     public static void CreateEntity<T>()
     {
-        T newEntity = GetEntityInput<T>();
 
         try
         {
+            T newEntity = GetEntityInput<T>();
+
             if (typeof(T) == typeof(BO.Task))
             {
                 s_bl.Task.CreateTask(newEntity as BO.Task);
@@ -162,11 +168,15 @@ internal class Program
         {
             Console.WriteLine(ex);
         }
+        catch(Exception ex)
+        {
+            Console.WriteLine(ex);
+        }
     }
 
     public static void ReadEntity<T>()
     {
-        Console.WriteLine("Enter the id of the Task you wish to see");
+        Console.WriteLine($"Enter the id of the {typeof(T).Name} you wish to see");
         int id = int.Parse(Console.ReadLine());
 
         try
@@ -186,7 +196,11 @@ internal class Program
                 Console.WriteLine($"Unsupported entity type: {typeof(T).Name}");
             }
         }
-        catch (DalDoesNotExistException ex)
+        catch (BlDoesNotExistException ex)
+        {
+            Console.WriteLine(ex);
+        }
+        catch(Exception ex)
         {
             Console.WriteLine(ex);
         }
@@ -225,7 +239,11 @@ internal class Program
                 Console.WriteLine($"No {typeof(T).Name}s found.");
             }
         }
-        catch (DalDoesNotExistException ex)
+        catch (BlDoesNotExistException ex)
+        {
+            Console.WriteLine(ex);
+        }
+        catch (Exception ex)
         {
             Console.WriteLine(ex);
         }
@@ -240,7 +258,7 @@ internal class Program
             if (typeof(T) == typeof(BO.Task))
             {
                 BO.Task updateItem = GetEntityInput<BO.Task>();
-                s_bl.Task.UpdateTask(updateItem.Id,updateItem);
+                s_bl.Task.UpdateTask(updateItem.Id, updateItem);
             }
             else if (typeof(T) == typeof(BO.Engineer))
             {
@@ -255,6 +273,10 @@ internal class Program
         catch (DalDoesNotExistException ex)
         {
             Console.WriteLine(ex);
+        }
+        catch(Exception ex)
+        {
+            Console.WriteLine(ex);  
         }
     }
 
@@ -278,24 +300,35 @@ internal class Program
                 Console.WriteLine($"Unsupported entity type: {typeof(T).Name}");
             }
         }
-        catch (DalDoesNotExistException ex)
+        catch (BlDoesNotExistException ex)
+        {
+            Console.WriteLine(ex);
+        }
+        catch (Exception ex)
         {
             Console.WriteLine(ex);
         }
     }
     public static void ResetEntities<T>()
     {
-        if (typeof(T) == typeof(BO.Task))
+        try
         {
-            s_bl.Task.Reset();
+            if (typeof(T) == typeof(BO.Task))
+            {
+                s_bl.Task.Reset();
+            }
+            else if (typeof(T) == typeof(BO.Engineer))
+            {
+                s_bl.Engineer.Reset();
+            }
+            else
+            {
+                Console.WriteLine($"Unsupported entity type: {typeof(T).Name}");
+            }
         }
-        else if (typeof(T) == typeof(BO.Engineer))
+        catch (Exception ex)
         {
-            s_bl.Engineer.Reset();
-        }
-        else
-        {
-            Console.WriteLine($"Unsupported entity type: {typeof(T).Name}");
+            Console.WriteLine(ex);
         }
     }
 
@@ -319,7 +352,6 @@ internal class Program
         Console.WriteLine("Enter engineer cost:");
         double cost = double.Parse(Console.ReadLine());
 
-        string taskInput = Console.ReadLine();
         BO.Task? task = null; //Don't assign the engineer to a task at this point
 
 
@@ -335,53 +367,24 @@ internal class Program
     }
 
 
-    public static void UseEntity<T>()
+
+
+
+    public static void UpdateEntityProjectedStartDate<T>()
     {
-        Console.WriteLine($@"Choose one of the following {typeof(T).Name}s to perform:
-                        0: Exit sub-menu
-                        1: Create {typeof(T).Name}
-                        2: Read {typeof(T).Name}
-                        3: Update {typeof(T).Name}
-                        4: Delete {typeof(T).Name}
-                        5: Read all {typeof(T).Name}s
-                        6: Reset
-                        Any Other number to go back
-    ");
-
-
+        Console.WriteLine("What is the ID of the Task you wish to update the Projected" +
+            " Start Date for?");
+        int id;
         string inputString = Console.ReadLine();
-        int parsedInt;
-        bool success = int.TryParse(inputString, out parsedInt);
-        if (success)
+        int.TryParse(inputString, out id);
+
+        DateTime inputDate;
+        if (!DateTime.TryParseExact(Console.ReadLine(), "MM/dd/yyyy HH:mm:ss", null, DateTimeStyles.None, out inputDate))
         {
-            switch (parsedInt)
-            {
-                case 1:
-                    CreateEntity<T>();
-                    break;
-                case 2:
-                    ReadEntity<T>();
-                    break;
-                case 3:
-                    UpdateEntity<T>();
-                    break;
-                case 4:
-                    DeleteEntity<T>();
-                    break;
-                case 5:
-                    ReadAllEntities<T>();
-                    break;
-                case 6:
-                    ResetEntities<T>();
-                    break;
-                default:
-                    break;
-            }
+            Console.WriteLine("Invalid date format. Please enter a valid date in MM/dd/yyyy HH:mm:ss format.");
         }
-        else
-        {
-            Console.WriteLine("Invalid input. Request Failed.");
-        }
+
+        s_bl.Task.UpdateStartDate(id, inputDate);
     }
 
     public static void ResetInitialData()
@@ -400,58 +403,44 @@ internal class Program
     }
 
 
+
     static void Main(string[] args)
     {
-        Console.Write("Would you like to create Initial data? (Y/N)"); //stage 3
-        string? ans = Console.ReadLine() ?? throw new FormatException("Wrong input"); //stage 3
-        if (ans == "Y") { 
-            DalTest.Initialization.Do();
-        }
-        int choice = 1;
-        while (choice != 0)
+        Console.WriteLine(@"Choose the Admin/Engineer mode:
+                            1: Engineer view 
+                            2: Admin Task Planning Mode
+                            3: Admin Engineer Mode
+                            4: Admin Task Production Mode");
+        int view = int.Parse(Console.ReadLine());
+        while (view != 0)
         {
-
-            Console.WriteLine("Please enter the project start date: ");
-            string date = Console.ReadLine();
-            DateTime? startDate = string.IsNullOrEmpty(date) ? (DateTime?)null : DateTime.Parse(date);
-
-            s_bl.Tools.SetProjectStartDate(startDate);
-
-
-            Console.WriteLine("Please enter the project start date: ");
-            date = Console.ReadLine();
-            DateTime? endDate = string.IsNullOrEmpty(date) ? (DateTime?)null : DateTime.Parse(date);
-
-            s_bl.Tools.SetProjectStartDate(endDate);
-
-
-            Console.WriteLine(@"These are the options of interfaces you may interact with:
-                     0: Exit
-                     1: Task
-                     2: Engineer
-                     4: Optional: Reset Initial Data
-                    ");
-
-
-
-
-            choice = int.Parse(Console.ReadLine());
-            switch (choice)
+            switch (view)
             {
                 case 1:
-                    UseEntity<BO.Task>();
+                    EngineerView.EngineerViewProduction<BO.Engineer>();
                     break;
                 case 2:
-                    UseEntity<BO.Engineer>();
+                    AdminView.AdminTaskPlanning<BO.Task>();
+                    break;
+                case 3:
+                    AdminView.AdminViewEngineer<BO.Engineer>();
                     break;
                 case 4:
-                    ResetInitialData();
+                    AdminView.AdminTaskProduction<BO.Task>();
                     break;
                 default:
-                    choice = 0;
+                    Console.WriteLine("Choice entered is invalid, please enter a valid option.");
                     break;
             }
+            Console.WriteLine(@"Choose the Admin/Engineer mode:
+                            1: Engineer view 
+                            2: Admin Task Planning Mode
+                            3: Admin Engineer Mode
+                            4: Admin Task Production Mode");
+            view = int.Parse(Console.ReadLine());
         }
+
+
     }
 
 
