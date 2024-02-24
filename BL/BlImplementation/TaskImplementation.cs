@@ -2,10 +2,21 @@
 using BO;
 namespace BlImplementation;
 
+/// <summary>
+/// Implements task-related business logic.
+/// Interacts with the DAL for data access and manipulation.
+/// </summary>
 internal class TaskImplementation : BlApi.ITask
 {
+    /// <summary>
+    /// DAL instance for data access.
+    /// </summary>
     private DalApi.IDal _dal = DalApi.Factory.Get;
 
+    /// <summary>
+    /// Creates a new task in the system.
+    /// </summary>
+    /// <param name="task">The task data to create.</param>
     public void CreateTask(BO.Task task)
     {
         try
@@ -27,6 +38,10 @@ internal class TaskImplementation : BlApi.ITask
         }
     }
 
+    /// <summary>
+    /// Deletes a task with the specified ID.
+    /// </summary>
+    /// <param name="id">The ID of the task to delete.</param>
     public void DeleteTask(int id)
     {
         try
@@ -39,6 +54,11 @@ internal class TaskImplementation : BlApi.ITask
         }
     }
 
+    /// <summary>
+    /// Reads a task with the specified ID.
+    /// </summary>
+    /// <param name="id">The ID of the task to read.</param>
+    /// <returns>The retrieved task.</returns>
     public BO.Task ReadTask(int id)
     {
         try {
@@ -50,6 +70,13 @@ internal class TaskImplementation : BlApi.ITask
             throw new BO.BlDoesNotExistException($"Engineer with ID={id} already exists", ex);
         } 
     }
+
+    /// <summary>
+    /// Reads a task using a filter function and engineer ID.
+    /// </summary>
+    /// <param name="filter">The filter function to apply.</param>
+    /// <param name="engineerId">The ID of the engineer to filter by.</param>
+    /// <returns>The retrieved task.</returns>
     public BO.Task ReadTask(Func<DO.Task, int, bool> filter, int engineerId)
     {
         try
@@ -66,6 +93,12 @@ internal class TaskImplementation : BlApi.ITask
         }
     }
 
+
+    /// <summary>
+    /// Reads all tasks, optionally filtering by engineer ID and considering dependencies.
+    /// </summary>
+    /// <param name="engineerId">(Optional) The ID of the engineer to filter tasks for.</param>
+    /// <returns>An IEnumerable of retrieved tasks.</returns>
     public IEnumerable<BO.Task> ReadAll(int engineerId)
     {
             try
@@ -100,6 +133,11 @@ internal class TaskImplementation : BlApi.ITask
             }
     }
 
+    /// <summary>
+    /// Updates the start date of a task with the specified ID.
+    /// </summary>
+    /// <param name="id">The ID of the task to update.</param>
+    /// <param name="newStartTime">The new start date.</param>
     public void UpdateStartDate(int id, DateTime newStartTime)
     {
         try
@@ -127,6 +165,11 @@ internal class TaskImplementation : BlApi.ITask
         }
     }
 
+    /// <summary>
+    /// Updates a task with the specified ID.
+    /// </summary>
+    /// <param name="id">The ID of the task to update.</param>
+    /// <param name="boTask">The updated task data.</param>
     public void UpdateTask(int id, BO.Task boTask)
     {
         /// TODO have this ask for the proper fields and actaully update the object
@@ -144,11 +187,19 @@ internal class TaskImplementation : BlApi.ITask
         }
     }
 
+    /// <summary>
+    /// Resets task data (likely clears or repopulates the data source).
+    /// </summary>
     public void Reset()
     {
         _dal.Task.Reset();
     }
 
+    /// <summary>
+    /// Converts a DO.Task object to a BO.Task object.
+    /// </summary>
+    /// <param name="task">The DO.Task object to convert.</param>
+    /// <returns>The converted BO.Task object.</returns>
     private BO.Task taskDo_BO(DO.Task task)
     {
         DO.Engineer engineer;
@@ -183,6 +234,12 @@ internal class TaskImplementation : BlApi.ITask
         return boTask;
     }
 
+
+    /// <summary>
+    /// Creates a DO.Task object from a BO.Task object, performing validation.
+    /// </summary>
+    /// <param name="task">The BO.Task object to create a DO.Task from.</param>
+    /// <returns>The created DO.Task object.</returns>
     private DO.Task taskCreater(BO.Task task)
     {
         TimeSpan duration = (TimeSpan)(task.ActualEndDate - task.ActualStartDate);

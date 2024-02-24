@@ -8,6 +8,12 @@ namespace BO
 
     public static class Tools
     {
+        /// <summary>
+        /// Converts an object to a string representation, including the values of its properties.
+        /// </summary>
+        /// <typeparam name="T">The type of the object to convert.</typeparam>
+        /// <param name="obj">The object to convert.</param>
+        /// <returns>A string representation of the object, including its properties.</returns>
 
         public static string ToStringProperty<T>(this T obj)
         {

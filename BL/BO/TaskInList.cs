@@ -6,6 +6,7 @@ namespace BO;
 
 /// <summary>
 /// List of Tasks for the BO Layer
+/// Usedt o show which tasks the engineer is assigned to
 /// </summary>
 public class TaskInList
 {
