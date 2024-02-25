@@ -5,10 +5,22 @@ using System;
 
 namespace BlImplementation;
 
+/// <summary>
+/// Class implementing the IEngineer interface to manipulate the
+/// Engineer list object of the Bl
+/// </summary>
 internal class EngineerImplementation : IEngineer
 {
     private DalApi.IDal _dal = DalApi.Factory.Get;
 
+    /// <summary>
+    /// Creates a new engineer record in the system.
+    /// Validates the provided boItem for mandatory fields and data integrity.
+    /// Throws exceptions for invalid data or duplicate engineer IDs.
+    /// Returns the ID of the newly created engineer.
+    /// </summary>
+    /// <param name="boItem">The engineer data to be created.</param>
+    /// <returns>The ID of the newly created engineer.</returns>
     public int Create(BO.Engineer boItem)
     {
         if (boItem.Id <= 0)
@@ -54,6 +66,11 @@ internal class EngineerImplementation : IEngineer
         }
     }
 
+    /// <summary>
+    /// Deletes an engineer record with the specified ID.
+    /// Throws an exception if the engineer with the given ID does not exist.
+    /// </summary>
+    /// <param name="id">The ID of the engineer to delete.</param>
     public void DeleteEngineer(int id)
     {
         try
@@ -68,6 +85,14 @@ internal class EngineerImplementation : IEngineer
 
         }
     }
+    /// <summary>
+    /// Retrieves all engineer records from the system.
+    /// Optionally applies a provided filter function to the results.
+    /// Maps retrieved DO.Engineer objects to BO.Engineer objects.
+    /// Throws an exception if an error occurs while reading engineers.
+    /// </summary>
+    /// <param name="filter">Optional filter function to apply to the results.</param>
+    /// <returns>An IEnumerable of BO.Engineer objects representing the retrieved engineers.</returns>
 
     public IEnumerable<Engineer> ReadAll(Func<Engineer, bool> filter)
     {
@@ -115,6 +140,14 @@ internal class EngineerImplementation : IEngineer
         }
     }
 
+/// <summary>
+    /// Retrieves an engineer record with the specified ID.
+    /// Returns the engineer as a BO.Engineer object if found, otherwise returns null.
+    /// Throws an exception if the engineer with the given ID does not exist.
+    /// </summary>
+    /// <param name="id">The ID of the engineer to retrieve.</param>
+    /// <returns>The retrieved engineer as a BO.Engineer object, or null if not found.</returns>
+
     public Engineer? ReadEngineer(int id)
     {
 
@@ -147,6 +180,12 @@ internal class EngineerImplementation : IEngineer
 
     }
 
+    /// <summary>
+    /// Updates an existing engineer record with the provided details.
+    /// Validates the provided boItem for mandatory fields and data integrity.
+    /// Throws an exception if the engineer with the given ID does not exist.
+    /// </summary>
+    /// <param name="boItem">The updated engineer data.</param>
     public void UpdateEngineer(Engineer boItem)
     {
         try
@@ -174,10 +213,23 @@ internal class EngineerImplementation : IEngineer
         }
 
     }
+
+    /// <summary>
+    /// Resets the engineer data clears the data source.
+    /// </summary>
     public void Reset()
     {
         _dal.Engineer.Reset();
     }
+
+    /// <summary>
+    /// Validates the format of an email address.
+    /// Checks for the presence and position of the '@' symbol.
+    /// Checks for a valid domain ending (limited to specific domains in this example).
+    /// Returns true if the email format is valid, false otherwise.
+    /// </summary>
+    /// <param name="email">The email address to validate.</param>
+    /// <returns>True if the email format is valid, false otherwise.</returns>
     private static bool IsValidEmail(string email)
     {
         if (string.IsNullOrEmpty(email))
@@ -201,10 +253,5 @@ internal class EngineerImplementation : IEngineer
 
         return false;
     }
-
-
-
-
-
 
 }

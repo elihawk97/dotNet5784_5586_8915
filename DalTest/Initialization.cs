@@ -28,12 +28,11 @@ public static class Initialization
         // Call the private initialization methods
         createTasks();
         CreateEngineers();
-        CreateDependencys();
+        CreateDependencies();
     }
 
     private static void createTasks()
     {
-        
         // Creates 20 Names for Task
         string name = "Task";
         string[] TaskNames = new string[20];
@@ -42,73 +41,73 @@ public static class Initialization
         {
             TaskNames[i - 1] = $"{name} {i}";
         }
-        int counter = 0;
-        int timeWindow = 0;
-        int spacer = 10;
-        // ADD in end and start date
-        foreach (var Task in TaskNames)
+
+        /// Always start the project on January 1st
+        DateTime startingPoint = new DateTime(DateTime.Now.Year, 1, 1);
+
+        // Loop through each month
+        for (int month = 1; month <= 4; month++)
         {
-
-            int randomAmountOfDays = s_rand.Next(1, 10);
-
-            //Project is Created within at least one year of the current date
-            DateTime dateCreated = DateTime.Now.AddDays(-randomAmountOfDays);
-
-            //Project is projected to start at least one year after the current date
-            DateTime projectedStartDate = DateTime.Now.AddDays(randomAmountOfDays + timeWindow*10);
-
-            //Project is actually started at most 15 days after the projected start date
-            DateTime? actualStartTime = projectedStartDate.AddDays(s_rand.Next(1, 16));
-
-            //Project deadline is between 30 and 60 days after the projected start date
-            DateTime deadLine = projectedStartDate.AddDays(s_rand.Next(31, 61));
-
-            //Project is actually completed at most 10 days before the deadline
-            DateTime? actualEndDate = deadLine.AddDays(-s_rand.Next(1, 11));
-            TimeSpan? duration = actualEndDate - actualStartTime;
-
-
-            //setting the difficuly level
-            Enums.ExperienceLevel experienceLevel = randomExperienceLevel();
-
-            //nullable values
-            string? description = null;
-            string? deliverables = null; 
-            string? notes = null;
-            int? EngineerID = null;
-
-            //Constructor for Task 
-            try
+            // Create 5 tasks in this month
+            for (int i = 1; i <= 5; i++)
             {
-                DO.Task newTask = new(
-                    Task,
-                    description,
-                    dateCreated,
-                    projectedStartDate,
-                    actualStartTime,
-                    duration,
-                    deadLine,
-                    actualEndDate,
-                    deliverables,
-                    notes,
-                    EngineerID,
-                    experienceLevel);
-                s_dal!.Task.Create(newTask);
+                // Random number of days for each task
+                int randomAmountOfDays = s_rand.Next(1, 10);
+
+                // Project is Created within at least one year of the current date
+                DateTime dateCreated = startingPoint.AddDays(randomAmountOfDays);
+
+                // Projected start date is within the same month
+                DateTime projectedStartDate = new DateTime(startingPoint.Year, startingPoint.Month + month - 1, 1)
+                    .AddDays(randomAmountOfDays);
+
+                // Project is actually started at most 15 days after the projected start date
+                DateTime? actualStartTime = projectedStartDate.AddDays(s_rand.Next(1, 3));
+
+                // Project deadline is between 30 and 60 days after the projected start date
+                DateTime deadLine = projectedStartDate.AddDays(s_rand.Next(10, 17));
+
+                // Project is actually completed at most 10 days before the deadline
+                DateTime? actualEndDate = deadLine.AddDays(-s_rand.Next(1, 11));
+                TimeSpan? duration = actualEndDate - actualStartTime;
+
+                // Setting the difficulty level
+                Enums.ExperienceLevel experienceLevel = randomExperienceLevel();
+
+                // Nullable values
+                string? description = null;
+                string? deliverables = null;
+                string? notes = null;
+                int? EngineerID = null;
+
+                // Constructor for Task 
+                try
+                {
+                    DO.Task newTask = new(
+                        TaskNames[(month - 1) * 5 + i - 1],
+                        description,
+                        dateCreated,
+                        projectedStartDate,
+                        actualStartTime,
+                        duration,
+                        deadLine,
+                        actualEndDate,
+                        deliverables,
+                        notes,
+                        EngineerID,
+                        experienceLevel);
+                    s_dal!.Task.Create(newTask);
+                }
+                catch (InvalidTime ex)
+                {
+                    Console.WriteLine(ex);
+                }
             }
-            catch (InvalidTime ex)
-            {
-                Console.WriteLine(ex);
-            }
-            if(counter%5 == 0)
-            {
-                timeWindow += 1;
-            }
-            counter += 1;
-  
+
         }
-
     }
-        private static void CreateEngineers()
+
+    private static void CreateEngineers()
     {
         string[] EngineerNames = { "Ariel Blumstein", "Binyamin Klein", "Yishai Dredzen", "Avi Soclof" , "Eli Hawk" }; 
 
@@ -151,56 +150,54 @@ public static class Initialization
         }
     }
 
-    private static void CreateDependencys()
+    private static void CreateDependencies()
     {
-        // Creates 40 Names for Dependency
-        string name = "Dependency";
-        string[] DependencyNames = new string[40];
-        int[] validTaskIds = new int[40];
-        List<DO.Task> tasks = (List<DO.Task>)(s_dal!.Task.ReadAll().ToList());
-        for(int i = 0; i < 20; i++)
+        // Get all tasks from the database
+        List<DO.Task> tasks = s_dal!.Task.ReadAll().ToList();
+
+        // Filter out tasks that are not in the first month (assuming tasks are ordered by month)
+        List<DO.Task> firstMonthTasks;
+        List<DO.Task> currentMonthTasks;
+        // Iterate over each task starting from the second month
+        for (int month = 2; month <= 4; month++)
         {
-            validTaskIds[i] = tasks[i].Id;
-        }
-
-        for (int i = 1; i <= 40; i++)
-        {
-            DependencyNames[i - 1] = $"{name} {i}";
-        }
-
-        int count = 0;
-        foreach (var dependencyName in DependencyNames)
-        {
-
-            // Generating random dependencies for the task
-            int dependentTaskId = validTaskIds[s_rand.Next(1, 21)]; // Assuming task Ids range from 1 to 20
-            int dependentOnTaskId = validTaskIds[s_rand.Next(1, 21)]; // Assuming task Ids range from 1 to 20
-
-            // Ensure that dependentTaskId and dependentOnTaskId are not the same
-            while (dependentTaskId == dependentOnTaskId)
+            try
             {
-                dependentOnTaskId = validTaskIds[s_rand.Next(1, 21)];
-            }
+                // Filter out tasks that are not in the last month (assuming tasks are ordered by month)
+                firstMonthTasks = tasks.Where(task => task.ProjectedStartDate.HasValue && task.ProjectedStartDate.Value.Month == month - 1).ToList();
 
-            // Creating Dependency object
-            Dependency newDependency = new Dependency
-            (
-                dependentTaskId,
-                dependentOnTaskId
-            );
+                // Get tasks for the current month
+                currentMonthTasks = tasks.Where(task => task.ProjectedStartDate.HasValue && task.ProjectedStartDate.Value.Month == month).ToList();
 
+            // Determine the number of dependencies for tasks in the current month
+            int numDependencies = s_rand.Next(1, 4);
 
-            if (count > 0)
+            // Iterate over tasks in the current month to create dependencies
+            foreach (var currentTask in currentMonthTasks)
             {
-                if (checkCircularDependency(newDependency))
+                    numDependencies = s_rand.Next(1, 4);
+                    // Randomly select tasks from the previous month as dependencies
+                    for (int i = 0; i < numDependencies; i++)
                 {
-                    // Circular dependency detected, skip this iteration
-                    continue;
+                    // Randomly select a task from the previous month
+                    DO.Task dependencyTask = firstMonthTasks[s_rand.Next(0, firstMonthTasks.Count)];
+
+                    // Create dependency
+                    Dependency newDependency = new Dependency(currentTask.Id, dependencyTask.Id);
+
+                    // Check for circular dependency
+                    if (!checkCircularDependency(newDependency))
+                    {
+                        // Create the dependency using CRUD method Create
+                        s_dal!.Dependency.Create(newDependency);
+                    }
                 }
             }
-          
-            // Creating using CRUD method Create
-            s_dal!.Dependency.Create(newDependency);
+            }
+            catch (DalDoesNotExistException ex)
+            {
+                Console.WriteLine(ex);
+            }
         }
     }
 

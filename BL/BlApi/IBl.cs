@@ -5,6 +5,9 @@ using BL.BlImplementation;
 
 namespace BlApi;
 
+/// <summary>
+/// Interface for the Bl accessor to access the Bl level objects
+/// </summary>
 public interface IBl
 {
     public IEngineer Engineer { get; }

@@ -1,13 +1,21 @@
 ﻿using System;
 using System.Collections;
 using System.Reflection;
+using System.Reflection.Metadata.Ecma335;
 using System.Text;
 
 namespace BO
 {
-
     public static class Tools
     {
+        public static readonly BlApi.IBl s_bl = BlApi.Factory.Get();
+
+        /// <summary>
+        /// Converts an object to a string representation, including the values of its properties.
+        /// </summary>
+        /// <typeparam name="T">The type of the object to convert.</typeparam>
+        /// <param name="obj">The object to convert.</param>
+        /// <returns>A string representation of the object, including its properties.</returns>
 
         public static string ToStringProperty<T>(this T obj)
         {
@@ -44,6 +52,13 @@ namespace BO
             }
 
             return result.ToString();
+        }
+
+        public static List<BO.Task> scheduler(){
+            IEnumerable<Task> tasks = s_bl.Task.ReadAll(0);
+
+
+            return null;          
         }
     }
 }

@@ -15,7 +15,14 @@ public class Engineer
     public double Cost { get; set; }
     public Task? Task { get; set; }
 
-
+    /// <summary>
+    /// Constructor that takes in parameters
+    /// </summary>
+    /// <param name="id">Engineer's ID</param>
+    /// <param name="name">Engineer's name</param>
+    /// <param name="email">Engineer's email</param>
+    /// <param name="level">Engineer's experience leve</param>
+    /// <param name="cost">Engineer's per hour salary</param>
     public Engineer(int id, string name, string email, Enums.ExperienceLevel? level, double cost)
     {
         Id = id;

@@ -1,4 +1,8 @@
-﻿namespace BlApi; 
+﻿namespace BlApi;
+
+/// <summary>
+/// Class of function to manipulate the Task list in the Bl layer 
+/// </summary>
 public interface ITask
 {
 
