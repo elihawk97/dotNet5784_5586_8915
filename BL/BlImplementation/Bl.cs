@@ -1,5 +1,4 @@
-﻿
-namespace BlImplementation;
+﻿namespace BlImplementation;
 
 using BL.BlApi;
 using BL.BlImplementation;
@@ -15,3 +14,4 @@ public class Bl : IBl
     public IMilestone Milestone => new MilestoneImplementation();
     public ITools Tools => new ToolsImplementation();
 }
+

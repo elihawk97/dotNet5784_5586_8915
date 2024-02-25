@@ -60,8 +60,8 @@ public record Task
         this.Deliverables = deliverables;
         this.Notes = notes;
         this.DifficultyLevel = difficultyLevel;
-
     }
+
     /// <summary>
     /// 
     /// </summary>

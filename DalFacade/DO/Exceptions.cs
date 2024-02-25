@@ -3,6 +3,11 @@ using System.Runtime.Serialization;
 
 namespace DO;
 [Serializable]
+public class DalBadDependency : Exception
+{
+    public DalBadDependency(string? message) : base(message) { }
+}
+[Serializable]
 public class DalDoesNotExistException : Exception
 {
     public DalDoesNotExistException(string? message) : base(message) { }
@@ -45,4 +50,6 @@ public class InvalidTime : Exception
         protected DalXMLFileLoadCreateException(SerializationInfo info, StreamingContext context) : base(info, context)
         {
         }
+
     }
+

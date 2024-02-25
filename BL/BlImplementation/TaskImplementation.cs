@@ -172,8 +172,6 @@ internal class TaskImplementation : BlApi.ITask
     /// <param name="boTask">The updated task data.</param>
     public void UpdateTask(int id, BO.Task boTask)
     {
-        /// TODO have this ask for the proper fields and actaully update the object
-        /// right now this just deletes and adds the same object
         try
         {
             DO.Task doTask = _dal.Task.Read(x => x.Id == id);
@@ -265,6 +263,30 @@ internal class TaskImplementation : BlApi.ITask
         DO.Task doTask = new DO.Task(task.Id, task.Name, task.Description, task.DateCreated,
         task.ProjectedStartDate, task.ActualStartDate, duration, task.DeadLine, task.ActualEndDate,
             task.Deliverable, task.Notes, task.EngineerForTask.Id, doExperienceLevel);
+        /// Create Dependency Objects based on the Dependency list
+        foreach(var dependency in task.Dependencies)
+        {
+            try
+            {
+                if (_dal.Task.Read(dependency.Id).DeadLine < task.ProjectedStartDate)
+                {
+                    _dal.Dependency.Create(new Dependency(task.Id, dependency.Id));
+                }
+                else
+                {
+                    throw new DalBadDependency("This task starts before the other task is done");
+                }
+            }
+            catch(DalDoesNotExistException ex)
+            {
+                Console.WriteLine(ex);
+            }
+            catch(DalBadDependency ex)
+            {
+                Console.WriteLine(ex);
+            }
+        }
+
 
         return doTask;
     }

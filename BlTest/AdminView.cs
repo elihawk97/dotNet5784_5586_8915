@@ -2,6 +2,7 @@
 using DO;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Reflection.Emit;
 using System.Text;
@@ -29,8 +30,9 @@ namespace BlTest
                         3: Update {typeof(T).Name}
                         4: Delete {typeof(T).Name}
                         5: Read all {typeof(T).Name}s
-                        7: Update {typeof(T).Name}'s Projected Start Date
-                        6: Reset
+                        6: Update {typeof(T).Name}'s Projected Start Date
+                        7: Add Dependencies
+                        8: Reset
                         Any Other number to go back");
 
             String inputString = Console.ReadLine();
@@ -56,12 +58,16 @@ namespace BlTest
                             break;
                         case 5:
                             Program.ReadAllEntities<T>();
-                            break;
+                            break; 
                         case 6:
-                            Program.ResetEntities<T>();
+                            Program.UpdateEntityProjectedStartDate<T>();
                             break;
                         case 7:
-                            Program.UpdateEntityProjectedStartDate<T>();
+                            AddDependecies();
+                            break;
+    
+                        case 8:
+                            Program.ResetEntities<T>();
                             break;
                         default:
                             break;
@@ -291,6 +297,56 @@ namespace BlTest
                 Console.WriteLine(ex);
             }
             catch(Exception ex)
+            {
+                Console.WriteLine(ex);
+            }
+        }
+
+        private static void AddDependecies()
+        {
+            try
+            {
+                Console.WriteLine("Enter the ID of the Task you wish to add dependencies to:");
+                int id;
+                string inputString = Console.ReadLine();
+                int.TryParse(inputString, out id);
+                BO.Task curTask = Program.s_bl.Task.ReadTask(id);
+
+                // Take in input of the tasks that the task is dependent on
+                int taskId;
+                Console.WriteLine($"Enter the IDs of the Task you wish to add to task {id}'s dependency list and 0 to stop:");
+                inputString = Console.ReadLine();
+                int.TryParse(inputString, out taskId);
+                Console.WriteLine("Enter the name of this dependency");
+                string nameInput = Console.ReadLine();
+                Console.WriteLine("Enter the Description of this dependency");
+                string descriptionInput = Console.ReadLine();
+
+
+                while (taskId != 0)
+                {
+                    try {
+                        Program.s_bl.Task.ReadTask(taskId);
+                        curTask.Dependencies.Add(new TaskInList(taskId, descriptionInput, nameInput, BO.Enums.TaskStatus.Unscheduled));
+                        Console.WriteLine($"Enter the next id:");
+                        inputString = Console.ReadLine();
+                        int.TryParse(inputString, out taskId);
+                        Console.WriteLine("Enter the name of this dependency");
+                        nameInput = Console.ReadLine();
+                        Console.WriteLine("Enter the Description of this dependency");
+                        descriptionInput = Console.ReadLine();
+                    }
+                    catch(BlDoesNotExistException ex)
+                    {
+                        Console.WriteLine(ex + " Must enter a different id.");
+                    }
+                }
+
+                
+
+                Program.s_bl.Task.UpdateTask(id, curTask);
+            }
+            catch(BlDoesNotExistException ex)
             {
                 Console.WriteLine(ex);
             }

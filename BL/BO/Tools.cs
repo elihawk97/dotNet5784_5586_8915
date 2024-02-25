@@ -1,13 +1,15 @@
 ﻿using System;
 using System.Collections;
 using System.Reflection;
+using System.Reflection.Metadata.Ecma335;
 using System.Text;
 
 namespace BO
 {
-
     public static class Tools
     {
+        public static readonly BlApi.IBl s_bl = BlApi.Factory.Get();
+
         /// <summary>
         /// Converts an object to a string representation, including the values of its properties.
         /// </summary>
@@ -50,6 +52,13 @@ namespace BO
             }
 
             return result.ToString();
+        }
+
+        public static List<BO.Task> scheduler(){
+            IEnumerable<Task> tasks = s_bl.Task.ReadAll(0);
+
+
+            return null;          
         }
     }
 }

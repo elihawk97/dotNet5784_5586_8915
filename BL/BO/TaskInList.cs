@@ -14,7 +14,15 @@ public class TaskInList
     public int Id { get; init;}
     public string? Description { get; set; }
     public string? Name { get; set; }
-    public TaskStatus Status { get; set; }
+    public BO.Enums.TaskStatus Status { get; set; }
+
+    public TaskInList(int id, string? description, string? name, BO.Enums.TaskStatus status)
+    {
+        Id = id;
+        Description = description;
+        Name = name;
+        Status = status;
+    }
 
     /// <summary>
     /// Over riding the default ToString method to format the data
