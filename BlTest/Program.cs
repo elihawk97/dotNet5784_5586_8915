@@ -10,116 +10,100 @@ namespace BlTest;
 internal class Program
 {
     public static readonly BlApi.IBl s_bl = BlApi.Factory.Get();
+
     public static int curEngineer = 0;
+
+
+    public static T GetUserInput<T>(string prompt, Func<string, (bool IsValid, T Value)> tryParse)
+    {
+        while (true)
+        {
+            Console.WriteLine(prompt);
+            string input = Console.ReadLine() ?? "";
+            var (isValid, value) = tryParse(input);
+            if (isValid)
+            {
+                return value;
+            }
+            Console.WriteLine("Invalid input. Please try again.");
+        }
+    }
+
+
+
+
+
     public static BO.Task taskInput()
     {
-        Console.WriteLine("Enter data to create a new task:");
-        Console.WriteLine("Enter ID integer:");
-        int id;
-        if (!int.TryParse(Console.ReadLine(), out id))
-        {
-            Console.WriteLine("Invalid input for dependency ID. Please enter a valid integer.");
-            return null;
-        }
-        Console.WriteLine("Enter name string:");
-        string? nickName = Console.ReadLine();
-        if (string.IsNullOrEmpty(nickName))
-        {
-            Console.WriteLine("Nickname cannot be empty. Please enter a valid name.");
-            return null;
-        }
-        Console.WriteLine("Enter description string:");
-        string? description = Console.ReadLine();
-        if (string.IsNullOrEmpty(description))
-        {
-            Console.WriteLine("Description cannot be empty. Please enter a valid description.");
-            return null;
-        }
-        Console.WriteLine("Enter isMilestone bool:");
-        bool isMilestone;
-        if (!bool.TryParse(Console.ReadLine(), out isMilestone))
-        {
-            Console.WriteLine("Invalid input for milestone flag. Please enter True or False.");
-            return null;
-        }
-        Console.WriteLine("Enter date created MM/dd/yyyy:");
-        DateTime dateCreated;
-        if (!DateTime.TryParseExact(Console.ReadLine(), "MM/dd/yyyy", null, DateTimeStyles.None, out dateCreated))
-        {
-            Console.WriteLine("Invalid date format. Please enter a valid date in MM/dd/yyyy format.");
-            return null;
-        }
-        Console.WriteLine("Enter projectedStartDate MM/dd/yyyy:");
-        DateTime projectedStartDate;
-        if (!DateTime.TryParseExact(Console.ReadLine(), "MM/dd/yyyy", null, DateTimeStyles.None, out projectedStartDate))
-        {
-            Console.WriteLine("Invalid date format. Please enter a valid date in MM/dd/yyyy format.");
-            return null;
-        }
-        Console.WriteLine("Enter actualStartTime MM/dd/yyyy:");
-        DateTime actualStartTime;
-        string actualStartTimeInput = Console.ReadLine();
-        bool timeParsed = DateTime.TryParseExact(actualStartTimeInput, "MM/dd/yyyy", null, DateTimeStyles.None, out actualStartTime);
-        if (!string.IsNullOrEmpty(actualStartTimeInput))
-        {
-            if (!timeParsed)
-            {
-                Console.WriteLine("Invalid date format. Please enter a valid date in MM/dd/yyyy  format.");
-                return null;
-            }
-        }
+        Console.WriteLine("Enter data to create a new task:/n");
 
-        Console.WriteLine("Enter Duration hh:mm:ss format:");
-        TimeSpan duration;
-        if (!TimeSpan.TryParseExact(Console.ReadLine(), "hh:mm:ss", null, out duration))
+        // For string input (e.g., nickName and description)
+        string nickName = GetUserInput<string>("Enter name (string):", input =>
         {
-            Console.WriteLine("Invalid duration format. Please enter a valid duration in HH:mm:ss format.");
-            return null;
-        }
+            bool isValid = !string.IsNullOrEmpty(input);
+            return (isValid, input); // input is directly the value for string types
+        });
 
-        Console.WriteLine("Enter deadline MM/dd/yyyy:");
-        DateTime deadline;
-        if (!DateTime.TryParseExact(Console.ReadLine(), "MM/dd/yyyy", null, DateTimeStyles.None, out deadline))
+        // For string input (e.g., nickName and description)
+        string description = GetUserInput<string>("Enter description (string):", input =>
         {
-            Console.WriteLine("Invalid date format. Please enter a valid date in MM/dd/yyyy  format.");
-            return null;
-        }
+            bool isValid = !string.IsNullOrEmpty(input);
+            return (isValid, input); // input is directly the value for string types
+        });
+        
+        DateTime dateCreated = DateTime.Now;
 
-        Console.WriteLine("Enter actualEndDate MM/dd/yyyy:");
-        DateTime actualEndDate;
-        if (!DateTime.TryParseExact(Console.ReadLine(), "MM/dd/yyyy", null, DateTimeStyles.None, out actualEndDate))
+        // For DateTime input (e.g., dateCreated, projectedStartDate)
+        DateTime projectedStartDate = GetUserInput<DateTime>("Enter Projected Start Date (MM/dd/yyyy):", input =>
         {
-            Console.WriteLine("Invalid date format. Please enter a valid date in MM/dd/yyyy  format.");
-            return null;
-        }
-        Console.WriteLine("Enter deliverables:");
-        string deliverables = Console.ReadLine();
+            bool isValid = DateTime.TryParseExact(input, "MM/dd/yyyy", null, DateTimeStyles.None, out DateTime value)
+                  && value >= DateTime.Today; // Ensure date is not in the past
+            return (isValid, value);
+        });
 
-        Console.WriteLine("Enter notes:");
-        string notes = Console.ReadLine();
-
-        int engineerID;
-        if (!int.TryParse(Console.ReadLine(), out engineerID))
+        DateTime projectedEndDate = GetUserInput<DateTime>("Enter Projected End Date (MM/dd/yyyy):", input =>
         {
-            Console.WriteLine("Invalid input for engineer ID. Please enter a valid integer.");
-            return null;
-        }
+            bool isValid = DateTime.TryParseExact(input, "MM/dd/yyyy", null, DateTimeStyles.None, out DateTime value)
+                  && value >= DateTime.Today && value > projectedStartDate; // Ensure date is not in the past
+            return (isValid, value);
+        });
 
-        BO.Enums.ExperienceLevel level;
-        if (!Enum.TryParse<BO.Enums.ExperienceLevel>(Console.ReadLine(), out level))
+        // For DateTime input (e.g., dateCreated, projectedStartDate)
+        DateTime deadline = GetUserInput<DateTime>("Enter deadline (MM/dd/yyyy):", input =>
         {
-            Console.WriteLine("Invalid input for experience level. Please enter a valid option.");
-            return null;
-        }
+            bool isValid = DateTime.TryParseExact(input, "MM/dd/yyyy", null, DateTimeStyles.None, out DateTime value)
+                  && value >= DateTime.Today && value >= projectedEndDate; // Ensure date is not in the past
+            return (isValid, value);
+        });
+
+        string deliverables = GetUserInput<string>("Enter deliverables:", input =>
+        {
+            bool isValid = !string.IsNullOrEmpty(input);
+            return (isValid, input); // input is directly the value for string types
+        });
+
+        string notes = GetUserInput<string>("Enter notes:", input =>
+        {
+            bool isValid = !string.IsNullOrEmpty(input);
+            return (isValid, input); // input is directly the value for string types
+        });
+
+        // For Enums (e.g., level)
+        BO.Enums.ExperienceLevel level = GetUserInput<BO.Enums.ExperienceLevel>("Enter experience level (e.g., Novice, AdvancedBeginner):", input =>
+        {
+            bool isValid = Enum.TryParse<BO.Enums.ExperienceLevel>(input, out var value);
+            return (isValid, value);
+        });
+
+
         BO.Task newTask = new BO.Task(
             nickName,
             description,
             new List<BO.TaskInList>(), // Dependencies can be added later
             dateCreated,
             projectedStartDate,
-            actualStartTime,
+            projectedEndDate,
             deadline,
-            actualEndDate,
             deliverables,
             notes,
             level
@@ -406,41 +390,69 @@ internal class Program
 
     static void Main(string[] args)
     {
-        Console.WriteLine(@"Choose the Admin/Engineer mode:
-                            1: Engineer view 
-                            2: Admin Task Planning Mode
-                            3: Admin Engineer Mode
-                            4: Admin Task Production Mode");
+
+        Console.WriteLine("You are in Planning Mode:");
+           
+        AdminView.AdminTaskPlanning<BO.Task>();
+
+
+        Console.WriteLine("Enter the Project Start Date in MM/dd/yyyy format:");
+        string startDateInput = Console.ReadLine() ?? "";
+        DateTime startDate;
+        if (DateTime.TryParseExact(startDateInput, "MM/dd/yyyy", null, System.Globalization.DateTimeStyles.None, out startDate))
+        {
+            // Assuming s_bl is accessible here and is an instance of IBl
+            Program.s_bl.Tools.SetProjectStartDate(startDate);
+            Console.WriteLine("Project Start Date set successfully.");
+        }
+        else
+        {
+            Console.WriteLine("Invalid date format. Please enter the date in MM/dd/yyyy format.");
+        }
+
+        s_bl.Tools.CurrentProjectStage = BO.Enums.ProjectStages.Planning;
+
+        Console.WriteLine("You are now in Production Mode");
+
+
+
+
+
+
+
+
+
+
+
+
+
+        Console.WriteLine(@"Please Select Your Role:
+                            1: Admin 
+                            2: Engineer");
+
         int view = int.Parse(Console.ReadLine());
         while (view != 0)
         {
             switch (view)
             {
                 case 1:
-                    EngineerView.EngineerViewProduction<BO.Engineer>();
+                    AdminView.AdminChooseEntity();
                     break;
                 case 2:
-                    AdminView.AdminTaskPlanning<BO.Task>();
-                    break;
-                case 3:
-                    AdminView.AdminViewEngineer<BO.Engineer>();
-                    break;
-                case 4:
-                    AdminView.AdminTaskProduction<BO.Task>();
+                    EngineerView.EngineerViewProduction<BO.Engineer>();
                     break;
                 default:
                     Console.WriteLine("Choice entered is invalid, please enter a valid option.");
                     break;
             }
-            Console.WriteLine(@"Choose the Admin/Engineer mode:
-                            1: Engineer view 
-                            2: Admin Task Planning Mode
-                            3: Admin Engineer Mode
-                            4: Admin Task Production Mode");
+
+            Console.WriteLine(@"Please Select Your Role:
+                            1: Admin 
+                            2: Engineer");
+
             view = int.Parse(Console.ReadLine());
+
         }
-
-
     }
 
 
