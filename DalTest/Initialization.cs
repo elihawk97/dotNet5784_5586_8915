@@ -186,11 +186,11 @@ public static class Initialization
                     Dependency newDependency = new Dependency(currentTask.Id, dependencyTask.Id);
 
                     // Check for circular dependency
-                    if (!checkCircularDependency(newDependency))
-                    {
+/*                    if (!checkCircularDependency(newDependency))
+                    {*/
                         // Create the dependency using CRUD method Create
                         s_dal!.Dependency.Create(newDependency);
-                    }
+                   // }
                 }
             }
             }
@@ -233,7 +233,6 @@ public static class Initialization
             return false;
         }
         return checkCircularHelper(item, item.DependentTask);
-
     }
 
     /// <summary>

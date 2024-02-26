@@ -151,7 +151,7 @@ internal class DependencyImplementation : IDependency
 
         if (dependencies.Count() == 0)
         {
-            throw new DalDoesNotExistException("Can't Read All! The list is empty");
+            //throw new DalDoesNotExistException("Can't Read All! The list is empty");
         }
         return dependencies;
     }
