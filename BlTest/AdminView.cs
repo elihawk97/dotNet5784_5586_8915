@@ -85,13 +85,13 @@ namespace BlTest
                         3: Update {typeof(T).Name}
                         4: Delete {typeof(T).Name}
                         5: Read all {typeof(T).Name}s
-                        7: Update {typeof(T).Name}'s Projected Start Date
-                        6: Reset
+                        6: Update {typeof(T).Name}'s Projected Start Date
+                        7: Add Dependencies
+                        8: Reset
                         Any Other number to go back"); inputString = Console.ReadLine();
                 success = int.TryParse(inputString, out choice);
             } 
         }
-
 
         public static void AdminChooseEntity()
         {
@@ -351,15 +351,29 @@ namespace BlTest
                 Console.WriteLine("Enter the Description of this dependency");
                 string descriptionInput = Console.ReadLine();
 
+                bool success = true; // Flag to track if the loop completes without errors.
+
 
                 while (taskId != 0)
                 {
                     try {
+
+                        curTask = Program.s_bl.Task.ReadTask(id);
                         Program.s_bl.Task.ReadTask(taskId);
-                        curTask.Dependencies.Add(new TaskInList(taskId, descriptionInput, nameInput, BO.Enums.TaskStatus.Unscheduled));
+                        if (curTask.Dependencies == null)
+                        {
+                            curTask.Dependencies = new List<TaskInList>(); // Assuming Dependencies is a List<TaskInList>
+                        }
                         Console.WriteLine($"Enter the next id:");
                         inputString = Console.ReadLine();
-                        int.TryParse(inputString, out taskId);
+
+                        if (int.TryParse(inputString, out taskId))
+                        {
+                            if (taskId == 0)
+                            {
+                                break; 
+                            }
+                        }
                         Console.WriteLine("Enter the name of this dependency");
                         nameInput = Console.ReadLine();
                         Console.WriteLine("Enter the Description of this dependency");
@@ -367,17 +381,21 @@ namespace BlTest
                     }
                     catch(BlDoesNotExistException ex)
                     {
-                        Console.WriteLine(ex + " Must enter a different id.");
+                        Console.WriteLine(ex.Message + " Must enter a different id.");
+                        success = false; 
+                        break; 
                     }
                 }
 
-                
-
-                Program.s_bl.Task.UpdateTask(id, curTask);
+                if (success)
+                {
+                    Program.s_bl.Task.UpdateTask(id, curTask);
+                }
             }
             catch(BlDoesNotExistException ex)
             {
-                Console.WriteLine(ex);
+                Console.WriteLine(ex.Message);
+               
             }
         }
     }

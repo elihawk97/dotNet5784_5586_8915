@@ -182,7 +182,7 @@ internal class Program
         }
         catch (BlDoesNotExistException ex)
         {
-            Console.WriteLine(ex);
+            Console.WriteLine(ex.Message);
         }
         catch(Exception ex)
         {
@@ -225,7 +225,7 @@ internal class Program
         }
         catch (BlDoesNotExistException ex)
         {
-            Console.WriteLine(ex);
+            Console.WriteLine(ex.Message);
         }
         catch (Exception ex)
         {
@@ -239,13 +239,17 @@ internal class Program
             Console.WriteLine($"Enter the id of the {typeof(T).Name} you wish to update");
             int id = int.Parse(Console.ReadLine());
 
+            
+
             if (typeof(T) == typeof(BO.Task))
             {
+                s_bl.Task.ReadTask(id);
                 BO.Task updateItem = GetEntityInput<BO.Task>();
-                s_bl.Task.UpdateTask(updateItem.Id, updateItem);
+                s_bl.Task.UpdateTask(id, updateItem);
             }
             else if (typeof(T) == typeof(BO.Engineer))
             {
+                s_bl.Engineer.ReadEngineer(id);
                 BO.Engineer updateItem = GetEntityInput<BO.Engineer>();
                 s_bl.Engineer.UpdateEngineer(updateItem);
             }
@@ -254,9 +258,9 @@ internal class Program
                 Console.WriteLine($"Unsupported entity type: {typeof(T).Name}");
             }
         }
-        catch (DalDoesNotExistException ex)
+        catch (BlDoesNotExistException ex)
         {
-            Console.WriteLine(ex);
+            Console.WriteLine(ex.Message);
         }
         catch(Exception ex)
         {
@@ -286,7 +290,7 @@ internal class Program
         }
         catch (BlDoesNotExistException ex)
         {
-            Console.WriteLine(ex);
+            Console.WriteLine(ex.Message);
         }
         catch (Exception ex)
         {
@@ -362,13 +366,39 @@ internal class Program
         string inputString = Console.ReadLine();
         int.TryParse(inputString, out id);
 
-        DateTime inputDate;
-        if (!DateTime.TryParseExact(Console.ReadLine(), "MM/dd/yyyy HH:mm:ss", null, DateTimeStyles.None, out inputDate))
+        try
         {
-            Console.WriteLine("Invalid date format. Please enter a valid date in MM/dd/yyyy HH:mm:ss format.");
+            s_bl.Task.ReadTask(id);
+
+        }
+        catch (BlDoesNotExistException ex)
+        {
+            Console.WriteLine(ex.Message);
+            return; 
+
         }
 
-        s_bl.Task.UpdateStartDate(id, inputDate);
+        DateTime inputDate = GetUserInput<DateTime>("Enter Projected Start Date (MM/dd/yyyy):", input =>
+        {
+            bool isValid = DateTime.TryParseExact(input, "MM/dd/yyyy", null, DateTimeStyles.None, out DateTime value)
+                  && value >= DateTime.Today;  // Ensure date is not in the past
+            return (isValid, value);
+        });
+
+     
+        try
+        {
+            s_bl.Task.UpdateStartDate(id, inputDate);
+        }
+        
+        catch (BlInvalidDateException ex)
+        {
+            Console.WriteLine(ex.Message);
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex);
+        }
     }
 
     public static void ResetInitialData()
