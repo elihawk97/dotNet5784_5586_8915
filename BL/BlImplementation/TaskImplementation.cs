@@ -306,7 +306,11 @@ internal class TaskImplementation : BlApi.ITask
         // - If all checks pass, proceed; otherwise, throw an exception.
         foreach (BO.Task task in boTaskList)
         {
-            DateTime? latestEndDate = task.Dependencies.Max(dep => _dal.Task.Read(dep.Id).ActualEndDate);
+            DateTime? latestEndDate = null;
+            if (task.Dependencies.Count() != 0)
+            {
+                latestEndDate = task.Dependencies.Max(dep => (((DateTime)_dal.Task.Read(dep.Id).ProjectedStartDate).Add((TimeSpan)_dal.Task.Read(dep.Id).Duration)));
+            }
             if (latestEndDate != null)
             {
                 task.ProjectedStartDate = latestEndDate.Value.AddDays(1);
@@ -319,7 +323,7 @@ internal class TaskImplementation : BlApi.ITask
                 task.ProjectedEndDate = task.DateCreated.Value.Add((TimeSpan)(task.RequiredEffortTime));
             }
             // Check the date is set to finish before the task's deadline and project deadline
-            if (task.ActualEndDate > task.DeadLine || task.ActualEndDate > _dal.getProjectEndDate())
+            if (task.ProjectedEndDate > task.DeadLine || task.ProjectedEndDate > _dal.getProjectEndDate())
             {
                 throw new BlTasksCanNotBeScheduled("The given tasks can not be completed before the deadline.");
             }
