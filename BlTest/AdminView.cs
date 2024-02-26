@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using System.Numerics;
 using System.Reflection.Emit;
 using System.Text;
 using System.Threading.Tasks;
@@ -88,10 +89,38 @@ namespace BlTest
                         6: Reset
                         Any Other number to go back"); inputString = Console.ReadLine();
                 success = int.TryParse(inputString, out choice);
+            } 
+        }
+
+
+        public static void AdminChooseEntity()
+        {
+            Console.WriteLine(@"Please choose an entity to interact with:
+                            1: Engineers 
+                            2: Tasks");
+
+
+            int view = int.Parse(Console.ReadLine());
+            while (view != 0)
+            {
+                switch (view)
+                {
+                    case 1:
+                        AdminViewEngineer<BO.Engineer>();
+                        break;
+                    case 2:
+                        AdminTaskProduction<BO.Task>();
+                        break;
+                    default:
+                        Console.WriteLine("Choice entered is invalid, please enter a valid option.");
+                        break;
+                }
+
+
             }
         }
 
-        public static void AdminTaskProduction<T>()
+            public static void AdminTaskProduction<T>()
         {
             Console.WriteLine($@"Choose one of the following {typeof(T).Name}s to perform:
                         0: Exit sub-menu

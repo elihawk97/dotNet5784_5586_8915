@@ -144,9 +144,9 @@ internal class DependencyImplementation : IDependency
 
         if (filter != null)
         {
-            dependencies = (List<Dependency>)(from item in dependencies
+            dependencies = (from item in dependencies
                            where filter(item)
-                           select item);
+                           select item).ToList();
         }
 
         if (dependencies.Count() == 0)

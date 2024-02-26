@@ -15,5 +15,11 @@ namespace BL.BlApi
         void SetProjectStartDate(DateTime? startDate);
         DateTime? getProjectStartDate();
         DateTime? getProjectEndDate();
+
+        // Refactored to use properties for ProjectStage
+        BO.Enums.ProjectStages CurrentProjectStage { get; set; }
+
+        // Refactored to use properties for CurrentUser
+        BO.Enums.User CurrentUser { get; set; }
     }
 }

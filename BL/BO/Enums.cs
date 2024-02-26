@@ -21,4 +21,21 @@ public class Enums
         Done
 
     }
+
+    public enum ProjectStages
+    {
+        Planning, 
+        Production
+    }
+
+    public enum User
+    {
+        Admin, 
+        Engineer
+    }
+
+
+
+
+
 }

@@ -12,21 +12,20 @@ public class Task
     public List<TaskInList> Dependencies { get; set; }
     public DateTime? DateCreated { get; set; }
     public DateTime? ProjectedStartDate { get; set; }
-    public DateTime? ActualStartDate { get; set; }
-    public DateTime? ProjectedEndDate { get; set; }
+    public DateTime? ActualStartDate { get; set; } = null; 
+    public DateTime? ProjectedEndDate { get; set; } 
     public DateTime? DeadLine { get; set; }
-    public DateTime? ActualEndDate { get; set; }
+    public DateTime? ActualEndDate { get; set; } = null; 
     public string? Deliverable { get; set; }
     public Engineer? EngineerForTask { get; set; }
     public Enums.ExperienceLevel Level { get; set; }
     public string? Notes { get; set; }
-    public Milestone? Milestone { get; set; }
 
     /// <summary>
     /// Default constructor
     /// </summary>
     public Task() { }
-    public Task( string? name, string? description, List<BO.TaskInList> tasksDependencies, DateTime? dateCreated, DateTime? projectedStartDate, DateTime? actualStartDate, DateTime? deadLine, DateTime? actualEndDate, string? deliverable, string? notes, Enums.ExperienceLevel experienceLevel)
+    public Task( string? name, string? description, List<BO.TaskInList> tasksDependencies, DateTime? dateCreated, DateTime? projectedStartDate, DateTime? projectedEndDate, DateTime? deadLine, string? deliverable, string? notes, Enums.ExperienceLevel experienceLevel)
     {
         Id = 0;
         Name = name;
@@ -35,9 +34,8 @@ public class Task
         Description = description;
         DateCreated = dateCreated;
         ProjectedStartDate = projectedStartDate;
-        ActualStartDate = actualStartDate;
+        ProjectedEndDate = projectedEndDate; 
         DeadLine = deadLine;
-        ActualEndDate = actualEndDate;
         Deliverable = deliverable;
         Notes = notes;
     }
@@ -53,22 +51,21 @@ public class Task
 
         return $@"
     Task
-    ID={Id},
-    Name={Name},
-    Description={Description},
-    Status={Status},
-    Dependencies={dependenciesString},
-    DateCreated={DateCreated},
-    ProjectedStartDate={ProjectedStartDate},
-    ActualStartDate={ActualStartDate},
-    ProjectedEndDate={ProjectedEndDate},
-    Deadline={DeadLine},
-    ActualEndDate={ActualEndDate},
-    Deliverable={Deliverable},
-    EngineerTask={(EngineerForTask != null ? EngineerForTask.Id : "None")},
-    Level={Level},
-    Notes={Notes},
-    Milestone={(Milestone != null ? Milestone.ToString() : "None")}
+    ID: {Id},
+    Name: {Name},
+    Description: {Description},
+    Status: {Status},
+    Dependencies: {(Dependencies != null ? Dependencies.ToString() : "None")},
+    DateCreated: {DateCreated},
+    ProjectedStartDate: {ProjectedStartDate},
+    ActualStartDate: {ActualStartDate},
+    ProjectedEndDate: {ProjectedEndDate},
+    Deadline: {DeadLine},
+    ActualEndDate: {ActualEndDate},
+    Deliverable: {Deliverable},
+    EngineerTask: {(EngineerForTask != null ? EngineerForTask.Id : "None")},
+    Level: {Level},
+    Notes: {Notes},
     ";
     }
 

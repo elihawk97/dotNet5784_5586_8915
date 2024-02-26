@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static BO.Enums;
 
 namespace BL.BlImplementation
 {
@@ -17,10 +18,32 @@ namespace BL.BlImplementation
         /// </summary>
         private DalApi.IDal _dal = DalApi.Factory.Get;
 
-        /// <summary>
-        /// Gets the project's end date.
-        /// </summary>
-        /// <returns>The project's end date, or null if not set.</returns>
+        // Backing fields for the properties
+        private ProjectStages _currentProjectStage;
+        private User _currentUser;
+
+        // Implementing properties from the ITools interface
+
+        public ToolsImplementation()
+        {
+            // Set the default user to Admin
+            _currentUser = User.Admin;
+            // Set the default project stage to Planning
+            _currentProjectStage = ProjectStages.Planning;
+        }
+
+        public ProjectStages CurrentProjectStage
+        {
+            get => _currentProjectStage;
+            set => _currentProjectStage = value;
+        }
+
+        public User CurrentUser
+        {
+            get => _currentUser;
+            set => _currentUser = value;
+        }
+
         public DateTime? getProjectEndDate()
         {
             return _dal.getProjectEndDate();

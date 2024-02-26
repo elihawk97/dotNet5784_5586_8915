@@ -242,29 +242,16 @@ internal class TaskImplementation : BlApi.ITask
     /// <returns>The created DO.Task object.</returns>
     private DO.Task taskCreater(BO.Task task)
     {
-        TimeSpan duration = (TimeSpan)(task.ActualEndDate - task.ActualStartDate);
+        TimeSpan duration = (TimeSpan)(task.ProjectedEndDate - task.ProjectedStartDate);
         DO.Enums.ExperienceLevel doExperienceLevel = (DO.Enums.ExperienceLevel)task.Level;
 
-        // Check the dates make sence, note the project may start before the projected
+        // Check the dates make sense, note the project may start before the projected
         // start date and finish before the deadline, and may finish after the deadline
-        if (task.DateCreated <= task.ProjectedStartDate ||
-        task.DateCreated <= task.ActualStartDate || task.DateCreated <= task.DeadLine
-        || task.ActualStartDate <= task.ActualEndDate)
-        {
-            throw new BlInvalidDateException("There is an error with dates entered");
-        }
-        if (duration > _dal.getProjectEndDate() - task.ActualStartDate)
-        {
-            throw new BlInvalidDateException("The task takes too long, it will finish after the project's" +
-                " final start date");
-        }
-        if(task.EngineerForTask.Level!=null && task.Level > task.EngineerForTask.Level)
-        {
-            throw new BlEngineerCantTakeTask($"Engineer with ID={task.EngineerForTask.Id} expertise level is not high enough.");
-        }
+       
+
         DO.Task doTask = new DO.Task(task.Id, task.Name, task.Description, task.DateCreated,
         task.ProjectedStartDate, task.ActualStartDate, duration, task.DeadLine, task.ActualEndDate,
-            task.Deliverable, task.Notes, task.EngineerForTask.Id, doExperienceLevel);
+            task.Deliverable, task.Notes, null, doExperienceLevel);
         /// Create Dependency Objects based on the Dependency list
         foreach(var dependency in task.Dependencies)
         {
