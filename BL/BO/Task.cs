@@ -49,13 +49,15 @@ public class Task
     /// <returns>formated object as a string</returns>
     public override string ToString()
     {
+        string dependenciesString = Dependencies != null ? string.Join(", ", Dependencies.Select(dep => dep.Id.ToString())) : "None";
+
         return $@"
     Task
     ID={Id},
     Name={Name},
     Description={Description},
     Status={Status},
-    Dependencies={(Dependencies != null ? Dependencies.ToString() : "None")},
+    Dependencies={dependenciesString},
     DateCreated={DateCreated},
     ProjectedStartDate={ProjectedStartDate},
     ActualStartDate={ActualStartDate},

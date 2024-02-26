@@ -85,7 +85,7 @@ internal class DependencyImplementation : IDependency
         DataSource.Dependencies = new List<Dependency>();
     }
 
-    public IEnumerable<Dependency> ReadAll(Func<Dependency, bool>? filter = null) //stage 2
+    public IEnumerable<Dependency> ReadAll(Func<Dependency, bool>? filter) //stage 2
     {
         IEnumerable<Dependency> dependencies;
         if (filter != null)
@@ -101,7 +101,7 @@ internal class DependencyImplementation : IDependency
         }
         if (dependencies.Count() == 0)
         {
-            throw new DalDoesNotExistException("Can't Read All! The list is empty");
+            //throw new DalDoesNotExistException("Can't Read All! The list is empty");
         }
         return dependencies;
     }
