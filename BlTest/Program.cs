@@ -317,23 +317,54 @@ internal class Program
     public static BO.Engineer EngineerInput()
     {
         Console.WriteLine("Enter data to create a new engineer:");
-        Console.WriteLine("Enter engineer ID:");
-        int id = int.Parse(Console.ReadLine());
 
-        Console.WriteLine("Enter engineer name:");
-        string name = Console.ReadLine();
+        int id = GetUserInput<int>("Enter engineer ID:", input =>
+        {
+            if (int.TryParse(input, out int result))
+            {
+                return (true, result);
+            }
+            return (false, 0); // Default value for int
+        });
 
-        Console.WriteLine("Enter engineer email:");
-        string email = Console.ReadLine();
 
-        Console.WriteLine("Enter experience level (Novice, AdvancedBeginner, Competent, Proficient, Expert):");
-        BO.Enums.ExperienceLevel? level = (BO.Enums.ExperienceLevel?)Enum.Parse(typeof(BO.Enums.ExperienceLevel), Console.ReadLine());
+        string name = GetUserInput<string>("Enter engineer name:", input =>
+        {
+            if (!string.IsNullOrWhiteSpace(input)) // Ensure the name is not empty or whitespace
+            {
+                return (true, input);
+            }
+            return (false, ""); // Default value for string
+        });
 
-        Console.WriteLine("Enter engineer cost:");
-        double cost = double.Parse(Console.ReadLine());
 
-        BO.Task? task = null; //Don't assign the engineer to a task at this point
+        string email = GetUserInput<string>("Enter engineer email:", input =>
+        {
+            // Basic validation for email, can be extended to more complex regex check
+            if (!string.IsNullOrWhiteSpace(input) && input.Contains("@"))
+            {
+                return (true, input);
+            }
+            return (false, ""); // Default value for string
+        });
 
+        BO.Enums.ExperienceLevel? level = GetUserInput<BO.Enums.ExperienceLevel?>("Enter experience level (Novice, AdvancedBeginner, Competent, Proficient, Expert):", input =>
+        {
+            if (Enum.TryParse<BO.Enums.ExperienceLevel>(input, true, out var result)) // true for ignoreCase
+            {
+                return (true, result);
+            }
+            return (false, null); // Default value for nullable ExperienceLevel
+        });
+
+        double cost = GetUserInput<double>("Enter engineer cost:", input =>
+        {
+            if (double.TryParse(input, out double result))
+            {
+                return (true, result);
+            }
+            return (false, 0.0); // Default value for double
+        });
 
         BO.Engineer newEngineer = new BO.Engineer(
             id,

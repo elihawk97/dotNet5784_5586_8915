@@ -17,17 +17,5 @@ public record Enums
         Expert
 
     }
-
-    public enum CurrentStage
-    {
-        Planning, 
-        Production
-    }
-
-    public enum CurrentUser
-    {
-        Admin, 
-        Engineer
-    }       
-
+   
 }
