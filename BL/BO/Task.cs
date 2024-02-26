@@ -16,6 +16,7 @@ public class Task
     public DateTime? ProjectedEndDate { get; set; } 
     public DateTime? DeadLine { get; set; }
     public DateTime? ActualEndDate { get; set; } = null; 
+    public TimeSpan? RequiredEffortTime { get; set; } = null;
     public string? Deliverable { get; set; }
     public Engineer? EngineerForTask { get; set; }
     public Enums.ExperienceLevel Level { get; set; }
@@ -25,7 +26,7 @@ public class Task
     /// Default constructor
     /// </summary>
     public Task() { }
-    public Task( string? name, string? description, List<BO.TaskInList> tasksDependencies, DateTime? dateCreated, DateTime? projectedStartDate, DateTime? projectedEndDate, DateTime? deadLine, string? deliverable, string? notes, Enums.ExperienceLevel experienceLevel)
+    public Task( string? name, string? description, List<BO.TaskInList> tasksDependencies, DateTime? dateCreated, DateTime? projectedStartDate, DateTime? projectedEndDate, DateTime? deadLine, TimeSpan? _RequiredEffortTime,string? deliverable, string? notes, Enums.ExperienceLevel experienceLevel)
     {
         Id = 0;
         Name = name;
@@ -38,6 +39,7 @@ public class Task
         DeadLine = deadLine;
         Deliverable = deliverable;
         Notes = notes;
+        RequiredEffortTime = _RequiredEffortTime;
     }
 
 
@@ -47,7 +49,7 @@ public class Task
     /// <returns>formated object as a string</returns>
     public override string ToString()
     {
-        string dependenciesString = Dependencies != null ? string.Join(", ", Dependencies.Select(dep => dep.Id.ToString())) : "None";
+        string dependenciesString = Dependencies != null ? string.Join(", ", Dependencies.Select(dep => dep.Id.ToString()).Distinct()) : "None";
 
         return $@"
     Task
@@ -55,13 +57,14 @@ public class Task
     Name: {Name},
     Description: {Description},
     Status: {Status},
-    Dependencies: {(Dependencies != null ? Dependencies.ToString() : "None")},
+    Dependencies: {dependenciesString},
     DateCreated: {DateCreated},
     ProjectedStartDate: {ProjectedStartDate},
     ActualStartDate: {ActualStartDate},
     ProjectedEndDate: {ProjectedEndDate},
     Deadline: {DeadLine},
     ActualEndDate: {ActualEndDate},
+    RequiredEffortTime: {RequiredEffortTime},
     Deliverable: {Deliverable},
     EngineerTask: {(EngineerForTask != null ? EngineerForTask.Id : "None")},
     Level: {Level},
