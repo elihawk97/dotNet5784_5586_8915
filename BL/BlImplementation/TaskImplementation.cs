@@ -211,7 +211,7 @@ internal class TaskImplementation : BlApi.ITask
         catch (DalDoesNotExistException ex)
         { engineerForBO = null;     }
 
-        
+        Func<DO.Dependency, bool> depFilter = dependency => dependency.DependentTask == task.Id;
         BO.Task boTask = new BO.Task()
         {
             Id = task.Id,
@@ -224,7 +224,9 @@ internal class TaskImplementation : BlApi.ITask
             DeadLine = task.DeadLine,
             ActualEndDate = task.ActualEndDate,
             Deliverable = task.Deliverables,
-            EngineerForTask = engineerForBO,//get engineer based off of the ID
+            Dependencies = _dal.Dependency.ReadAll(depFilter)
+            .Select(dep => new TaskInList(dep.DependentOnTask, null, null, BO.Enums.TaskStatus.Unscheduled)).ToList(),
+        EngineerForTask = engineerForBO,//get engineer based off of the ID
             Level = (BO.Enums.ExperienceLevel)task.DifficultyLevel,
             Notes = task.Notes,
         };
