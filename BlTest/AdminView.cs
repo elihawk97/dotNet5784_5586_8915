@@ -23,7 +23,7 @@ namespace BlTest
             {
                 DalTest.Initialization.Do();
             }
-            Tools.scheduler(Program.s_bl.Task.ReadAll(0));
+            //Tools.scheduler(Program.s_bl.Task.ReadAll(0));
             Console.WriteLine($@"Choose one of the following {typeof(T).Name}s to perform:
                         0: Exit sub-menu
                         1: Create {typeof(T).Name}
@@ -64,7 +64,7 @@ namespace BlTest
                             Program.UpdateEntityProjectedStartDate<T>();
                             break;
                         case 7:
-                            AddDependecies();
+                            AddDependencies();
                             break;
     
                         case 8:
@@ -331,72 +331,77 @@ namespace BlTest
             }
         }
 
-        private static void AddDependecies()
+        private static void AddDependencies()
         {
             try
             {
                 Console.WriteLine("Enter the ID of the Task you wish to add dependencies to:");
-                int id;
-                string inputString = Console.ReadLine();
-                int.TryParse(inputString, out id);
+                if (!int.TryParse(Console.ReadLine(), out int id) || id <= 0)
+                {
+                    Console.WriteLine("Invalid input. Please enter a positive numeric ID.");
+                    return;
+                }
+
                 BO.Task curTask = Program.s_bl.Task.ReadTask(id);
+                if (curTask.Dependencies == null)
+                {
+                    curTask.Dependencies = new List<TaskInList>();
+                }
 
-                // Take in input of the tasks that the task is dependent on
+                Console.WriteLine($"Enter the IDs of the Tasks you wish to add to task {id}'s dependency list, 0 to stop:");
                 int taskId;
-                Console.WriteLine($"Enter the IDs of the Task you wish to add to task {id}'s dependency list and 0 to stop:");
-                inputString = Console.ReadLine();
-                int.TryParse(inputString, out taskId);
-                Console.WriteLine("Enter the name of this dependency");
-                string nameInput = Console.ReadLine();
-                Console.WriteLine("Enter the Description of this dependency");
-                string descriptionInput = Console.ReadLine();
-
-                bool success = true; // Flag to track if the loop completes without errors.
-
-
-                while (taskId != 0)
+                while (true)
                 {
-                    try {
-
-                        curTask = Program.s_bl.Task.ReadTask(id);
-                        Program.s_bl.Task.ReadTask(taskId);
-                        if (curTask.Dependencies == null)
-                        {
-                            curTask.Dependencies = new List<TaskInList>(); // Assuming Dependencies is a List<TaskInList>
-                        }
-                        Console.WriteLine($"Enter the next id:");
-                        inputString = Console.ReadLine();
-
-                        if (int.TryParse(inputString, out taskId))
-                        {
-                            if (taskId == 0)
-                            {
-                                break; 
-                            }
-                        }
-                        Console.WriteLine("Enter the name of this dependency");
-                        nameInput = Console.ReadLine();
-                        Console.WriteLine("Enter the Description of this dependency");
-                        descriptionInput = Console.ReadLine();
-                    }
-                    catch(BlDoesNotExistException ex)
+                    string inputString = Console.ReadLine();
+                    if (!int.TryParse(inputString, out taskId) || taskId == 0)
                     {
-                        Console.WriteLine(ex.Message + " Must enter a different id.");
-                        success = false; 
-                        break; 
+                        break; // Exit the loop if the user enters '0' or invalid input
+                    }
+
+                    // Prevent adding a dependency to itself
+                    if (taskId == id)
+                    {
+                        Console.WriteLine("A task cannot depend on itself. Please enter a different ID.");
+                        continue;
+                    }
+
+                    // Check if the dependency already exists
+                    if (curTask.Dependencies.Any(d => d.Id == taskId))
+                    {
+                        Console.WriteLine($"Task {taskId} is already listed as a dependency.");
+                        Console.WriteLine("Please enter a different ID"); 
+                        continue; // Skip the rest of the loop and do not add this dependency
+                    }
+
+                    // Additional checks can be performed here, such as verifying the task exists
+                    try
+                    {
+                        Program.s_bl.Task.ReadTask(taskId); // This will throw an exception if the task doesn't exist
+
+                        Console.WriteLine("Enter the name of this dependency:");
+                        string nameInput = Console.ReadLine();
+
+                        Console.WriteLine("Enter the Description of this dependency:");
+                        string descriptionInput = Console.ReadLine();
+
+                        // Add the dependency since it passed all checks
+                        curTask.Dependencies.Add(new TaskInList(taskId, descriptionInput, nameInput, BO.Enums.TaskStatus.Unscheduled));
+                        Console.WriteLine($"Added dependency to task {taskId}.");
+                    }
+                    catch (BlDoesNotExistException ex)
+                    {
+                        Console.WriteLine($"Cannot add dependency: {ex.Message}");
                     }
                 }
 
-                if (success)
-                {
-                    Program.s_bl.Task.UpdateTask(id, curTask);
-                }
+                // Update the task with its new dependencies
+                Program.s_bl.Task.UpdateTask(id, curTask);
             }
-            catch(BlDoesNotExistException ex)
+            catch (BlDoesNotExistException ex)
             {
-                Console.WriteLine(ex.Message);
-               
+                Console.WriteLine($"Error: {ex.Message}");
             }
         }
+
     }
 }

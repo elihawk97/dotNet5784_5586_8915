@@ -257,6 +257,9 @@ internal class TaskImplementation : BlApi.ITask
             task.Deliverable, task.Notes, null, doExperienceLevel);
         /// Create Dependency Objects based on the Dependency list
         /// 
+
+    
+
         if (task.Dependencies == null)
         {
             task.Dependencies = new List<TaskInList>(); // Replace DependencyType with your actual dependency type

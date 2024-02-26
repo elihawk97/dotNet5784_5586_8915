@@ -55,7 +55,7 @@ public class Task
     Name: {Name},
     Description: {Description},
     Status: {Status},
-    Dependencies: {(Dependencies != null ? Dependencies.ToString() : "None")},
+    Dependencies: {dependenciesString},
     DateCreated: {DateCreated},
     ProjectedStartDate: {ProjectedStartDate},
     ActualStartDate: {ActualStartDate},
