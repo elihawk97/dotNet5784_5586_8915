@@ -386,7 +386,7 @@ namespace BlTest
 
                         // Add the dependency since it passed all checks
                         curTask.Dependencies.Add(new TaskInList(taskId, descriptionInput, nameInput, BO.Enums.TaskStatus.Unscheduled));
-                        Console.WriteLine($"Added dependency to task {taskId}.");
+                        Console.WriteLine($"Added dependency to task {id}.");
                     }
                     catch (BlDoesNotExistException ex)
                     {
