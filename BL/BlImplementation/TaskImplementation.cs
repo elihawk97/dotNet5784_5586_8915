@@ -46,6 +46,9 @@ internal class TaskImplementation : BlApi.ITask
     {
         try
         {
+          
+            _dal.Task.Read(x => x.Id == id);
+            
             _dal.Task.Delete(id);
         }
         catch (DO.DalDoesNotExistException ex)
@@ -67,7 +70,7 @@ internal class TaskImplementation : BlApi.ITask
             return boTask;
         }
         catch (DO.DalDoesNotExistException ex) {
-            throw new BO.BlDoesNotExistException($"Engineer with ID={id} already exists", ex);
+            throw new BO.BlDoesNotExistException($"Task with ID={id} does not exist", ex);
         } 
     }
 
@@ -151,12 +154,12 @@ internal class TaskImplementation : BlApi.ITask
             {
                 throw new BlDoesNotExistException("Task does not exist!");
             }
-            task.ActualStartTime = newStartTime; //Change the date of the task
+            task.ProjectedStartDate = newStartTime; //Change the date of the task
             _dal.Task.Update(task);
         }
         catch (DO.DalDoesNotExistException ex)
         {
-            throw new BlInvalidDateException("Date entered is invalid!", ex);
+            throw new BlDoesNotExistException("Task does not exist!", ex);
         }
         catch(DO.InvalidTime ex)
         {
@@ -176,7 +179,7 @@ internal class TaskImplementation : BlApi.ITask
         {
             DO.Task doTask = _dal.Task.Read(x => x.Id == id);
             DO.Task doNewTask = taskCreater(boTask);
-            _dal.Task.Delete(id);
+            doNewTask.Id = id; 
             _dal.Task.Update(doNewTask);
         }
         catch(DalDoesNotExistException ex)
@@ -253,7 +256,12 @@ internal class TaskImplementation : BlApi.ITask
         task.ProjectedStartDate, task.ActualStartDate, duration, task.DeadLine, task.ActualEndDate,
             task.Deliverable, task.Notes, null, doExperienceLevel);
         /// Create Dependency Objects based on the Dependency list
-        foreach(var dependency in task.Dependencies)
+        /// 
+        if (task.Dependencies == null)
+        {
+            task.Dependencies = new List<TaskInList>(); // Replace DependencyType with your actual dependency type
+        }
+        foreach (var dependency in task.Dependencies)
         {
             try
             {
