@@ -9,6 +9,15 @@ public class BlDoesNotExistException : Exception
     { }
 }
 
+
+[Serializable]
+public class BlTasksCanNotBeScheduled : Exception
+{
+    public BlTasksCanNotBeScheduled(string? message) : base(message) { }
+    public BlTasksCanNotBeScheduled(string? message, Exception innerException) :
+    base(message, innerException)
+    { }
+}
 [Serializable]
 public class BlNullPropertyException : Exception
 {
