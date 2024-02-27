@@ -77,7 +77,7 @@ internal class TaskImplementation : ITask
     /// </summary>
     /// <param name="filter">The filter condition for the Task object.</param>
     /// <returns>The Task object matching the filter condition.</returns>
-    public Task Read(Func<Task, bool>? filter = null) //stage 2
+    public Task Read(Func<Task, bool>? filter) //stage 2
     {
         Task? toRead;
         if (filter != null)
@@ -102,7 +102,7 @@ internal class TaskImplementation : ITask
     /// </summary>
     /// <param name="filter">The filter condition for Task objects.</param>
     /// <returns>A collection of Task objects matching the filter condition.</returns>
-    public IEnumerable<Task> ReadAll(Func<Task, bool>? filter = null) //stage 2
+    public IEnumerable<Task> ReadAll(Func<Task, bool>? filter) //stage 2
     {
         IEnumerable<Task> tasks;
         if (filter == null)

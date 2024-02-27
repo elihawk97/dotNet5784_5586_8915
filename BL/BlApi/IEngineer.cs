@@ -15,9 +15,7 @@ public interface IEngineer
 
     public void DeleteEngineer(int id);
     
-    public void UpdateEngineer(BO.Engineer item);
+    public void UpdateEngineer(int id, BO.Engineer item);
 
     public void Reset();
-
-
 }

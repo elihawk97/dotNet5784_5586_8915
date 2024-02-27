@@ -152,6 +152,7 @@ namespace BlTest
                             Program.UpdateEntity<T>();
                             break;
                         default:
+                            AdminChooseEntity();
                             break;
                     }
                 }
@@ -243,6 +244,7 @@ namespace BlTest
                 BO.Engineer engineer = Program.s_bl.Engineer.ReadEngineer(engineerId);
                 Func<DO.Task, int, bool> filterTask = (task, engineerId) => task.EngineerID == engineer.Id;
 
+                Console.WriteLine(Program.s_bl.Engineer.ReadEngineer(engineer.Id)); 
                 Console.WriteLine("Assigned to Task: " + Program.s_bl.Task.ReadTask(filterTask, engineer.Id));
             }
             catch (BlDoesNotExistException ex)
@@ -259,11 +261,11 @@ namespace BlTest
         private static void ReadAllEngineers()
         {
             Console.WriteLine(@"Enter the Level of Engineers you wish to view from the following list:
-                    N - Novice,
-                    AB - AdvancedBeginner,
-                    C - Competent,
-                    P - Proficient,
-                    E - Expert
+                    Novice,
+                    AdvancedBeginner,
+                    Competent,
+                    Proficient,
+                    Expert
             ");
             try
             {
@@ -319,7 +321,7 @@ namespace BlTest
                 engineer.Task = task;   
                 task.EngineerForTask = engineer;
                 Program.s_bl.Task.UpdateTask(taskId, task);
-                Program.s_bl.Engineer.UpdateEngineer(engineer);
+                Program.s_bl.Engineer.UpdateEngineer(engineerId, engineer);
             }
             catch (BlDoesNotExistException ex)
             {

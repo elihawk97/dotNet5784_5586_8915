@@ -11,47 +11,81 @@ namespace BlTest
     {
         public static void EngineerViewProduction<T>()
         {
-            int engineerId;
-            Console.WriteLine("Enter Your ID:");
-            string inputString = Console.ReadLine();
-            int.TryParse(inputString, out engineerId);
 
-            Console.WriteLine($@"Choose one of the following {typeof(T).Name}s to perform:
+            Func<string, (bool, int)> tryParseAndValidateEngineer = (input) =>
+            {
+                if (int.TryParse(input, out int engineerId))
+                {
+                    try
+                    {
+                        Program.s_bl.Engineer.ReadEngineer(engineerId);
+                        return (true, engineerId); // Engineer exists, return true and the ID
+                    }
+                    catch (BlDoesNotExistException)
+                    {
+                        Console.WriteLine($"No engineer found with ID {engineerId}. Please try again.");
+                        // Engineer does not exist, return false to keep the loop running
+                    }
+                }
+                // Parsing failed, return false to indicate invalid input
+                return (false, 0);
+            };
+
+            int engineerId = Program.GetUserInput<int>("Enter Your ID:", tryParseAndValidateEngineer);
+
+
+          
+            
+
+
+            try
+            {
+                Program.s_bl.Engineer.ReadEngineer(engineerId);
+            }
+            
+            catch (BlDoesNotExistException ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
+        
+                Console.WriteLine($@"Choose one of the following {typeof(T).Name}s to perform:
                         0: Exit sub-menu
                         1: Read {typeof(T).Name}
                         2: Read all {typeof(T).Name}s
                         3: Choose a Task");
 
-            inputString = Console.ReadLine();
-            int choice;
-            bool success = int.TryParse(inputString, out choice);
-            while (choice != 0)
-            {
-                if (success)
+                string inputString = Console.ReadLine();
+                int choice;
+                bool success = int.TryParse(inputString, out choice);
+                while (choice != 0)
                 {
-                    switch (choice)
+                    if (success)
                     {
-                        case 1:
-                            Program.ReadEntity<T>();
-                            break;
-                        case 2:
-                            ReadAllTasks(engineerId);
-                            break;
-                        case 3:
-                            AssignToTask(engineerId);
-                            break;
-                        default:
-                            break;
+                        switch (choice)
+                        {
+                            case 1:
+                                Program.ReadEntity<T>();
+                                break;
+                            case 2:
+                                ReadAllTasks(engineerId);
+                                break;
+                            case 3:
+                                AssignToTask(engineerId);
+                                break;
+                            default:
+                                break;
+                        }
                     }
+                    else
+                    {
+                        Console.WriteLine("Invalid input. Request Failed.");
+                    }
+                    Console.WriteLine("Select a choice from the menu:");
+                    inputString = Console.ReadLine();
+                    success = int.TryParse(inputString, out choice);
                 }
-                else
-                {
-                    Console.WriteLine("Invalid input. Request Failed.");
-                }
-                Console.WriteLine("Select a choice from the menu:");
-                inputString = Console.ReadLine();
-                success = int.TryParse(inputString, out choice);
-            }
+            
+           
         }
 
 
@@ -69,7 +103,7 @@ namespace BlTest
                 engineer.Task = task;
                 task.EngineerForTask = engineer;
                 Program.s_bl.Task.UpdateTask(taskId, task);
-                Program.s_bl.Engineer.UpdateEngineer(engineer);
+                Program.s_bl.Engineer.UpdateEngineer(engineerId, engineer);
             }
             catch (BlDoesNotExistException ex)
             {

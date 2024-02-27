@@ -42,7 +42,7 @@ public class Engineer
     Email={Email}, 
     EngineerExperience={Level}, 
     Cost={Cost}
-    Task={Task}
+    Task={(Task?.Id != null ? Task.Id.ToString() : "None")}
     ";
 
 }

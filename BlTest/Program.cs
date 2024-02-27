@@ -251,7 +251,7 @@ internal class Program
             {
                 s_bl.Engineer.ReadEngineer(id);
                 BO.Engineer updateItem = GetEntityInput<BO.Engineer>();
-                s_bl.Engineer.UpdateEngineer(updateItem);
+                s_bl.Engineer.UpdateEngineer(id, updateItem);
             }
             else
             {
@@ -326,16 +326,6 @@ internal class Program
     {
         Console.WriteLine("Enter data to create a new engineer:");
 
-        int id = GetUserInput<int>("Enter engineer ID:", input =>
-        {
-            if (int.TryParse(input, out int result))
-            {
-                return (true, result);
-            }
-            return (false, 0); // Default value for int
-        });
-
-
         string name = GetUserInput<string>("Enter engineer name:", input =>
         {
             if (!string.IsNullOrWhiteSpace(input)) // Ensure the name is not empty or whitespace
@@ -375,7 +365,7 @@ internal class Program
         });
 
         BO.Engineer newEngineer = new BO.Engineer(
-            id,
+            0,
             name,
             email,
             level,
@@ -384,10 +374,6 @@ internal class Program
 
         return newEngineer;
     }
-
-
-
-
 
     public static void UpdateEntityProjectedStartDate<T>()
     {
@@ -456,36 +442,19 @@ internal class Program
            
         AdminView.AdminTaskPlanning<BO.Task>();
 
+        DateTime startDate = GetUserInput<DateTime>("Enter Project Start Date (MM/dd/yyyy):", input =>
+        {
+            bool isValid = DateTime.TryParseExact(input, "MM/dd/yyyy", null, DateTimeStyles.None, out DateTime value)
+                  && value >= DateTime.Today; // Ensure date is not in the past
+            return (isValid, value);
+        });
 
-        Console.WriteLine("Enter the Project Start Date in MM/dd/yyyy format:");
-        string startDateInput = Console.ReadLine() ?? "";
-        DateTime startDate;
-        if (DateTime.TryParseExact(startDateInput, "MM/dd/yyyy", null, System.Globalization.DateTimeStyles.None, out startDate))
-        {
-            // Assuming s_bl is accessible here and is an instance of IBl
-            Program.s_bl.Tools.SetProjectStartDate(startDate);
-            Console.WriteLine("Project Start Date set successfully.");
-        }
-        else
-        {
-            Console.WriteLine("Invalid date format. Please enter the date in MM/dd/yyyy format.");
-        }
+        Program.s_bl.Tools.SetProjectStartDate(startDate);
+        Console.WriteLine("Project Start Date set successfully.");
 
         s_bl.Tools.CurrentProjectStage = BO.Enums.ProjectStages.Planning;
 
         Console.WriteLine("You are now in Production Mode");
-
-
-
-
-
-
-
-
-
-
-
-
 
         Console.WriteLine(@"Please Select Your Role:
                             1: Admin 

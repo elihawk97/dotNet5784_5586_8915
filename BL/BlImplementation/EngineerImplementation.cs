@@ -23,11 +23,7 @@ internal class EngineerImplementation : IEngineer
     /// <returns>The ID of the newly created engineer.</returns>
     public int Create(BO.Engineer boItem)
     {
-        if (boItem.Id <= 0)
-        {
-            throw new Exception("Invalid identifier. Must be a positive value.");
-        }
-
+        
         // Check for engineer's name (non-empty string)
         if (string.IsNullOrEmpty(boItem.Name))
         {
@@ -75,14 +71,13 @@ internal class EngineerImplementation : IEngineer
     {
         try
         {
-            _dal.Engineer.Delete(_dal.Engineer.Read(id).Id);
+            _dal.Engineer.Read(x => x.Id == id);
+
+            _dal.Engineer.Delete(id);
         }
         catch (DO.DalDoesNotExistException ex)
         {
-            throw new Exception(
-            $"Engineer with ID={id} does not exist", ex
-            );
-
+            throw new BlDoesNotExistException($"There was an error deleting the Engineer with id={id}", ex);
         }
     }
     /// <summary>
@@ -98,49 +93,27 @@ internal class EngineerImplementation : IEngineer
     {
         try
         {
-            IEnumerable<DO.Engineer> doEngineers;
+            IEnumerable<DO.Engineer> doEngineers = _dal.Engineer.ReadAll();
 
-
-            // If a filter is provided, use DAL's filtering capability
             if (filter != null)
             {
-                doEngineers = _dal.Engineer.ReadAll(doEngineer =>
-                    filter(new BO.Engineer(
-                            doEngineer.Id,
-                            doEngineer.Name,
-                            doEngineer.Email,
-                            (Enums.ExperienceLevel?)doEngineer.EngineerExperience,
-                            doEngineer.Cost
-                            )))!;
+                // Apply filter after conversion if provided
+                return doEngineers.Select(doEngineer => ConvertDOtoBO(doEngineer)).Where(filter);
             }
             else
             {
-                // Otherwise, fetch all records
-                doEngineers = _dal.Engineer.ReadAll();
+                // Convert all fetched records
+                return doEngineers.Select(doEngineer => ConvertDOtoBO(doEngineer)).Where(filter);
+
             }
-
-            // Map DO.Engineer objects to BO.Engineer objects
-            IEnumerable<BO.Engineer> boEngineers = doEngineers.Select(doEngineer =>
-                new BO.Engineer
-                (
-                    doEngineer.Id,
-                    doEngineer.Name,
-                    doEngineer.Email,
-                    (Enums.ExperienceLevel?)doEngineer.EngineerExperience,
-                    doEngineer.Cost
-                ));
-
-            return boEngineers;
         }
         catch (DO.DalDoesNotExistException ex)
         {
-            throw new Exception(
-                $"Error occurred while reading engineers", ex
-            );
+            throw new Exception($"Error occurred while reading engineers", ex);
         }
     }
 
-/// <summary>
+    /// <summary>
     /// Retrieves an engineer record with the specified ID.
     /// Returns the engineer as a BO.Engineer object if found, otherwise returns null.
     /// Throws an exception if the engineer with the given ID does not exist.
@@ -150,33 +123,16 @@ internal class EngineerImplementation : IEngineer
 
     public Engineer? ReadEngineer(int id)
     {
-
-        try
-        {
-            DO.Engineer? DOengineer = _dal.Engineer.Read(id);
-            BO.Engineer? BOengineerToRead = null;
-
-
-            if (DOengineer != null)
+            try
             {
-                BOengineerToRead = new BO.Engineer(
-                   DOengineer.Id,
-                   DOengineer.Name,
-                   DOengineer.Email,
-                   (BO.Enums.ExperienceLevel?)DOengineer.EngineerExperience,
-                   DOengineer.Cost
-                   );
-
+                DO.Engineer engineer = _dal.Engineer.Read(x => x.Id == id);
+                BO.Engineer boEngineer= ConvertDOtoBO(engineer);
+                return boEngineer;
             }
-            return BOengineerToRead;
-        }
-
-        catch (DO.DalDoesNotExistException ex)
-        {
-            throw new Exception(
-                $"Engineer with {id} does not exist", ex
-            );
-        }
+            catch (DO.DalDoesNotExistException ex)
+            {
+                throw new BO.BlDoesNotExistException($"Engineer with ID={id} does not exist", ex);
+            }
 
     }
 
@@ -186,30 +142,18 @@ internal class EngineerImplementation : IEngineer
     /// Throws an exception if the engineer with the given ID does not exist.
     /// </summary>
     /// <param name="boItem">The updated engineer data.</param>
-    public void UpdateEngineer(Engineer boItem)
+    public void UpdateEngineer(int id, Engineer boEngineer)
     {
         try
         {
-            DO.Engineer? DOengineer = _dal.Engineer.Read(boItem.Id);
-
-            if (DOengineer != null)
-            {
-                DOengineer = new DO.Engineer(
-                boItem.Id,
-                boItem.Name,
-                boItem.Email,
-                (DO.Enums.ExperienceLevel?)boItem.Level,
-                boItem.Cost);
-
-                _dal.Engineer.Update(DOengineer);
-            }
-
+            DO.Engineer doEngineer = _dal.Engineer.Read(x => x.Id == id);
+            DO.Engineer doNewEngineer = ConvertBOtoDO(boEngineer);
+            doNewEngineer.Id = id;
+            _dal.Engineer.Update(doNewEngineer);
         }
         catch (DO.DalDoesNotExistException ex)
         {
-            throw new Exception(
-                $"Engineer with {boItem.Id} does not exist", ex
-            );
+            throw new BO.BlDoesNotExistException($"Can't update Task with id={id}, no such Task exists!", ex);
         }
 
     }
@@ -253,5 +197,79 @@ internal class EngineerImplementation : IEngineer
 
         return false;
     }
+
+
+    /// <summary>
+    /// Converts a BO.Engineer object to a DO.Engineer object.
+    /// </summary>
+    /// <param name="boEngineer">The BO.Engineer object to convert.</param>
+    /// <returns>A new DO.Engineer object with values copied from the BO.Engineer.</returns>
+    private DO.Engineer ConvertBOtoDO(BO.Engineer boEngineer)
+    {
+        return new DO.Engineer
+        {
+            Id = boEngineer.Id,
+            Name = boEngineer.Name,
+            Email = boEngineer.Email,
+            EngineerExperience = (DO.Enums.ExperienceLevel)boEngineer.Level, // Assuming the enum values match between BO and DO
+            Cost = boEngineer.Cost
+        };
+    }
+
+
+    /// <summary>
+    /// Converts a DO.Engineer object to a BO.Engineer object.
+    /// </summary>
+    /// <param name="doEngineer">The DO.Engineer object to convert.</param>
+    /// <returns>A new BO.Engineer object with values copied from the DO.Engineer.</returns>
+    private BO.Engineer ConvertDOtoBO(DO.Engineer doEngineer)
+    {
+        BO.Engineer engineer = new BO.Engineer
+        (
+            doEngineer.Id,
+            doEngineer.Name,
+            doEngineer.Email,
+            (BO.Enums.ExperienceLevel?)doEngineer.EngineerExperience, // Assuming the enum values match between DO and BO
+            doEngineer.Cost
+        );
+
+        try
+        {
+            Func<DO.Task, bool> filterTask = (task) => task.EngineerID == doEngineer.Id;
+            DO.Task? task = _dal.Task.Read(filterTask);
+            Func<DO.Dependency, bool> depFilter = dependency => dependency.DependentTask == task.Id;
+
+            BO.Task boTask = new BO.Task()
+            {
+                Id = task.Id,
+                Name = task.NickName,
+                Description = task.Description,
+                DateCreated = task.DateCreated,
+                ProjectedStartDate = task.ProjectedStartDate,
+                ProjectedEndDate = task.ProjectedStartDate + task.Duration,
+                ActualStartDate = task.ActualStartTime,
+                DeadLine = task.DeadLine,
+                ActualEndDate = task.ActualEndDate,
+                Deliverable = task.Deliverables,
+                Dependencies = _dal.Dependency.ReadAll(depFilter)
+                .Select(dep => new TaskInList(dep.DependentOnTask, null, null, BO.Enums.TaskStatus.Unscheduled)).ToList(),
+                EngineerForTask = engineer,//get engineer based off of the ID
+                Level = (BO.Enums.ExperienceLevel)task.DifficultyLevel,
+                Notes = task.Notes,
+            };
+
+            engineer.Task = boTask;
+        }
+        catch (Exception ex)
+        {
+
+        }
+
+       
+
+        return engineer; 
+
+    }
+
 
 }

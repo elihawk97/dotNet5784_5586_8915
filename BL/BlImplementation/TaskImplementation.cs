@@ -80,7 +80,7 @@ internal class TaskImplementation : BlApi.ITask
     /// <param name="filter">The filter function to apply.</param>
     /// <param name="engineerId">The ID of the engineer to filter by.</param>
     /// <returns>The retrieved task.</returns>
-    public BO.Task ReadTask(Func<DO.Task, int, bool> filter, int engineerId)
+    public BO.Task? ReadTask(Func<DO.Task, int, bool> filter, int engineerId)
     {
         try
         {
@@ -88,8 +88,16 @@ internal class TaskImplementation : BlApi.ITask
                                          where (filter(task, engineerId))
                                          select taskDo_BO(task);
             List<BO.Task>taskList = tasks.ToList();
+
+            if (taskList.Count == 0)
+            {
+                return null; 
+            }
+
             return taskList[0];
         }
+
+
         catch (DO.DalDoesNotExistException ex)
         {
             throw new BO.BlDoesNotExistException($"Engineer with these constraints does not exist", ex);
@@ -201,7 +209,7 @@ internal class TaskImplementation : BlApi.ITask
     /// </summary>
     /// <param name="task">The DO.Task object to convert.</param>
     /// <returns>The converted BO.Task object.</returns>
-    private BO.Task taskDo_BO(DO.Task task)
+    public BO.Task taskDo_BO(DO.Task task)
     {
         DO.Engineer engineer;
         BO.Engineer engineerForBO;
@@ -255,6 +263,9 @@ internal class TaskImplementation : BlApi.ITask
         DO.Task doTask = new DO.Task(task.Id, task.Name, task.Description, task.DateCreated,
         task.ProjectedStartDate, task.ActualStartDate, duration, task.DeadLine, task.ActualEndDate,
             task.Deliverable, task.Notes, null, doExperienceLevel);
+
+         doTask.EngineerID = task.EngineerForTask.Id;
+   
         /// Create Dependency Objects based on the Dependency list
         /// 
 
