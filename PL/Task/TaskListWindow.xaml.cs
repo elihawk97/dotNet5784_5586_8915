@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Engineer;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -19,6 +20,21 @@ namespace Task
     /// </summary>
     public partial class TaskListWindow : Window
     {
+        static readonly BlApi.IBl s_bl = BlApi.Factory.Get();
+
+        public IEnumerable<BO.Task> TaskList
+        {
+            get { return (IEnumerable<BO.Task>)GetValue(TaskListProperty); }
+            set { SetValue(TaskListProperty, value); }
+        }
+        public static readonly DependencyProperty TaskListProperty =
+        DependencyProperty.Register("TaskList",
+        typeof(IEnumerable<BO.Task>),
+        typeof(TaskListWindow),
+        new PropertyMetadata(null)
+        );
+
+
         public TaskListWindow()
         {
             InitializeComponent();
