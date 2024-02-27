@@ -325,13 +325,15 @@ internal class TaskImplementation : BlApi.ITask
             }
             if (latestEndDate != null)
             {
-                task.ProjectedStartDate = latestEndDate.Value.AddDays(1);
+                DateTime? date1 = latestEndDate.Value.AddDays(1);
+                DateTime? date2 = _dal.getProjectStartDate();
+                task.ProjectedStartDate = (date1 > date2) ? date1 : date2 ;
                 task.ProjectedEndDate = latestEndDate.Value.Add((TimeSpan)(task.RequiredEffortTime));
             }
             else //If it has no dependencies, we set it start and finish days to be to the ones the
                  // the admin suggested
             {
-                task.ProjectedStartDate = task.DateCreated;
+                task.ProjectedStartDate = _dal.getProjectStartDate();
                 task.ProjectedEndDate = task.DateCreated.Value.Add((TimeSpan)(task.RequiredEffortTime));
             }
             // Check the date is set to finish before the task's deadline and project deadline
