@@ -7,7 +7,7 @@
         mc:Ignorable="d"
         DataContext="{Binding RelativeSource={RelativeSource Mode=Self}}"
         Title="EngineerListWindow" Height="640" Width="800">
-    
+  
     <!-- Outer Grid -->
     <Grid>
         <Grid.RowDefinitions>
@@ -21,10 +21,13 @@
                 <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
-            <ComboBox   Grid.Column="1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
+            <ComboBox
+            ItemsSource="{Binding Source={StaticResource ExpCollectionKey}}"
+            Grid.Column="1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
+            />
             <Label Content="Select Engineer" Grid.Column="0" HorizontalAlignment="Stretch"  VerticalAlignment="Stretch"/>
         </Grid>
-        <ListView Grid.Row="1">
+        <ListView Margin="5" Grid.Row="1" ItemsSource="{Binding EngineerList}">
             <ListView.View>
                 <GridView>
                     <GridViewColumn/>

@@ -37,6 +37,7 @@ namespace Task
 
         public TaskListWindow()
         {
+            TaskList = s_bl?.Task.ReadAll(0)!;
             InitializeComponent();
         }
     }

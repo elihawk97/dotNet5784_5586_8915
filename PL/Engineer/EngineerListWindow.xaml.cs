@@ -22,6 +22,8 @@ namespace Engineer
 
         static readonly BlApi.IBl s_bl = BlApi.Factory.Get();
 
+        
+
         public IEnumerable<BO.Engineer> EngineerList
         {
             get { return (IEnumerable<BO.Engineer>)GetValue(EngineerListProperty); }
@@ -35,6 +37,7 @@ namespace Engineer
         );
         public EngineerListWindow()
         {
+            EngineerList = s_bl?.Engineer.ReadAll(null)!;
             InitializeComponent();
         }
     }

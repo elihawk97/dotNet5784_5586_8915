@@ -20,10 +20,13 @@
                 <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
-            <ComboBox Grid.Column="1" HorizontalAlignment="Stretch"  VerticalAlignment="Stretch" />
+            <ComboBox
+            ItemsSource="{Binding Source={StaticResource ExpCollectionKey}}"
+            Grid.Column="1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
+            />
             <Label Grid.Column="0" Content="Select Task" HorizontalAlignment="Stretch"  VerticalAlignment="Stretch"/>
         </Grid>
-        <ListView Grid.Row="1">
+        <ListView Margin="5" Grid.Row="1" ItemsSource="{Binding TaskList}">
             <ListView.View>
                 <GridView>
                     <GridViewColumn/>

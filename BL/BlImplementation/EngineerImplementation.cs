@@ -103,7 +103,7 @@ internal class EngineerImplementation : IEngineer
             else
             {
                 // Convert all fetched records
-                return doEngineers.Select(doEngineer => ConvertDOtoBO(doEngineer)).Where(filter);
+                return doEngineers.Select(doEngineer => ConvertDOtoBO(doEngineer)); 
 
             }
         }
