@@ -341,6 +341,8 @@ internal class TaskImplementation : BlApi.ITask
             {
                 throw new BlTasksCanNotBeScheduled("The given tasks can not be completed before the deadline.");
             }
+            task.DateCreated = _dal.getProjectStartDate();
+            task.DeadLine = ((DateTime)task.DateCreated).AddDays(1000);
             _dal.Task.Update(taskCreater(task));
         }
 
