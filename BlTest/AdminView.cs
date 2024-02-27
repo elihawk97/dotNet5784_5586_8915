@@ -23,7 +23,6 @@ namespace BlTest
             {
                 DalTest.Initialization.Do();
             }
-            //Tools.scheduler(Program.s_bl.Task.ReadAll(0));
             Console.WriteLine($@"Choose one of the following {typeof(T).Name}s to perform:
                         0: Exit sub-menu
                         1: Create {typeof(T).Name}
@@ -121,7 +120,14 @@ namespace BlTest
         }
 
             public static void AdminTaskProduction<T>()
-        {
+            {
+            Console.Write("Would you like to schedule the tasks? (Y/N)"); //stage 3
+            string? ans = Console.ReadLine() ?? throw new FormatException("Wrong input"); //stage 3
+            if (ans == "Y")
+            {
+                Program.s_bl.Task.Scheduler();
+            }
+
             Console.WriteLine($@"Choose one of the following {typeof(T).Name}s to perform:
                         0: Exit sub-menu
                         1: Read {typeof(T).Name}

@@ -58,18 +58,17 @@ public static class Initialization
                 DateTime dateCreated = startingPoint.AddDays(randomAmountOfDays);
 
                 // Projected start date is within the same month
-                DateTime projectedStartDate = new DateTime(startingPoint.Year, startingPoint.Month + month - 1, 1)
-                    .AddDays(randomAmountOfDays);
+                DateTime? projectedStartDate = null;
 
                 // Project is actually started at most 15 days after the projected start date
-                DateTime? actualStartTime = projectedStartDate.AddDays(s_rand.Next(1, 3));
+                DateTime? actualStartTime = null;
 
                 // Project deadline is between 30 and 60 days after the projected start date
-                DateTime deadLine = projectedStartDate.AddDays(s_rand.Next(10, 17));
+                DateTime deadLine = dateCreated.AddDays(500);
 
                 // Project is actually completed at most 10 days before the deadline
-                DateTime? actualEndDate = deadLine.AddDays(-s_rand.Next(1, 11));
-                TimeSpan? duration = actualEndDate - actualStartTime;
+                DateTime? actualEndDate = null;
+                TimeSpan? duration = TimeSpan.FromDays(s_rand.Next(8, 12));
 
                 // Setting the difficulty level
                 Enums.ExperienceLevel experienceLevel = randomExperienceLevel();
@@ -159,15 +158,15 @@ public static class Initialization
         List<DO.Task> firstMonthTasks;
         List<DO.Task> currentMonthTasks;
         // Iterate over each task starting from the second month
-        for (int month = 2; month <= 4; month++)
+        for (int month = 1; month <= 4; month++)
         {
             try
             {
                 // Filter out tasks that are not in the last month (assuming tasks are ordered by month)
-                firstMonthTasks = tasks.Where(task => task.ProjectedStartDate.HasValue && task.ProjectedStartDate.Value.Month == month - 1).ToList();
+                firstMonthTasks = tasks.Where(task => task.Id <= month*5 && task.Id >= (month - 1) * 5).ToList();
 
                 // Get tasks for the current month
-                currentMonthTasks = tasks.Where(task => task.ProjectedStartDate.HasValue && task.ProjectedStartDate.Value.Month == month).ToList();
+                currentMonthTasks = tasks.Where(task => task.Id <= (month+1) * 5 && task.Id > (month) * 5).ToList();
 
             // Determine the number of dependencies for tasks in the current month
             int numDependencies = s_rand.Next(1, 4);

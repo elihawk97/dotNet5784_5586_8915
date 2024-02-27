@@ -240,6 +240,7 @@ internal class TaskImplementation : BlApi.ITask
         EngineerForTask = engineerForBO,//get engineer based off of the ID
             Level = (BO.Enums.ExperienceLevel)task.DifficultyLevel,
             Notes = task.Notes,
+            RequiredEffortTime = task.Duration
         };
 
         return boTask;
@@ -253,7 +254,6 @@ internal class TaskImplementation : BlApi.ITask
     /// <returns>The created DO.Task object.</returns>
     private DO.Task taskCreater(BO.Task task)
     {
-        TimeSpan duration = (TimeSpan)(task.ProjectedEndDate - task.ProjectedStartDate);
         DO.Enums.ExperienceLevel doExperienceLevel = (DO.Enums.ExperienceLevel)task.Level;
 
         // Check the dates make sense, note the project may start before the projected
@@ -261,7 +261,7 @@ internal class TaskImplementation : BlApi.ITask
        
 
         DO.Task doTask = new DO.Task(task.Id, task.Name, task.Description, task.DateCreated,
-        task.ProjectedStartDate, task.ActualStartDate, duration, task.DeadLine, task.ActualEndDate,
+        task.ProjectedStartDate, task.ActualStartDate, task.RequiredEffortTime, task.DeadLine, task.ActualEndDate,
             task.Deliverable, task.Notes, null, doExperienceLevel);
 
          doTask.EngineerID = task.EngineerForTask.Id;
@@ -279,7 +279,7 @@ internal class TaskImplementation : BlApi.ITask
         {
             try
             {
-                if (_dal.Task.Read(dependency.Id).DeadLine < task.ProjectedStartDate)
+                if (((DateTime)_dal.Task.Read(dependency.Id).ProjectedStartDate).Add((TimeSpan)_dal.Task.Read(dependency.Id).Duration) < task.ProjectedStartDate)
                 {
                     _dal.Dependency.Create(new Dependency(task.Id, dependency.Id));
                 }
@@ -303,7 +303,92 @@ internal class TaskImplementation : BlApi.ITask
     }
 
 
+    public void Scheduler()
+    {
+        List<DO.Task> doTaskList = _dal.Task.ReadAll(null).ToList();
+        List<BO.Task> boTaskList = doTaskList.Select(task => taskDo_BO(task)).ToList();
+        boTaskList = TopologicalSort(boTaskList);
 
+        // For each task in the sorted list:
+        // - Calculate the latest end date among its dependencies.
+        // - Set the task's actual start date to one day after the latest dependency end date, or projected start date if it has no dependencies.
+        // - Calculate the task's actual end date based on its projected dates.
+        // - Check if the actual end date exceeds the task's deadline or project deadline.
+        // - If all checks pass, proceed; otherwise, throw an exception.
+        foreach (BO.Task task in boTaskList)
+        {
+            DateTime? latestEndDate = null;
+            if (task.Dependencies.Count() != 0)
+            {
+                latestEndDate = task.Dependencies.Max(dep => (((DateTime)_dal.Task.Read(dep.Id).ProjectedStartDate).Add((TimeSpan)_dal.Task.Read(dep.Id).Duration)));
+            }
+            if (latestEndDate != null)
+            {
+                task.ProjectedStartDate = latestEndDate.Value.AddDays(1);
+                task.ProjectedEndDate = latestEndDate.Value.Add((TimeSpan)(task.RequiredEffortTime));
+            }
+            else //If it has no dependencies, we set it start and finish days to be to the ones the
+                 // the admin suggested
+            {
+                task.ProjectedStartDate = task.DateCreated;
+                task.ProjectedEndDate = task.DateCreated.Value.Add((TimeSpan)(task.RequiredEffortTime));
+            }
+            // Check the date is set to finish before the task's deadline and project deadline
+            if (task.ProjectedEndDate > task.DeadLine || task.ProjectedEndDate > _dal.getProjectEndDate())
+            {
+                throw new BlTasksCanNotBeScheduled("The given tasks can not be completed before the deadline.");
+            }
+            _dal.Task.Update(taskCreater(task));
+        }
+        foreach (BO.Task task in boTaskList)
+        {
+            Console.WriteLine(task);
+        }
+    }
+
+
+    public static List<BO.Task> TopologicalSort(List<BO.Task> tasks)
+    {
+        List<BO.Task> sortedTasks = new List<BO.Task>();
+        var dependencies = new Dictionary<int, HashSet<int>>();
+        int amount = tasks.Count();
+        // Populate dependencies dictionary
+        foreach (var task in tasks)
+        {
+            if (task.Dependencies != null && task.Dependencies.Count() != 0)
+            {
+                dependencies[task.Id] = new HashSet<int>(task.Dependencies.Select(dep => dep.Id));
+            }
+        }
+
+        var queue = new Queue<BO.Task>(tasks.Where(task => !dependencies.ContainsKey(task.Id) || dependencies[task.Id].Count == 0));
+
+        while (queue.Any())
+        {
+            var currentTask = queue.Dequeue();
+            sortedTasks.Add(currentTask);
+            // Remove the current task from the dependencies of other tasks
+            foreach (var dep in dependencies.Values)
+            {
+                dep.Remove(currentTask.Id);
+            }
+            // Enqueue tasks whose dependencies are satisfied
+            List<BO.Task> newTasks = tasks.Where(task => dependencies.ContainsKey(task.Id) && dependencies[task.Id].Count == 0 && !sortedTasks.Any(sortedTask => sortedTask.Id == task.Id)).ToList();
+            foreach (var task in newTasks)
+            {
+                queue.Enqueue(task);
+                tasks.RemoveAll(curTask => curTask.Id == task.Id);
+            }
+        }
+
+        // Check for cycles
+        if (sortedTasks.Count != amount)
+        {
+            throw new Exception("Cycle detected in the task dependencies. Unable to perform topological sort.");
+        }
+
+        return sortedTasks;
+    }
 
 
 

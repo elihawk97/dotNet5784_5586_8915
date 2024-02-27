@@ -2,8 +2,7 @@
 using DO;
 using BO;
 using System.Globalization;
-using System.Runtime.InteropServices;
-using System.Reflection.Emit;
+
 
 namespace BlTest;
 
@@ -53,18 +52,11 @@ internal class Program
         
         DateTime dateCreated = DateTime.Now;
 
-        // For DateTime input (e.g., dateCreated, projectedStartDate)
-        DateTime projectedStartDate = GetUserInput<DateTime>("Enter Projected Start Date (MM/dd/yyyy):", input =>
-        {
-            bool isValid = DateTime.TryParseExact(input, "MM/dd/yyyy", null, DateTimeStyles.None, out DateTime value)
-                  && value >= DateTime.Today; // Ensure date is not in the past
-            return (isValid, value);
-        });
 
-        DateTime projectedEndDate = GetUserInput<DateTime>("Enter Projected End Date (MM/dd/yyyy):", input =>
+        TimeSpan RequiredEffortTime = GetUserInput<TimeSpan>("Enter required effort time (in days):", input =>
         {
-            bool isValid = DateTime.TryParseExact(input, "MM/dd/yyyy", null, DateTimeStyles.None, out DateTime value)
-                  && value >= DateTime.Today && value > projectedStartDate; // Ensure date is not in the past
+            bool isValid = TimeSpan.TryParse(input, out TimeSpan value)
+                && value >= TimeSpan.Zero; // Ensure non-negative time span
             return (isValid, value);
         });
 
@@ -72,7 +64,7 @@ internal class Program
         DateTime deadline = GetUserInput<DateTime>("Enter deadline (MM/dd/yyyy):", input =>
         {
             bool isValid = DateTime.TryParseExact(input, "MM/dd/yyyy", null, DateTimeStyles.None, out DateTime value)
-                  && value >= DateTime.Today && value >= projectedEndDate; // Ensure date is not in the past
+                  && value >= DateTime.Today && value <= DateTime.Today.Add(RequiredEffortTime); // Ensure date is not in the past
             return (isValid, value);
         });
 
@@ -101,14 +93,14 @@ internal class Program
             description,
             new List<BO.TaskInList>(), // Dependencies can be added later
             dateCreated,
-            projectedStartDate,
-            projectedEndDate,
+            null,
+            null,
             deadline,
+            RequiredEffortTime,
             deliverables,
             notes,
             level
         );
-
         return newTask;
     }
 
@@ -452,7 +444,7 @@ internal class Program
         Program.s_bl.Tools.SetProjectStartDate(startDate);
         Console.WriteLine("Project Start Date set successfully.");
 
-        s_bl.Tools.CurrentProjectStage = BO.Enums.ProjectStages.Planning;
+//        s_bl.Tools.CurrentProjectStage = BO.Enums.ProjectStages.Planning;
 
         Console.WriteLine("You are now in Production Mode");
 

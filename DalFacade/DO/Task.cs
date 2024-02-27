@@ -77,7 +77,7 @@ public record Task
     /// <param name="deliverable"></param>
     /// <param name="notes"></param>
     /// <param name="engineerID"></param>
-    public Task(string nickName, string? description, DateTime dateCreated, DateTime projectedStartDate, DateTime? actualStartTime, TimeSpan? duration, DateTime deadLine, DateTime? actualEndDate, string? deliverables, string? notes, int? engineerID, Enums.ExperienceLevel difficultyLevel)
+    public Task(string nickName, string? description, DateTime dateCreated, DateTime? projectedStartDate, DateTime? actualStartTime, TimeSpan? duration, DateTime deadLine, DateTime? actualEndDate, string? deliverables, string? notes, int? engineerID, Enums.ExperienceLevel difficultyLevel)
     { 
 
         this.NickName = nickName;
