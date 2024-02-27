@@ -43,7 +43,7 @@ public static class Initialization
         }
 
         /// Always start the project on January 1st
-        DateTime? startingPoint = new DateTime(DateTime.Now.Year, 1, 1);
+        DateTime startingPoint = new DateTime(DateTime.Now.Year, 1, 1);
 
         // Loop through each month
         for (int month = 1; month <= 4; month++)
