@@ -258,13 +258,14 @@ internal class TaskImplementation : BlApi.ITask
 
         // Check the dates make sense, note the project may start before the projected
         // start date and finish before the deadline, and may finish after the deadline
-       
+
 
         DO.Task doTask = new DO.Task(task.Id, task.Name, task.Description, task.DateCreated,
         task.ProjectedStartDate, task.ActualStartDate, task.RequiredEffortTime, task.DeadLine, task.ActualEndDate,
             task.Deliverable, task.Notes, null, doExperienceLevel);
-
-         doTask.EngineerID = task.EngineerForTask.Id;
+        if (task.EngineerForTask != null) { 
+        doTask.EngineerID = task.EngineerForTask.Id;
+    }
    
         /// Create Dependency Objects based on the Dependency list
         /// 
@@ -340,10 +341,7 @@ internal class TaskImplementation : BlApi.ITask
             }
             _dal.Task.Update(taskCreater(task));
         }
-        foreach (BO.Task task in boTaskList)
-        {
-            Console.WriteLine(task);
-        }
+
     }
 
 

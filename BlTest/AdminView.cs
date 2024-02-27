@@ -89,7 +89,11 @@ namespace BlTest
                         8: Reset
                         Any Other number to go back"); inputString = Console.ReadLine();
                 success = int.TryParse(inputString, out choice);
-            } 
+            }
+
+
+
+
         }
 
         public static void AdminChooseEntity()
@@ -121,12 +125,7 @@ namespace BlTest
 
             public static void AdminTaskProduction<T>()
             {
-            Console.Write("Would you like to schedule the tasks? (Y/N)"); //stage 3
-            string? ans = Console.ReadLine() ?? throw new FormatException("Wrong input"); //stage 3
-            if (ans == "Y")
-            {
-                Program.s_bl.Task.Scheduler();
-            }
+           
 
             Console.WriteLine($@"Choose one of the following {typeof(T).Name}s to perform:
                         0: Exit sub-menu

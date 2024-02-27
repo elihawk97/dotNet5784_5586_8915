@@ -434,6 +434,10 @@ internal class Program
            
         AdminView.AdminTaskPlanning<BO.Task>();
 
+
+
+
+
         DateTime startDate = GetUserInput<DateTime>("Enter Project Start Date (MM/dd/yyyy):", input =>
         {
             bool isValid = DateTime.TryParseExact(input, "MM/dd/yyyy", null, DateTimeStyles.None, out DateTime value)
@@ -441,10 +445,17 @@ internal class Program
             return (isValid, value);
         });
 
+        
+
         Program.s_bl.Tools.SetProjectStartDate(startDate);
         Console.WriteLine("Project Start Date set successfully.");
-
-//        s_bl.Tools.CurrentProjectStage = BO.Enums.ProjectStages.Planning;
+        Console.Write("Would you like to schedule the tasks? (Y/N)"); //stage 3
+        string inputString = Console.ReadLine() ?? throw new FormatException("Wrong input"); //stage 3
+        if (inputString == "Y")
+        {
+            Program.s_bl.Task.Scheduler();
+        }
+        //        s_bl.Tools.CurrentProjectStage = BO.Enums.ProjectStages.Planning;
 
         Console.WriteLine("You are now in Production Mode");
 
