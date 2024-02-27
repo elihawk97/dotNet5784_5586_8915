@@ -14,20 +14,9 @@
 	<RootNamespace />
   </PropertyGroup>
 
-  <ItemGroup>
-    <ApplicationDefinition Remove="App.xaml" />
-  </ItemGroup>
 
-  <ItemGroup>
-    <Compile Remove="AssemblyInfo.cs" />
-  </ItemGroup>
 
-  <ItemGroup>
-    <EditorConfigFiles Include="App.xaml">
-      <Generator>MSBuild:Compile</Generator>
-    </EditorConfigFiles>
-    <Page Include="AssemblyInfo.cs" />
-  </ItemGroup>
+
 
   <ItemGroup>
     <ProjectReference Include="..\BL\BL.csproj" />

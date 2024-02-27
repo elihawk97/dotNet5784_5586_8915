@@ -22,7 +22,7 @@ namespace Engineer
 
         static readonly BlApi.IBl s_bl = BlApi.Factory.Get();
 
-        
+        public BO.Enums.ExperienceLevel ExpLevel { get; set; } = BO.Enums.ExperienceLevel.None;
 
         public IEnumerable<BO.Engineer> EngineerList
         {
@@ -35,6 +35,17 @@ namespace Engineer
         typeof(EngineerListWindow),
         new PropertyMetadata(null)
         );
+
+
+        private void cbEngineerSelector_SelectionChanged(object sender,
+SelectionChangedEventArgs e)
+        {
+            EngineerList = (ExpLevel == BO.Enums.ExperienceLevel.None) ?
+            s_bl?.Engineer.ReadAll(null)! :
+            s_bl?.Engineer.ReadAll(item => item.Level == ExpLevel)!;
+        }
+
+
         public EngineerListWindow()
         {
             EngineerList = s_bl?.Engineer.ReadAll(null)!;

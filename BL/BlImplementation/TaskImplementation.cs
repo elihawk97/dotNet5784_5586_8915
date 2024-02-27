@@ -144,6 +144,40 @@ internal class TaskImplementation : BlApi.ITask
             }
     }
 
+    public IEnumerable<BO.Task> ReadAll(Func<BO.Task, bool> filter)
+    {
+        try
+        {
+            IEnumerable<BO.Task> tasks = from task in _dal.Task.ReadAll()
+                                            select taskDo_BO(task);
+
+            if (filter != null)
+            {
+                tasks = from task in tasks
+                        where filter(task)
+                        select task;
+
+               /* tasks = from task in tasks
+                        let idNum = task.Id
+                        from dependency in _dal.Dependency.ReadAll()
+                        where ((dependency.DependentTask == idNum && _dal.Task.Read(dependency.DependentTask).IsActive == false) ||
+                                (dependency.DependentTask != idNum))
+                        select task;*/
+
+                return tasks;
+            }
+
+            tasks = from task in _dal.Task.ReadAll()
+                    select taskDo_BO(task);
+            return tasks;
+
+
+        }
+        catch (DalDoesNotExistException ex)
+        {
+            throw new BO.BlDoesNotExistException("Can't Read-All The Task list is empty!", ex);
+        }
+    }
     /// <summary>
     /// Updates the start date of a task with the specified ID.
     /// </summary>

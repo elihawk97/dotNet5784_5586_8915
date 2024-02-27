@@ -4,11 +4,14 @@ public class Enums
 {
     public enum ExperienceLevel
     {
+        None,
+        All,
         Novice,
         AdvancedBeginner,
         Competent,
         Proficient,
         Expert
+
 
     }
 

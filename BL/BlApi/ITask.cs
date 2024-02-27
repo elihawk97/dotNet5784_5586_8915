@@ -7,6 +7,7 @@ public interface ITask
 {
 
     public IEnumerable<BO.Task> ReadAll(int engineerId);
+    public IEnumerable<BO.Task> ReadAll(Func<BO.Task, bool> filter);
     public BO.Task ReadTask(int id);
     public BO.Task ReadTask(Func<DO.Task, int, bool> filter, int engineerId);
     public void Scheduler();
