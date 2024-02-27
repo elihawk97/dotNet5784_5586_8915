@@ -19,8 +19,19 @@
                 <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
-            <ComboBox   Grid.Column="1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Width="120"/>
+            <ComboBox   Grid.Column="1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
             <Label Content="Select Engineer" Grid.Column="0" HorizontalAlignment="Stretch"  VerticalAlignment="Stretch"/>
         </Grid>
+        <ListView Grid.Row="1">
+            <ListView.View>
+                <GridView>
+                    <GridViewColumn/>
+                </GridView>
+            </ListView.View>
+        </ListView>
+        <Button Content="Add" Grid.Row="2" HorizontalAlignment="Center" Height="50"
+        Width="100"/>
+
     </Grid>
+    
 </Window>
