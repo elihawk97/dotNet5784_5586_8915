@@ -40,26 +40,16 @@ namespace Task
 
         private void cbTaskSelector_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            if (cbTaskSelector.SelectedValue is string selectedValue)
-            {
-                BO.Enums.ExperienceLevel expLevel;
-                // Try to parse the selected value to the enum
-                if (Enum.TryParse<BO.Enums.ExperienceLevel>(selectedValue, out expLevel))
-                {
-                    // Create the filter based on the selected experience level
-                    Func<BO.Task, bool> filter = item => item.Level == expLevel;
+
+
+            // Create the filter based on the selected experience level
+            Func<BO.Task, bool> filter = item => item.Level == ExpLevel;
 
                     // Apply the filter
-                    TaskList = (expLevel == BO.Enums.ExperienceLevel.None) ?
+                    TaskList = (ExpLevel == BO.Enums.ExperienceLevel.None || ExpLevel == BO.Enums.ExperienceLevel.All) ?
                                 s_bl?.Task.ReadAll(0)! :
                                 s_bl?.Task.ReadAll(filter)!;
-                }
-                else
-                {
-                    // Handle parsing failure if necessary
-                    Debug.WriteLine("Failed to parse the selected value to ExperienceLevel enum.");
-                }
-            }
+                
         }
 
 

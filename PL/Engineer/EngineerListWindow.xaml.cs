@@ -37,13 +37,21 @@ namespace Engineer
         );
 
 
-        private void cbEngineerSelector_SelectionChanged(object sender,
-SelectionChangedEventArgs e)
-        {
-            EngineerList = (ExpLevel == BO.Enums.ExperienceLevel.None) ?
-            s_bl?.Engineer.ReadAll(null)! :
-            s_bl?.Engineer.ReadAll(item => item.Level == ExpLevel)!;
-        }
+        
+            private void cbEngineerSelector_SelectionChanged(object sender, SelectionChangedEventArgs e)
+            {
+
+
+                // Create the filter based on the selected experience level
+                Func<BO.Engineer, bool> filter = item => item.Level == ExpLevel;
+
+                // Apply the filter
+                EngineerList = (ExpLevel == BO.Enums.ExperienceLevel.None || ExpLevel == BO.Enums.ExperienceLevel.All) ?
+                            s_bl?.Engineer.ReadAll(null)! :
+                            s_bl?.Engineer.ReadAll(filter)!;
+
+            }
+        
 
 
         public EngineerListWindow()

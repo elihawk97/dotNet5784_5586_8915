@@ -22,7 +22,7 @@
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
             <ComboBox
-                SelectedValue="{Binding Path=EngineerList, Mode=TwoWay}"
+                SelectedValue="{Binding Path=ExpLevel, Mode=TwoWay}"
             ItemsSource="{Binding Source={StaticResource ExpCollectionKey}}"
                 SelectionChanged="cbEngineerSelector_SelectionChanged"
             Grid.Column="1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"

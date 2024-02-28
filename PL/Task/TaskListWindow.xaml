@@ -21,9 +21,9 @@
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
             <ComboBox
-                SelectedValue="{Binding Path=TaskList, Mode=TwoWay}"
+                SelectedValue="{Binding Path=ExpLevel, Mode=TwoWay}"
             ItemsSource="{Binding Source={StaticResource ExpCollectionKey}}"
-                x:Name="cbTaskSelector" SelectionChanged="cbTaskSelector_SelectionChanged"
+                SelectionChanged="cbTaskSelector_SelectionChanged"
             Grid.Column="1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
             />
             <Label Grid.Column="0" Content="Select Task" HorizontalAlignment="Stretch"  VerticalAlignment="Stretch"/>
