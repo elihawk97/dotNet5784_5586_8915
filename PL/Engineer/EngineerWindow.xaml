@@ -5,8 +5,77 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Engineer"
         mc:Ignorable="d"
-        Title="EngineerWindow" Height="450" Width="800">
-    <Grid>
         
+        Title="EngineerWindow" Height="460" Width="800"
+        DataContext="{Binding CurrentEngineer, RelativeSource={RelativeSource Self},
+Mode=TwoWay}">
+    
+    <Grid>
+
+        <Grid.RowDefinitions>
+        
+            <RowDefinition Height="500*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+        
+        
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="*"/>
+
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+
+
+            <Label HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Column="0" Grid.Row="0" Content="ID" />
+            <TextBox Grid.Column="1" Grid.Row="0" 
+                    Text="{Binding Path=Id, Mode=TwoWay, 
+                        NotifyOnValidationError=True, ValidatesOnExceptions=True}"
+
+                    HorizontalAlignment="Center" Height="NaN" Margin="3"
+                    VerticalAlignment="Center" Width="120"/>
+
+            <Label HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Column="0" Grid.Row="1" Content="Name"/>
+            <TextBox Grid.Column="1" Grid.Row="1" 
+                     Text="{Binding Name, Mode=TwoWay, NotifyOnValidationError=true,
+                     ValidatesOnExceptions=true}"
+                     HorizontalAlignment="Center" Height="NaN" Margin="3"
+                     VerticalAlignment="Center" Width="120"/>
+
+                <Label HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Column="0" Grid.Row="2" Content="Email"/>
+            <TextBox Grid.Column="1" Grid.Row="2"  
+                    Text="{Binding Email, Mode=TwoWay, NotifyOnValidationError=true,
+                    ValidatesOnExceptions=true}"
+                    HorizontalAlignment="Center" Height="NaN" Margin="3"
+                    VerticalAlignment="Center" Width="120"/>
+
+            <Label  HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Column="0" Grid.Row="3" Content="Experience Level"/>
+            <ComboBox Grid.Column="1" Grid.Row="3" 
+                ItemsSource="{Binding Source={StaticResource ExpCollectionKey}}"
+                SelectedValue="{Binding Level, Mode=TwoWay, ValidatesOnExceptions=true,
+                NotifyOnValidationError=true}"
+                HorizontalAlignment="Center" Height="NaN" Margin="3"
+                VerticalAlignment="Center" Width="120"/>
+
+            <Label HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Column="0" Grid.Row="4" Content="Cost"/>
+            <TextBox  Grid.Column="1" Grid.Row="4" 
+                      Text="{Binding Cost, Mode=TwoWay, NotifyOnValidationError=true,
+                      ValidatesOnExceptions=true}"
+                      HorizontalAlignment="Center" Height="NaN" Margin="3"
+                      VerticalAlignment="Center" Width="120"/>
+                    
+        </Grid>
+        <Button Grid.Row="1" 
+                Content="{Binding Id, Mode=OneTime, Converter={StaticResource ConvertIdToContentKey}}"
+                HorizontalAlignment="Left" Margin="3,0,0,0"
+                VerticalAlignment="Top" Padding="5"
+                Click="btnAddUpdate_Click"/>
     </Grid>
 </Window>

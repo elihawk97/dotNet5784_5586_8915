@@ -32,6 +32,10 @@ public class Engineer
         Cost = cost;
     }
 
+    public Engineer()
+    {
+         
+    }
     /// <summary>
     /// Over riding the default ToString method to format the data
     /// </summary>

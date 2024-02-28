@@ -38,7 +38,7 @@ namespace Engineer
 
 
         
-            private void cbEngineerSelector_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        private void cbEngineerSelector_SelectionChanged(object sender, SelectionChangedEventArgs e)
             {
 
 
@@ -51,7 +51,13 @@ namespace Engineer
                             s_bl?.Engineer.ReadAll(filter)!;
 
             }
-        
+
+        private void AddButton_Click(object sender, RoutedEventArgs e)
+        {
+            // Instantiate the EngineerWindow in "Add" mode (not passing an ID)
+            EngineerWindow engineerWindow = new EngineerWindow(); // Assuming a parameterless constructor is "Add" mode
+            engineerWindow.ShowDialog(); // ShowDialog to make it modal
+        }
 
 
         public EngineerListWindow()
