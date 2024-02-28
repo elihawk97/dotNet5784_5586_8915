@@ -338,13 +338,13 @@ internal class Program
             return (false, ""); // Default value for string
         });
 
-        BO.Enums.ExperienceLevel? level = GetUserInput<BO.Enums.ExperienceLevel?>("Enter experience level (Novice, AdvancedBeginner, Competent, Proficient, Expert):", input =>
+        BO.Enums.ExperienceLevel level = GetUserInput<BO.Enums.ExperienceLevel>("Enter experience level (Novice, AdvancedBeginner, Competent, Proficient, Expert):", input =>
         {
             if (Enum.TryParse<BO.Enums.ExperienceLevel>(input, true, out var result)) // true for ignoreCase
             {
                 return (true, result);
             }
-            return (false, null); // Default value for nullable ExperienceLevel
+            return (false, BO.Enums.ExperienceLevel.None); // Default value for  ExperienceLevel
         });
 
         double cost = GetUserInput<double>("Enter engineer cost:", input =>
