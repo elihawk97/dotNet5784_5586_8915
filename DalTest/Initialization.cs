@@ -124,7 +124,7 @@ public static class Initialization
                 string firstNameInitial = parts[0].Substring(0, 1);
                 string lastName = parts[1];
 
-                string modifiedName = $"{firstNameInitial}. {lastName}";
+                string modifiedName = $"{firstNameInitial}.{lastName}";
                 email = modifiedName + "@jct.com";
             }
 

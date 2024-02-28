@@ -46,7 +46,7 @@ namespace Task
             Func<BO.Task, bool> filter = item => item.Level == ExpLevel;
 
                     // Apply the filter
-                    TaskList = (ExpLevel == BO.Enums.ExperienceLevel.None || ExpLevel == BO.Enums.ExperienceLevel.All) ?
+                    TaskList = (ExpLevel == BO.Enums.ExperienceLevel.None) ?
                                 s_bl?.Task.ReadAll(0)! :
                                 s_bl?.Task.ReadAll(filter)!;
                 

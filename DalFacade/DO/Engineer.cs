@@ -13,8 +13,7 @@ public record Engineer
     public int Id;
     public string? Name;
     public string? Email;
-
-    public Enums.ExperienceLevel? EngineerExperience;
+    public Enums.ExperienceLevel EngineerExperience = Enums.ExperienceLevel.Novice;
     public double Cost;
     public bool IsActive = true;
 
@@ -30,7 +29,7 @@ public record Engineer
 
     }
 
-    public Engineer(int id, string? name, string? email, Enums.ExperienceLevel? engineerExperience, double cost)
+    public Engineer(int id, string? name, string? email, Enums.ExperienceLevel engineerExperience, double cost)
     {
         Id = id;
         Name = name;
@@ -38,7 +37,7 @@ public record Engineer
         EngineerExperience = engineerExperience;
         Cost = cost;
     }
-    public Engineer(string? name, string? email, Enums.ExperienceLevel? engineerExperience, double cost)
+    public Engineer(string? name, string? email, Enums.ExperienceLevel engineerExperience, double cost)
     {
         Name = name;
         Email = email;

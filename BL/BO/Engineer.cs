@@ -10,7 +10,7 @@ public class Engineer
     public int Id { get; set; } 
     public string? Name { get; set; }
     public string? Email { get; set; }
-    public Enums.ExperienceLevel? Level { get; set; }
+    public Enums.ExperienceLevel Level { get; set; } = Enums.ExperienceLevel.None;
 
     public double Cost { get; set; }
     public Task? Task { get; set; }
@@ -23,7 +23,7 @@ public class Engineer
     /// <param name="email">Engineer's email</param>
     /// <param name="level">Engineer's experience leve</param>
     /// <param name="cost">Engineer's per hour salary</param>
-    public Engineer(int id, string name, string email, Enums.ExperienceLevel? level, double cost)
+    public Engineer(int id, string name, string email, Enums.ExperienceLevel level, double cost)
     {
         Id = id;
         Name = name;

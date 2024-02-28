@@ -49,7 +49,7 @@ namespace Engineer
                 Func<BO.Engineer, bool> filter = item => item.Level == ExpLevel;
 
                 // Apply the filter
-                EngineerList = (ExpLevel == BO.Enums.ExperienceLevel.None || ExpLevel == BO.Enums.ExperienceLevel.All) ?
+                EngineerList = (ExpLevel == BO.Enums.ExperienceLevel.None) ?
                             s_bl?.Engineer.ReadAll(null)! :
                             s_bl?.Engineer.ReadAll(filter)!;
 
