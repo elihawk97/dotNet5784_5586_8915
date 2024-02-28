@@ -36,8 +36,11 @@ namespace Engineer
         new PropertyMetadata(null)
         );
 
+        private void RefreshEngineerList()
+        {
+            EngineerList = s_bl?.Engineer.ReadAll(null)!;
+        }
 
-        
         private void cbEngineerSelector_SelectionChanged(object sender, SelectionChangedEventArgs e)
             {
 
@@ -57,8 +60,22 @@ namespace Engineer
             // Instantiate the EngineerWindow in "Add" mode (not passing an ID)
             EngineerWindow engineerWindow = new EngineerWindow(); // Assuming a parameterless constructor is "Add" mode
             engineerWindow.ShowDialog(); // ShowDialog to make it modal
+            RefreshEngineerList(); 
         }
 
+        private void ListView_MouseDoubleClick(object sender, MouseButtonEventArgs e)
+        {
+            var listView = sender as ListView;
+            var selectedEngineer = listView.SelectedItem as BO.Engineer;
+
+            if (selectedEngineer != null)
+            {
+                // Assuming EngineerWindow has a constructor that takes an engineer's ID for update mode
+                EngineerWindow engineerWindow = new EngineerWindow(selectedEngineer.Id);
+                engineerWindow.ShowDialog(); // Show the window modally
+            }
+            RefreshEngineerList();
+        }
 
         public EngineerListWindow()
         {

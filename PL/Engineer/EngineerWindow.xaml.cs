@@ -24,55 +24,60 @@ namespace Engineer
 
         public BO.Enums.ExperienceLevel ExpLevel { get; set; } = BO.Enums.ExperienceLevel.None;
 
+        public static readonly DependencyProperty CurrentEngineerProperty = DependencyProperty.Register(
+            "CurrentEngineer",
+            typeof(BO.Engineer),
+            typeof(EngineerWindow),
+            new PropertyMetadata(default(BO.Engineer)));
 
-        public int EngineerId = 0;
-
-        public BO.Engineer? CurrentEngineer { get; private set; }
-
-        private void InitializeEngineer()
+        public BO.Engineer CurrentEngineer
         {
-            if (EngineerId == 0)
-            {
-
-                CurrentEngineer = new BO.Engineer();
-            }
-            else
-            {
-                // If EngineerId is not 0, it means we are in "Update" mode
-                // Retrieve the object with the specified ID from the BL API
-                // and assign it to the EngineerInfo property
-                CurrentEngineer = s_bl.Engineer.ReadEngineer(EngineerId);
-            }
+            get { return (BO.Engineer)GetValue(CurrentEngineerProperty); }
+            set { SetValue(CurrentEngineerProperty, value); }
         }
+
 
         private void btnAddUpdate_Click(object sender, RoutedEventArgs e)
         {
             try
             {
-                // Call the appropriate BL API method (Add/Update) passing the CurrentEngineer object
-                // Here, you should determine whether to call Add or Update based on EngineerId
                 if (EngineerId == 0)
                 {
+                    // Add logic
                     s_bl.Engineer.Create(CurrentEngineer);
                 }
                 else
                 {
+                    // Update logic
                     s_bl.Engineer.UpdateEngineer(EngineerId, CurrentEngineer);
                 }
 
-                // Close the single-item window upon successful termination of the call
+                // Close the window or navigate away
                 this.Close();
             }
             catch (Exception ex)
             {
-                // Handle any exceptions that may surface during the API call
-                MessageBox.Show("An error occurred: " + ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show($"An error occurred: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
-        public EngineerWindow()
+
+        private int EngineerId = 0;
+
+        public EngineerWindow(int engineerId = 0)
         {
             InitializeComponent();
-            InitializeEngineer(); 
+            EngineerId = engineerId;
+
+            if (EngineerId == 0)
+            {
+                // Add mode: Assign a new object
+                CurrentEngineer = new BO.Engineer();
+            }
+            else
+            {
+                // Update mode: Fetch the object from BL
+                CurrentEngineer = s_bl.Engineer.ReadEngineer(EngineerId);
+            }
         }
     }
 }

@@ -11,6 +11,11 @@ public class ConvertIdToContent : IValueConverter
     {
 
 
+        if (value is int id)
+        {
+            return id == 0 ? "Add" : "Update";
+        }
+        // Adjust or remove the string logic as necessary
         return string.IsNullOrEmpty(value as string) ? "Add" : "Update";
 
     }

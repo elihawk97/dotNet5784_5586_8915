@@ -29,7 +29,7 @@
             />
             <Label Content="Select Engineer" Grid.Column="0" HorizontalAlignment="Stretch"  VerticalAlignment="Stretch"/>
         </Grid>
-        <ListView Margin="5" Grid.Row="1" ItemsSource="{Binding EngineerList}">
+        <ListView Margin="5" Grid.Row="1" ItemsSource="{Binding EngineerList}" MouseDoubleClick="ListView_MouseDoubleClick">
             <ListView.View>
                 <GridView>
                     <GridViewColumn/>
@@ -37,7 +37,7 @@
             </ListView.View>
         </ListView>
         <Button Content="Add" Grid.Row="2" HorizontalAlignment="Center" Height="50"
-        Width="100"/>
+        Width="100" Click="AddButton_Click"/>
 
     </Grid>
     
