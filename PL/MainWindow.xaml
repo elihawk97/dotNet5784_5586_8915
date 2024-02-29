@@ -6,40 +6,63 @@
         xmlns:local="clr-namespace:PL"
         mc:Ignorable="d"
         Title="MainWindow" Height="460" Width="800">
+    <Window.Resources>
+
+        <Style TargetType="Button" x:Key="RoundButton">
+            <Style.Resources>
+                <Style TargetType="Border">
+                    <Setter Property="CornerRadius" Value="25" />
+                </Style>
+            </Style.Resources>
+        </Style>
+
+    </Window.Resources>
 
     <!-- Main container grid with 4 rows -->
     <Grid>
         <!-- Defining four rows of equal height -->
         <Grid.RowDefinitions>
-            <RowDefinition Height="*"/>
-            <RowDefinition Height="*"/>
-            <RowDefinition Height="*"/>
-            <RowDefinition Height="*"/>
+            <RowDefinition Height="1*"/>
+            <RowDefinition Height="1*"/>
+            <RowDefinition Height="3*"/>
         </Grid.RowDefinitions>
 
         <!-- Welcome message section -->
-        <StackPanel Grid.Row="0" HorizontalAlignment="Center" VerticalAlignment="Center">
             <TextBlock  HorizontalAlignment="Center" VerticalAlignment="Center"
-                   Text="Welcome to the Engineering Management System"
-                   FontFamily="Arial" FontSize="30" FontWeight="Bold" FontStyle="Italic"
+                   Text="Admin Screen"
+                   FontFamily="Arial" FontSize="50" FontWeight="Bold" FontStyle="Italic"
                    Foreground="DarkBlue" TextWrapping="Wrap" TextAlignment="Center" Padding="10"/>
-        <TextBlock  VerticalAlignment="Center" HorizontalAlignment="Center"
-           Text="Avi Soclof and Eli Hawk"
-           FontFamily="Arial" FontSize="20" FontWeight="Bold" FontStyle="Italic"
-           Foreground="Black" TextWrapping="Wrap" TextAlignment="Center" Padding="10"/>
-        </StackPanel>
-
+       
         <!-- Initialize Data Button (hidden example button commented out) -->
-        <!--<Button Content="Handle Tasks" HorizontalAlignment="Left" Margin="197,209,0,0" VerticalAlignment="Top" Click="btnTask_Click"/>-->
-        <Button Grid.Row="1" Content="Initialize Data" HorizontalAlignment="Center"  VerticalAlignment="Center" Width="100" Height="50" Click="InitializeData_Click"/>
+        <Button Grid.Row="1" Content="Initialize Data" 
+                HorizontalAlignment="Center"  VerticalAlignment="Center" 
+                Width="150" Height="50" 
+                Click="InitializeData_Click"
+                Style="{DynamicResource RoundButton}"
+                FontSize="20"
+                />
         
         <!-- Handle Engineers Button -->
-        <Button Grid.Row="2" Content="Handle Engineers" HorizontalAlignment="Center"  VerticalAlignment="Center" Width="100" Height="50" Click="btnEngineer_Click"/>
-
-        <!-- Footer message section -->
-        <TextBlock Grid.Row="3"  VerticalAlignment="Center" HorizontalAlignment="Center"
-     Text="Working Together For A Better Future"
-     FontFamily="Arial" FontSize="24" FontWeight="Bold" FontStyle="Italic"
-     Foreground="Black" TextWrapping="Wrap" TextAlignment="Center"/>
+        <Grid Grid.Row="2">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <Button Grid.Column="0" Grid.Row="2" 
+                    Content="Engineers" 
+                    HorizontalAlignment="Center"  VerticalAlignment="Center" 
+                    Width="200" Height="100"
+                    Click="btnEngineer_Click"
+                    Style="{DynamicResource RoundButton}"
+                    FontSize="40"/>
+             
+            <Button Grid.Column="1" Grid.Row="2" 
+                    Content="Tasks" HorizontalAlignment="Center"  
+                    VerticalAlignment="Center" Width="200" Height="100" 
+                    Click="btnTask_Click"
+                    Style="{DynamicResource RoundButton}"
+                    FontSize="40"/>
+        </Grid>
+       
     </Grid>
 </Window>
