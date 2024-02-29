@@ -6,13 +6,18 @@
         xmlns:local="clr-namespace:PL"
         mc:Ignorable="d"
         Title="MainWindow" Height="460" Width="800">
+
+    <!-- Main container grid with 4 rows -->
     <Grid>
+        <!-- Defining four rows of equal height -->
         <Grid.RowDefinitions>
             <RowDefinition Height="*"/>
             <RowDefinition Height="*"/>
             <RowDefinition Height="*"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
+
+        <!-- Welcome message section -->
         <StackPanel Grid.Row="0" HorizontalAlignment="Center" VerticalAlignment="Center">
             <TextBlock  HorizontalAlignment="Center" VerticalAlignment="Center"
                    Text="Welcome to the Engineering Management System"
@@ -24,9 +29,14 @@
            Foreground="Black" TextWrapping="Wrap" TextAlignment="Center" Padding="10"/>
         </StackPanel>
 
+        <!-- Initialize Data Button (hidden example button commented out) -->
         <!--<Button Content="Handle Tasks" HorizontalAlignment="Left" Margin="197,209,0,0" VerticalAlignment="Top" Click="btnTask_Click"/>-->
         <Button Grid.Row="1" Content="Initialize Data" HorizontalAlignment="Center"  VerticalAlignment="Center" Width="100" Height="50" Click="InitializeData_Click"/>
+        
+        <!-- Handle Engineers Button -->
         <Button Grid.Row="2" Content="Handle Engineers" HorizontalAlignment="Center"  VerticalAlignment="Center" Width="100" Height="50" Click="btnEngineer_Click"/>
+
+        <!-- Footer message section -->
         <TextBlock Grid.Row="3"  VerticalAlignment="Center" HorizontalAlignment="Center"
      Text="Working Together For A Better Future"
      FontFamily="Arial" FontSize="24" FontWeight="Bold" FontStyle="Italic"
