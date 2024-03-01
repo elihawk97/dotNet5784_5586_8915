@@ -109,7 +109,7 @@ internal class EngineerImplementation : IEngineer
         }
         catch (DO.DalDoesNotExistException ex)
         {
-            throw new Exception($"Error occurred while reading engineers", ex);
+            throw new BlDoesNotExistException($"Error occurred while reading engineers", ex);
         }
     }
 
