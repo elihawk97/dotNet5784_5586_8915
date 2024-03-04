@@ -60,6 +60,7 @@ public partial class MainWindow : Window
             // Assuming DalTest.Initialization.Do() is the method to reset data
             // You may need to adjust this line if the actual call is different
             DalTest.Initialization.Do();
+            new Task.GanttChart().Show(); 
             MessageBox.Show("Data initialization completed successfully.", "Initialization Done", MessageBoxButton.OK, MessageBoxImage.Information);
         }
     } 
