@@ -5,7 +5,8 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:PL"
         mc:Ignorable="d"
-        Title="MainWindow" Height="460" Width="800">
+        Title="MainWindow" Height="450" Width="700">
+
     <Window.Resources>
 
         <Style TargetType="Button" x:Key="RoundButton">
@@ -18,51 +19,48 @@
 
     </Window.Resources>
 
-    <!-- Main container grid with 4 rows -->
     <Grid>
-        <!-- Defining four rows of equal height -->
         <Grid.RowDefinitions>
-            <RowDefinition Height="1*"/>
             <RowDefinition Height="1*"/>
             <RowDefinition Height="3*"/>
         </Grid.RowDefinitions>
 
-        <!-- Welcome message section -->
-            <TextBlock  HorizontalAlignment="Center" VerticalAlignment="Center"
-                   Text="Admin Screen"
-                   FontFamily="Arial" FontSize="50" FontWeight="Bold" FontStyle="Italic"
-                   Foreground="DarkBlue" TextWrapping="Wrap" TextAlignment="Center" Padding="10"/>
-       
-        <!-- Initialize Data Button (hidden example button commented out) -->
-        <Button Grid.Row="1" Content="Initialize Data" 
-                HorizontalAlignment="Center"  VerticalAlignment="Center" 
-                Width="150" Height="50" 
-                Click="InitializeData_Click"
-                Style="{DynamicResource RoundButton}"
-                FontSize="20"
-                />
-        
-        <!-- Handle Engineers Button -->
-        <Grid Grid.Row="2">
+        <TextBlock  HorizontalAlignment="Center" VerticalAlignment="Center"
+       Text="Main Window"
+       FontFamily="Arial" FontSize="50" FontWeight="Bold" FontStyle="Italic"
+       Foreground="DarkBlue" TextWrapping="Wrap" TextAlignment="Center" Padding="10"/>
+
+        <Grid Grid.Row="1">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
-            <Button Grid.Column="0" Grid.Row="2" 
-                    Content="Engineers" 
-                    HorizontalAlignment="Center"  VerticalAlignment="Center" 
-                    Width="200" Height="100"
-                    Click="btnEngineer_Click"
-                    Style="{DynamicResource RoundButton}"
-                    FontSize="40"/>
-             
-            <Button Grid.Column="1" Grid.Row="2" 
-                    Content="Tasks" HorizontalAlignment="Center"  
-                    VerticalAlignment="Center" Width="200" Height="100" 
-                    Click="btnTask_Click"
-                    Style="{DynamicResource RoundButton}"
-                    FontSize="40"/>
+            <Button Grid.Row="1" Content="Admin" 
+                HorizontalAlignment="Center" VerticalAlignment="Center" 
+                Height="100" Width="200" 
+                Background="DarkOrange" 
+                Style ="{DynamicResource RoundButton}"
+                Click="btnAdminView_Click"
+                FontSize="30"/>
+            <Button Grid.Row="1" Grid.Column="1" 
+                Content="Engineer" 
+                HorizontalAlignment="Center" VerticalAlignment="Center" 
+                Height="100" Width="200" 
+                Background="DarkGray"
+                Click="btnEngineerView_Click"
+                Style ="{DynamicResource RoundButton}"
+                FontSize="30"/>
+
+
+
         </Grid>
-       
+        <!-- Initialize Data Button (hidden example button commented out) -->
+        <Button Grid.Row="1" Content="Initialize Data" 
+                HorizontalAlignment="Center"  VerticalAlignment="Top" 
+                Width="150" Height="50" 
+                Click="InitializeData_Click"
+                Style="{DynamicResource RoundButton}"
+                FontSize="20" RenderTransformOrigin="0.469,2.739" Margin="0,239,0,0"
+                />
     </Grid>
 </Window>
