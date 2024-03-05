@@ -110,11 +110,12 @@ internal class TaskImplementation : BlApi.ITask
     /// </summary>
     /// <param name="engineerId">(Optional) The ID of the engineer to filter tasks for.</param>
     /// <returns>An IEnumerable of retrieved tasks.</returns>
-    public IEnumerable<BO.Task> ReadAll(int engineerId)
+    public IEnumerable<BO.TaskInList> ReadAll(int engineerId)
     {
             try
             {
             IEnumerable<BO.Task> tasks = null;
+            IEnumerable<BO.TaskInList> tasksInList;
                 if (engineerId != 0)
                 {
                     DO.Engineer engineer = _dal.Engineer.Read(engineerId);
@@ -122,19 +123,22 @@ internal class TaskImplementation : BlApi.ITask
                                                  where (task.DifficultyLevel <= engineer.EngineerExperience && task.EngineerID == 0)
                                                  select taskDo_BO(task);
 
-                    tasks = from task in tasks
+                    
+                    tasksInList = from task in tasks
                             let idNum = task.Id
                             from dependency in _dal.Dependency.ReadAll()
                             where ((dependency.DependentTask == idNum && _dal.Task.Read(dependency.DependentTask).IsActive == false) ||
                                     (dependency.DependentTask != idNum))
-                            select task;
+                            select new TaskInList(task.Id, task.Description, task.Name, taskStatus(task));
 
-                    return tasks;
+                    return tasksInList;
                 }
 
             tasks = from task in _dal.Task.ReadAll()
                     select taskDo_BO(task);
-                   return tasks; 
+            tasksInList = from task in tasks
+                          select new TaskInList(task.Id, task.Description, task.Name, taskStatus(task));
+                   return tasksInList; 
 
                 
             }
@@ -144,13 +148,39 @@ internal class TaskImplementation : BlApi.ITask
             }
     }
 
-    public IEnumerable<BO.Task> ReadAll(Func<BO.Task, bool> filter)
+    private BO.Enums.TaskStatus taskStatus(BO.Task task)
+    {
+        BO.Enums.TaskStatus status;
+        if (task.ProjectedStartDate == null)
+        {
+            status = BO.Enums.TaskStatus.Unscheduled;
+        }
+        else if(task.ActualStartDate == null)
+        {
+            status = BO.Enums.TaskStatus.Scheduled;
+        }
+        else if(task.ActualEndDate == null && ((DateTime)task.ActualStartDate).Add(((TimeSpan)task.RequiredEffortTime)) < task.DeadLine)
+        {
+            status = BO.Enums.TaskStatus.OnTrack;
+        }
+        else if(task.ActualEndDate != null)
+        {
+            status = BO.Enums.TaskStatus.Done;
+        }
+        else
+        {
+            status = BO.Enums.TaskStatus.InJeopardy;
+        }
+        return status;
+    }
+
+    public IEnumerable<BO.TaskInList> ReadAll(Func<BO.Task, bool> filter)
     {
         try
         {
             IEnumerable<BO.Task> tasks = from task in _dal.Task.ReadAll()
                                             select taskDo_BO(task);
-
+            IEnumerable<BO.TaskInList> taskInList;
             if (filter != null)
             {
                 tasks = from task in tasks
@@ -163,13 +193,16 @@ internal class TaskImplementation : BlApi.ITask
                         where ((dependency.DependentTask == idNum && _dal.Task.Read(dependency.DependentTask).IsActive == false) ||
                                 (dependency.DependentTask != idNum))
                         select task;*/
-
-                return tasks;
+               taskInList = from task in tasks
+                            select new TaskInList(task.Id, task.Description, task.Name, taskStatus(task));
+                return taskInList;
             }
 
             tasks = from task in _dal.Task.ReadAll()
                     select taskDo_BO(task);
-            return tasks;
+            taskInList = from task in tasks
+                          select new TaskInList(task.Id, task.Description, task.Name, taskStatus(task));
+            return taskInList;
 
 
         }
