@@ -303,7 +303,17 @@ internal class TaskImplementation : BlApi.ITask
             ActualEndDate = task.ActualEndDate,
             Deliverable = task.Deliverables,
             Dependencies = _dal.Dependency.ReadAll(depFilter)
-            .Select(dep => new TaskInList(dep.DependentOnTask, null, null, BO.Enums.TaskStatus.Unscheduled)).ToList(),
+            .Select(dep => {
+        // Assuming _dal.Task.GetById() method retrieves the Task object by its ID
+            var dependentOnTask = _dal.Task.Read(dep.DependentOnTask);
+            return new TaskInList(
+            dep.DependentOnTask, // Assuming this is the ID
+            dependentOnTask?.Description ?? "", // Accessing Description property if dependentOnTask is not null
+            dependentOnTask?.NickName ?? "", // Accessing NickName property if dependentOnTask is not null
+            BO.Enums.TaskStatus.Unscheduled
+        );
+            }).ToList(),
+
         EngineerForTask = engineerForBO,//get engineer based off of the ID
             Level = (BO.Enums.ExperienceLevel)task.DifficultyLevel,
             Notes = task.Notes,

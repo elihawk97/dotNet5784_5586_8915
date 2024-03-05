@@ -174,6 +174,7 @@ public static class Initialization
             // Iterate over tasks in the current month to create dependencies
             foreach (var currentTask in currentMonthTasks)
             {
+                    
                     numDependencies = s_rand.Next(1, 4);
                     // Randomly select tasks from the previous month as dependencies
                     for (int i = 0; i < numDependencies; i++)
@@ -184,11 +185,19 @@ public static class Initialization
                     // Create dependency
                     Dependency newDependency = new Dependency(currentTask.Id, dependencyTask.Id);
 
+                    bool dependencyExists = s_dal.Dependency.ReadAll().Any(dependency =>
+                        dependency.DependentTask == currentTask.Id && dependency.DependentOnTask == dependencyTask.Id);
+
+                    // If the dependency doesn't exist, create it
+                    if (!dependencyExists)
+                    {
+                        newDependency = new Dependency(currentTask.Id, dependencyTask.Id);
+                        s_dal.Dependency.Create(newDependency);
+                    }
                     // Check for circular dependency
 /*                    if (!checkCircularDependency(newDependency))
                     {*/
-                        // Create the dependency using CRUD method Create
-                        s_dal!.Dependency.Create(newDependency);
+                       
                    // }
                 }
             }
