@@ -8,6 +8,9 @@ namespace BlImplementation;
 /// </summary>
 internal class TaskImplementation : BlApi.ITask
 {
+    private readonly Bl _bl;
+    internal TaskImplementation(Bl bl) => _bl = bl;
+
     /// <summary>
     /// DAL instance for data access.
     /// </summary>

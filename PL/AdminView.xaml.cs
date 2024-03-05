@@ -1,5 +1,6 @@
 ﻿
 using System.Windows;
+using System.Windows.Controls;
 
 
 namespace PL;
@@ -14,6 +15,8 @@ public partial class AdminView : Window
     /// Static reference to the business logic layer.
     /// </summary>
     static readonly BlApi.IBl s_bl = BlApi.Factory.Get();
+    private bool _isInitialized = false;
+
     /// <summary>
     /// Initializes a new instance of the MainWindow class.
     /// This constructor initializes the components necessary for the application's UI.
@@ -75,6 +78,29 @@ public partial class AdminView : Window
             MessageBox.Show("Data initialization completed successfully.", "Initialization Done", MessageBoxButton.OK, MessageBoxImage.Information);
         }
 
+    }
+
+    private void InitializeData_Click(object sender, RoutedEventArgs e)
+    {
+        if (!_isInitialized) // Check if already initialized
+        {
+            // Ask user for confirmation
+            MessageBoxResult result = MessageBox.Show("Do you really want to Initialize the data?", "Confirm Initialization", MessageBoxButton.YesNo, MessageBoxImage.Question);
+
+            // If user clicked "Yes", proceed with data initialization
+            if (result == MessageBoxResult.Yes)
+            {
+                // Assuming DalTest.Initialization.Do() is the method to reset data
+                // You may need to adjust this line if the actual call is different
+                DalTest.Initialization.Do();
+                MessageBox.Show("Data initialization completed successfully.", "Initialization Done", MessageBoxButton.OK, MessageBoxImage.Information);
+            }
+            // Set flag to true, indicating initialization is complete
+            _isInitialized = true;
+
+            // Disable the button
+            (sender as Button).IsEnabled = false;
+        }
     }
 
 

@@ -1,4 +1,5 @@
-﻿using System.Windows;
+﻿using BlImplementation;
+using System.Windows;
 using System.Windows.Controls;
 
 
@@ -9,36 +10,18 @@ namespace PL
     /// </summary>
     public partial class MainWindow : Window
     {
-        private bool _isInitialized = false;
+        private Bl blInstance;
+        public DateTime Date = DateTime.Now;
 
         public MainWindow()
         {
             InitializeComponent();
+            blInstance = new Bl(); // Assuming Bl is instantiated here.
+            DataContext = Date; // Set DataContext for data binding
         }
 
 
-        private void InitializeData_Click(object sender, RoutedEventArgs e)
-        {
-            if (!_isInitialized) // Check if already initialized
-            {
-                // Ask user for confirmation
-                MessageBoxResult result = MessageBox.Show("Do you really want to reset the data?", "Confirm Initialization", MessageBoxButton.YesNo, MessageBoxImage.Question);
 
-                // If user clicked "Yes", proceed with data initialization
-                if (result == MessageBoxResult.Yes)
-                {
-                    // Assuming DalTest.Initialization.Do() is the method to reset data
-                    // You may need to adjust this line if the actual call is different
-                    DalTest.Initialization.Do();
-                    MessageBox.Show("Data initialization completed successfully.", "Initialization Done", MessageBoxButton.OK, MessageBoxImage.Information);
-                }
-                // Set flag to true, indicating initialization is complete
-                _isInitialized = true;
-
-                // Disable the button
-                (sender as Button).IsEnabled = false;
-            }
-        }
 
         /// <summary>
         /// Event handler for the "Handle Engineers" button click.
@@ -61,6 +44,24 @@ namespace PL
         private void btnEngineerView_Click(object sender, RoutedEventArgs e)
         {
             new Task.TaskListWindow().Show();
+        }
+
+        private void ButtonForward_Click(object sender, RoutedEventArgs e)
+        {
+            blInstance.ClockForward(); // Adjust the time forward by 1 day
+            DataContext = blInstance.Clock;
+        }
+
+        private void ButtonBackward_Click(object sender, RoutedEventArgs e)
+        {
+            blInstance.ClockBackward(); // Adjust the time backward by 1 day
+            DataContext = blInstance.Clock;
+        }
+
+        private void Reset_Clock(object sender, RoutedEventArgs e)
+        {
+            blInstance.Reset_Time(); // Adjust the time backward by 1 day
+            DataContext = blInstance.Clock;
         }
     }
 
