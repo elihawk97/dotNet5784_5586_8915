@@ -26,14 +26,14 @@ namespace Task
         public BO.Enums.ExperienceLevel ExpLevel { get; set; } = BO.Enums.ExperienceLevel.None;
 
 
-        public IEnumerable<BO.Task> TaskList
+        public IEnumerable<BO.TaskInList> TaskList
         {
-            get { return (IEnumerable<BO.Task>)GetValue(TaskListProperty); }
+            get { return (IEnumerable<BO.TaskInList>)GetValue(TaskListProperty); }
             set { SetValue(TaskListProperty, value); }
         }
         public static readonly DependencyProperty TaskListProperty =
         DependencyProperty.Register("TaskList",
-        typeof(IEnumerable<BO.Task>),
+        typeof(IEnumerable<BO.TaskInList>),
         typeof(TaskListWindow),
         new PropertyMetadata(null)
         );
