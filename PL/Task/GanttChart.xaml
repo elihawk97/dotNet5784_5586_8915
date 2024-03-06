@@ -5,34 +5,25 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Task"
         mc:Ignorable="d"
-        DataContext="{Binding RelativeSource={RelativeSource Mode=Self}}"
-        Title="GanttChart" Height="450" Width="800">
+        Title="GanttChart" Height="450" Width="800"
+        Loaded="Window_Loaded" WindowState="Maximized">
+    <Grid>
+        <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
+            <DataGrid CanUserAddRows="False" 
+                      Name="FooBar1" Height="500" VerticalAlignment="Top" Margin="0,40,0,0"
+                      HorizontalAlignment="Stretch" 
+                      Width="{Binding ActualWidth, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ScrollViewer}}}"
+                      >
 
-    
-        <Grid>
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="2*"/>
-                <ColumnDefinition Width="3*"/>
-            </Grid.ColumnDefinitions>
+                
+            <DataGrid.CellStyle>
+                <Style TargetType= "DataGridCell">
+                        <Setter Property= "Background" Value="{Binding RelativeSource={RelativeSource Self}, Path=Content.Text, Converter={StaticResource colorconverterKey}}"/>
+                        <Setter Property= "Foreground" Value="{Binding RelativeSource={RelativeSource Self}, Path=Content.Text, Converter={StaticResource ForeGroundConvertorKey}}"/>
+                    </Style>
+            </DataGrid.CellStyle>
+        </DataGrid>
+        </ScrollViewer>
 
-            <!-- ListView for tasks and dependencies -->
-            <ListView Grid.Column="0" Margin="5" ItemsSource="{Binding TaskList}">
-                <ListView.ItemTemplate>
-                    <DataTemplate>
-                        <Expander Header="{Binding Name}" IsExpanded="True">
-                            <ItemsControl ItemsSource="{Binding Dependencies}">
-                                <ItemsControl.ItemTemplate>
-                                    <DataTemplate>
-                                        <TextBlock Text="{Binding Name}" Margin="20,0,0,0"/>
-                                    </DataTemplate>
-                                </ItemsControl.ItemTemplate>
-                            </ItemsControl>
-                        </Expander>
-                    </DataTemplate>
-                </ListView.ItemTemplate>
-            </ListView>
-
-            <!-- Canvas for Gantt chart visualization -->
-        <Canvas Width="800" Height="600" Loaded="Canvas_Loaded"/>
     </Grid>
 </Window>

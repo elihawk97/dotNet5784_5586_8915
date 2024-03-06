@@ -1,6 +1,9 @@
-﻿
+﻿using System.Windows; 
 using System.Globalization;
 using System.Windows.Data;
+using System.Windows.Media;
+using System.Windows.Controls; // Add this for DataGridCell
+
 
 namespace PL;
 
@@ -42,6 +45,52 @@ public class ConvertIdToContent : IValueConverter
     /// <returns>Throws a NotImplementedException.</returns>
     public object ConvertBack(object value, Type targetType, object parameter,
     CultureInfo culture)
+    {
+        throw new NotImplementedException();
+    }
+}
+
+public class ForeGroundConvertor : IValueConverter
+{
+    public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+    {
+        var str = value as string;
+        if (str == null) return Brushes.Black;
+
+        if (str == "Created") return Brushes.Blue;
+        if (str == "UnScheduled") return Brushes.Yellow; 
+        if (str == "Scheduled") return Brushes.Purple; 
+        if (str == "OnTrack") return Brushes.Pink;
+        if (str == "InJeopardy") return Brushes.Red;
+        if (str == "Done") return Brushes.Green;
+
+        return Brushes.Black;
+    }
+
+    public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+    {
+        throw new NotImplementedException();
+    }
+}
+
+public class ValueColorConverter : IValueConverter
+{
+    public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+    {
+        var str = value as string;
+        if (str == null) return Brushes.White;
+
+        if (str == "Created") return Brushes.Blue;
+        if (str == "UnScheduled") return Brushes.Yellow;
+        if (str == "Scheduled") return Brushes.Purple;
+        if (str == "OnTrack") return Brushes.Pink;
+        if (str == "InJeopardy") return Brushes.Red;
+        if (str == "Done") return Brushes.Green;
+
+        return Brushes.White; // Default color if parsing fails or value is not an int
+    }
+
+    public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
     {
         throw new NotImplementedException();
     }
