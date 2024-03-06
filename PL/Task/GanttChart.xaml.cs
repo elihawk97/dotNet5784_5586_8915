@@ -45,14 +45,7 @@ public partial class GanttChart : Window
     private void Window_Loaded(object sender, RoutedEventArgs e)
     {
         s_bl.Task.Scheduler(); 
-        List<BO.TaskInList> tasksList = FetchTasks().ToList();
-        List<BO.Task> tasks = new List<BO.Task>();  
-
-        foreach (var task in tasksList)
-        {
-            tasks.Add(s_bl.Task.ReadTask(task.Id)); 
-        }
-
+        List<BO.Task> tasks = FetchTasks().ToList();
         DataTable = new DataTable();
 
         DateTime minStartDate = tasks.Min(task => task.ProjectedStartDate ?? DateTime.MaxValue);
@@ -72,29 +65,45 @@ public partial class GanttChart : Window
         foreach (var task in tasks)
         {
             DataRow taskRow = DataTable.NewRow();
-            taskRow[0] = task.Name + " Id: " + task.Id; // Add task name in the first column
+            taskRow[0] = task.Name; // Add task name in the first column
             
+
             // Ensure ProjectedStartDate is not null; otherwise, use DateTime.MaxValue
-            DateTime start = (task.ProjectedStartDate ?? DateTime.MaxValue).Date;
+            DateTime start = task.ProjectedStartDate ?? DateTime.MaxValue;
            
             // Ensure ProjectedEndDate is not null; otherwise, use DateTime.MinValue
-            DateTime end = (task.ProjectedEndDate ?? DateTime.MinValue).Date;
+            DateTime end = task.ProjectedEndDate ?? DateTime.MinValue;
 
 
             for (int i = 1; i < DataTable.Columns.Count; i++)
             {
                 
-                DateTime columnDate = DateTime.ParseExact(DataTable.Columns[i].ColumnName, "MM dd yyyy", CultureInfo.InvariantCulture).Date;
+                DateTime columnDate = DateTime.ParseExact(DataTable.Columns[i].ColumnName, "MM dd yyyy", CultureInfo.InvariantCulture);
                 if (start <= columnDate && columnDate <= end)
                 {
-                    taskRow[i] = task.Status.ToString(); // Mark this cell as part of the task's duration
+                    taskRow[i] = "1"; // Mark this cell as part of the task's duration
                 } else
                 {
                     taskRow[i] = "";
                 }
             }
+
             DataTable.Rows.Add(taskRow);
 
+            foreach (var dependency in task.Dependencies)
+            {
+                // Check if the dependency row already exists
+                bool dependencyExists = DataTable.AsEnumerable().Any(row => row.Field<string>(0) == $"Dependency: {dependency.Id}");
+
+                if (!dependencyExists)
+                {
+                    DataRow dependencyRow = DataTable.NewRow();
+                    dependencyRow[0] = $"Dependency: {dependency.Id}"; // Add dependency under the task
+                    DataTable.Rows.Add(dependencyRow);
+                }
+            }
+
+            DataTable.Rows.Add(DataTable.NewRow());
         }
         FooBar1.ItemsSource = DataTable.DefaultView;
     }
@@ -105,10 +114,10 @@ public partial class GanttChart : Window
         InitializeComponent();
     }
 
-    private static IEnumerable<BO.TaskInList> FetchTasks()
+    private static IEnumerable<BO.Task> FetchTasks()
     {
         // Implement this method to return your tasks collection
-        return s_bl.Task.ReadAll(null); // This is just an example; adjust it according to your actual method to fetch tasks
+        return s_bl.Task.ReadAll(0); // This is just an example; adjust it according to your actual method to fetch tasks
     }
 
 }
