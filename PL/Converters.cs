@@ -54,17 +54,16 @@ public class ForeGroundConvertor : IValueConverter
 {
     public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
     {
-        var str = value as string; 
-        if (int.TryParse(str, out int intValue))
-        {
-            switch (intValue)
-            {
-                case 1: return Brushes.Red;
-                case 2: return Brushes.Black;
-                case 3: return Brushes.DarkGray;
-                default: return Brushes.Black;
-            }
-        }
+        var str = value as string;
+        if (str == null) return Brushes.Black;
+
+        if (str == "Created") return Brushes.Blue;
+        if (str == "UnScheduled") return Brushes.Yellow; 
+        if (str == "Scheduled") return Brushes.Purple; 
+        if (str == "OnTrack") return Brushes.Pink;
+        if (str == "InJeopardy") return Brushes.Red;
+        if (str == "Done") return Brushes.Green;
+
         return Brushes.Black;
     }
 
@@ -79,18 +78,16 @@ public class ValueColorConverter : IValueConverter
     public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
     {
         var str = value as string;
-        if (str == null) return Brushes.Black; 
+        if (str == null) return Brushes.White;
 
-        if (int.TryParse(str, out int intValue))
-        {
-            switch (intValue)
-            {
-                case 1: return Brushes.Red;
-   
-                default: return Brushes.Green;
-            }
-        }
-        return Brushes.Gray; // Default color if parsing fails or value is not an int
+        if (str == "Created") return Brushes.Blue;
+        if (str == "UnScheduled") return Brushes.Yellow;
+        if (str == "Scheduled") return Brushes.Purple;
+        if (str == "OnTrack") return Brushes.Pink;
+        if (str == "InJeopardy") return Brushes.Red;
+        if (str == "Done") return Brushes.Green;
+
+        return Brushes.White; // Default color if parsing fails or value is not an int
     }
 
     public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
