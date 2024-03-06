@@ -47,7 +47,7 @@ public partial class AdminView : Window
     /// <param name="e">An RoutedEventArgs that contains the event data.</param>
     private void btnTask_Click(object sender, RoutedEventArgs e)
     {
-        new Task.TaskListWindow().Show();
+        new Task.TaskListWindow(null).Show();
     }
 
 

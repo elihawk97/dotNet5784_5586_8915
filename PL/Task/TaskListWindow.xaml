@@ -28,7 +28,7 @@
             />
             <Label Grid.Column="0" Content="Select Task" HorizontalAlignment="Stretch"  VerticalAlignment="Stretch"/>
         </Grid>
-        <ListView Margin="5" Grid.Row="1" ItemsSource="{Binding TaskList}">
+        <ListView Margin="5" Grid.Row="1" ItemsSource="{Binding TaskInList}" MouseDoubleClick="ListView_MouseDoubleClick">
             <ListView.View>
                 <GridView>
                     <GridViewColumn/>

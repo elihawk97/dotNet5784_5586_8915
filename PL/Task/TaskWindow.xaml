@@ -5,8 +5,136 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Task"
         mc:Ignorable="d"
-        Title="TaskWindow" Height="450" Width="800">
+        Title="TaskWindow" Height="450" Width="800"
+        DataContext="{Binding CurrentTask, RelativeSource={RelativeSource Self}, Mode=TwoWay}">
+
+    <!-- Grid layout -->
     <Grid>
-        
+
+        <!-- Inner grid layout -->
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+
+        <Grid Grid.Row="0">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*" />
+                <RowDefinition Height="*" />
+                <RowDefinition Height="*" />
+                <RowDefinition Height="*" />
+                <RowDefinition Height="*" />
+                <RowDefinition Height="*" />
+                <RowDefinition Height="*" />
+                <RowDefinition Height="*" />
+                <RowDefinition Height="*" />
+                <RowDefinition Height="*" />
+                <RowDefinition Height="*" />
+                <RowDefinition Height="*" />
+                <RowDefinition Height="*" />
+                <RowDefinition Height="*" />
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+
+            <!-- ID Label and TextBox for displaying the task's ID. The ID field is read-only. -->
+            <Label Grid.Row="0" Grid.Column="0" Content="ID" />
+            <TextBox Grid.Row="0" Grid.Column="1"
+                 Text="{Binding Path=Id, Mode=TwoWay, NotifyOnValidationError=True, ValidatesOnExceptions=True}"
+                 IsReadOnly="True" />
+
+            <!-- Name Label and TextBox for entering the task's name. -->
+            <Label Grid.Row="1" Grid.Column="0" Content="Name" />
+            <TextBox Grid.Row="1" Grid.Column="1"
+                 Text="{Binding Name, Mode=TwoWay, NotifyOnValidationError=True, ValidatesOnExceptions=True}" />
+
+            <!-- Description Label and TextBox for entering the task's description. -->
+            <Label Grid.Row="2" Grid.Column="0" Content="Description" />
+            <TextBox Grid.Row="2" Grid.Column="1"
+                 Text="{Binding Description, Mode=TwoWay, NotifyOnValidationError=True, ValidatesOnExceptions=True}" />
+
+            <!-- Status Text-->
+            <Label Grid.Row="3" Grid.Column="0" Content="Status" />
+            <TextBox Grid.Row="3" Grid.Column="1"
+                 Text="{Binding Status, Mode=OneWay, NotifyOnValidationError=True, ValidatesOnExceptions=True}"
+                 IsReadOnly="True"/>
+
+            <!-- Dependencies TextBox for displaying the task's dependencies. -->
+            <Label Grid.Row="4" Grid.Column="0" Content="Dependencies" />
+            <Button Grid.Row="4" Grid.Column="1"
+                 Click="View_Dependencies"
+            />
+            
+            <!-- TODO MAKE COMBO BOX OF POSSIBLE ENGINEERS Engineer TextBox for displaying the task's Engineer. -->
+            <Label Grid.Row="12" Grid.Column="0" Content="Engineer ID" />
+            <ComboBox Grid.Row="12" Grid.Column="1"
+            ItemsSource="{Binding EngineersList}" 
+            DisplayMemberPath="BO.Engineer.Name" 
+            SelectedValuePath="BO.Engineer.Id"
+            SelectedItem="{Binding CurrentTask.EngineerForTask}"
+                      />
+
+            <!-- Experience Level ComboBox for selecting the engineer's experience level from a predefined list. -->
+            <Label Grid.Row="13" Grid.Column="0" Content="Task Level" />
+            <ComboBox Grid.Row="13" Grid.Column="1"
+                ItemsSource="{Binding Source={StaticResource ExpCollectionKey}}"
+                SelectedValue="{Binding Level, Mode=TwoWay, ValidatesOnExceptions=true,
+                NotifyOnValidationError=true}"
+                />
+
+            <Label Grid.Row="14" Grid.Column="0" Content="Notes" />
+            <TextBox Grid.Row="14" Grid.Column="1"
+            Text="{Binding Notes, Mode=TwoWay}" 
+            IsEnabled="True" />
+            
+            <Label Grid.Row="5" Grid.Column="0" Content="Date Created" />
+            <TextBox Grid.Row="5" Grid.Column="1"
+            Text="{Binding DateCreated, Mode=OneWay}" 
+            IsEnabled="False" />
+
+            <!-- Projected Start Date Label and DatePicker for displaying the task's projected start date. -->
+            <Label Grid.Row="6" Grid.Column="0" Content="Projected Start Date" />
+            <TextBox Grid.Row="6" Grid.Column="1"
+            Text="{Binding ProjectedStartDate, Mode=OneWay}" 
+            IsEnabled="False" />
+
+            <!-- Actual Start Date Label and DatePicker for displaying the task's actual start date. -->
+            <Label Grid.Row="7" Grid.Column="0" Content="Actual Start Date" />
+            <TextBox Grid.Row="7" Grid.Column="1"
+            Text="{Binding ActualStartDate, Mode=OneWay}" 
+            IsEnabled="False" />
+
+            <!-- Projected End Date Label and DatePicker for displaying the task's projected end date. -->
+            <Label Grid.Row="8" Grid.Column="0" Content="Projected End Date" />
+            <TextBox Grid.Row="8" Grid.Column="1"
+            Text="{Binding ProjectedEndDate, Mode=OneWay}" 
+            IsEnabled="False" />
+
+            <!-- Deadline Label and DatePicker for displaying the task's deadline. -->
+            <Label Grid.Row="9" Grid.Column="0" Content="Deadline" />
+            <TextBox Grid.Row="9" Grid.Column="1"
+            Text="{Binding Deadline, Mode=OneWay}" 
+            IsEnabled="False" />
+
+            <!-- Actual End Date Label and DatePicker for displaying the task's actual end date. -->
+            <Label Grid.Row="10" Grid.Column="0" Content="Actual End Date" />
+            <TextBox Grid.Row="10" Grid.Column="1"
+            Text="{Binding ActualEndDate, Mode=OneWay}" 
+            IsEnabled="False" />
+            <!-- Required Effort Time Label and TextBox for entering the task's required effort time. -->
+            <Label Grid.Row="11" Grid.Column="0" Content="Required Effort Time" />
+            <TextBox Grid.Row="11" Grid.Column="1"
+                 Text="{Binding RequiredEffortTime, Mode=TwoWay, NotifyOnValidationError=True, ValidatesOnExceptions=True}" />
+
+        </Grid>
+
+        <!-- Add/Update Button with dynamic content based on the task's ID. 
+    This button is used to either add a new task or update an existing one's details. -->
+        <Button Grid.Row="1" Content="{Binding Id, Mode=OneTime, Converter={StaticResource ConvertIdToContentKey}}"
+            HorizontalAlignment="Center" Margin="3,0,0,0" VerticalAlignment="Center" Padding="5" Width="100" Height="50"
+            Click="btnAddUpdate_Click" />
     </Grid>
 </Window>

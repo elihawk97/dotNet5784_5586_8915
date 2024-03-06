@@ -1,18 +1,7 @@
-﻿using Engineer;
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
+
 
 namespace Task
 {
@@ -26,13 +15,13 @@ namespace Task
         public BO.Enums.ExperienceLevel ExpLevel { get; set; } = BO.Enums.ExperienceLevel.None;
 
 
-        public IEnumerable<BO.TaskInList> TaskList
+        public IEnumerable<BO.TaskInList> TaskInList
         {
-            get { return (IEnumerable<BO.TaskInList>)GetValue(TaskListProperty); }
-            set { SetValue(TaskListProperty, value); }
+            get { return (IEnumerable<BO.TaskInList>)GetValue(TaskInListProperty); }
+            set { SetValue(TaskInListProperty, value); }
         }
-        public static readonly DependencyProperty TaskListProperty =
-        DependencyProperty.Register("TaskList",
+        public static readonly DependencyProperty TaskInListProperty =
+        DependencyProperty.Register("TaskInList",
         typeof(IEnumerable<BO.TaskInList>),
         typeof(TaskListWindow),
         new PropertyMetadata(null)
@@ -46,19 +35,51 @@ namespace Task
             Func<BO.Task, bool> filter = item => item.Level == ExpLevel;
 
                     // Apply the filter
-                    TaskList = (ExpLevel == BO.Enums.ExperienceLevel.None) ?
+                    TaskInList = (ExpLevel == BO.Enums.ExperienceLevel.None) ?
                                 s_bl?.Task.ReadAll(0)! :
                                 s_bl?.Task.ReadAll(filter)!;
                 
         }
 
 
-        public TaskListWindow()
+        public TaskListWindow(BO.Task? task)
         {
-
-        TaskList = s_bl?.Task.ReadAll(0)!;
+            if (task == null)
+            {
+                TaskInList = s_bl?.Task.ReadAll(0)!;
+            }
+            else
+            {
+                TaskInList = task.Dependencies;
+            }
 
             InitializeComponent();
+        }
+
+        /// <summary>
+        /// Handles the mouse double click event of the list view.    /// </summary>
+        /// <param name="sender">The sender of the event.</param>
+        /// <param name="e">The event arguments.</param>
+        private void ListView_MouseDoubleClick(object sender, MouseButtonEventArgs e)
+        {
+            var listView = sender as ListView;
+            var selectedTask = listView.SelectedItem as BO.TaskInList;
+
+            if (selectedTask != null)
+            {
+                // Assuming EngineerWindow has a constructor that takes an engineer's ID for update mode
+                TaskWindow TaskWindow = new TaskWindow(selectedTask.Id);
+                TaskWindow.ShowDialog(); // Show the window modally
+            }
+            //RefreshTaskList();
+        }
+
+        /// <summary>
+        /// Refreshes the list of engineers displayed.
+        /// </summary>
+        private void RefreshTaskList()
+        {
+            TaskInList = s_bl?.Task.ReadAll(null)!;
         }
     }
 }

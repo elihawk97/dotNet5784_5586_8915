@@ -43,7 +43,7 @@ namespace PL
         /// <param name="e">An RoutedEventArgs that contains the event data.</param>
         private void btnEngineerView_Click(object sender, RoutedEventArgs e)
         {
-            new Task.TaskListWindow().Show();
+            new Task.TaskListWindow(null).Show();
         }
 
         private void ButtonForward_Click(object sender, RoutedEventArgs e)
