@@ -6,5 +6,8 @@ StartupUri="MainWindow.xaml">
     <Application.Resources>
         <local:ExperienceLevelCollection x:Key="ExpCollectionKey" />
         <local:ConvertIdToContent x:Key="ConvertIdToContentKey"/>
+        <local:ValueColorConverter x:Key="colorconverterKey"/>
+        <local:ForeGroundConvertor x:Key="ForeGroundConvertorKey" />
+     
     </Application.Resources>
 </Application>
