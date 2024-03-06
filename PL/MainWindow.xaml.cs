@@ -38,7 +38,7 @@ namespace PL
                 // Disable the button
                 (sender as Button).IsEnabled = false;
 
-                new Task.GanttChart().Show(); 
+              
             }
         }
 
