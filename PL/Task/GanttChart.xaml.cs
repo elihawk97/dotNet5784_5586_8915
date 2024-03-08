@@ -15,7 +15,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 
-namespace Task; 
+namespace Task;
 
 /// <summary>
 /// Interaction logic for GanttChart.xaml
@@ -25,8 +25,8 @@ public partial class GanttChart : Window
 
     static readonly BlApi.IBl s_bl = BlApi.Factory.Get();
 
-    
-        
+
+
     private DataTable DataTable { get; set; }
     public DataView DataView { get; set; }
 
@@ -44,13 +44,13 @@ public partial class GanttChart : Window
 
     private void Window_Loaded(object sender, RoutedEventArgs e)
     {
-        s_bl.Task.Scheduler(); 
+        s_bl.Task.Scheduler();
         List<BO.TaskInList> tasksList = FetchTasks().ToList();
-        List<BO.Task> tasks = new List<BO.Task>();  
+        List<BO.Task> tasks = new List<BO.Task>();
 
         foreach (var task in tasksList)
         {
-            tasks.Add(s_bl.Task.ReadTask(task.Id)); 
+            tasks.Add(s_bl.Task.ReadTask(task.Id));
         }
 
         DataTable = new DataTable();
@@ -73,22 +73,23 @@ public partial class GanttChart : Window
         {
             DataRow taskRow = DataTable.NewRow();
             taskRow[0] = task.Name + " Id: " + task.Id; // Add task name in the first column
-            
+
             // Ensure ProjectedStartDate is not null; otherwise, use DateTime.MaxValue
             DateTime start = (task.ProjectedStartDate ?? DateTime.MaxValue).Date;
-           
+
             // Ensure ProjectedEndDate is not null; otherwise, use DateTime.MinValue
             DateTime end = (task.ProjectedEndDate ?? DateTime.MinValue).Date;
 
 
             for (int i = 1; i < DataTable.Columns.Count; i++)
             {
-                
+
                 DateTime columnDate = DateTime.ParseExact(DataTable.Columns[i].ColumnName, "MM dd yyyy", CultureInfo.InvariantCulture).Date;
                 if (start <= columnDate && columnDate <= end)
                 {
                     taskRow[i] = task.Status.ToString(); // Mark this cell as part of the task's duration
-                } else
+                }
+                else
                 {
                     taskRow[i] = "";
                 }
@@ -98,7 +99,7 @@ public partial class GanttChart : Window
         }
         FooBar1.ItemsSource = DataTable.DefaultView;
     }
-  
+
     public GanttChart()
     {
         FetchTasks(); // FetchTasks() should be a method that returns a collection of your tasks

@@ -21,14 +21,7 @@ namespace PL
         }
 
 
-
-
-                // Disable the button
-                (sender as Button).IsEnabled = false;
-
-                new Task.GanttChart().Show(); 
-            }
-        }
+        
 
         /// <summary>
         /// Event handler for the "Handle Engineers" button click.

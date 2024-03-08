@@ -15,14 +15,14 @@
                       Width="{Binding ActualWidth, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ScrollViewer}}}"
                       >
 
-                
-            <DataGrid.CellStyle>
-                <Style TargetType= "DataGridCell">
+
+                <DataGrid.CellStyle>
+                    <Style TargetType= "DataGridCell">
                         <Setter Property= "Background" Value="{Binding RelativeSource={RelativeSource Self}, Path=Content.Text, Converter={StaticResource colorconverterKey}}"/>
                         <Setter Property= "Foreground" Value="{Binding RelativeSource={RelativeSource Self}, Path=Content.Text, Converter={StaticResource ForeGroundConvertorKey}}"/>
                     </Style>
-            </DataGrid.CellStyle>
-        </DataGrid>
+                </DataGrid.CellStyle>
+            </DataGrid>
         </ScrollViewer>
 
     </Grid>

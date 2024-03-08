@@ -103,5 +103,11 @@ public partial class AdminView : Window
         }
     }
 
+    private void GanttChart_Click(object sender, RoutedEventArgs e) { 
+                (sender as Button).IsEnabled = false;
+
+                new Task.GanttChart().Show(); 
+            }
+
 
 }

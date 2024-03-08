@@ -56,7 +56,7 @@ namespace Task
                 // Call a method to populate the EngineersList property
                 LoadEngineers();
                 // Add mode: Assign a new object
-                CurrentTask = new BO.Task();
+                CurrentTask = new BO.Task() { Id = 0};
             }
             else
             {
@@ -94,9 +94,14 @@ namespace Task
         {
             try
             {
-                // Update logic
-                s_bl.Task.UpdateTask(CurrentTask.Id, CurrentTask);
-                
+                if (CurrentTask.Id == 0)
+                {
+                    s_bl.Task.CreateTask(CurrentTask);
+                }
+                else {
+                    s_bl.Task.UpdateTask(CurrentTask.Id, CurrentTask);
+                }
+
 
                 // Close the window or navigate away
                 this.Close();

@@ -68,6 +68,11 @@
                 Margin="0,10,0,0" Grid.Row="1" 
                 Click="btnReset_Click"
                 VerticalAlignment="Top"/>
+        <Button Content="Gantt Chart" 
+                HorizontalAlignment="Center" 
+                Margin="0,10,0,0" Grid.Row="1" 
+                Click="GanttChart_Click"
+                VerticalAlignment="Center"/>
         <!-- Initialize Data Button (hidden example button commented out) -->
         <Button Content="Initialize"
                 HorizontalAlignment="Right" 

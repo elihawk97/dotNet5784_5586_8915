@@ -36,7 +36,7 @@
             </ListView.View>
         </ListView>
 
-        <Button Content="Add" Grid.Row="2" HorizontalAlignment="Center" Height="50"
+        <Button Content="Add" Click="AddButton_Click" Grid.Row="2" HorizontalAlignment="Center" Height="50"
 Width="100"/>
     </Grid>
 
