@@ -121,7 +121,7 @@ public partial class GanttChart : Window
         InitializeComponent();
     }
 
-    private static IEnumerable<BO.Task> FetchTasks()
+    private static IEnumerable<BO.TaskInList> FetchTasks()
     {
         // Implement this method to return your tasks collection
         return s_bl.Task.ReadAll(0); // This is just an example; adjust it according to your actual method to fetch tasks
