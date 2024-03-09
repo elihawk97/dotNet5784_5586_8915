@@ -259,10 +259,17 @@ internal class TaskImplementation : BlApi.ITask
             DO.Task doNewTask = taskCreater(boTask);
             doNewTask.Id = id; 
             _dal.Task.Update(doNewTask);
+            List<DO.Task> doTaskList = _dal.Task.ReadAll(null).ToList();
+            List<BO.Task> boTaskList = doTaskList.Select(task => taskDo_BO(task)).ToList();
+            boTaskList = TopologicalSort(boTaskList);
         }
         catch(DalDoesNotExistException ex)
         {
             throw new BO.BlDoesNotExistException($"Can't update Task with id={id}, no such Task exists!", ex);
+        }
+        catch(DalCircularDependency ex)
+        {
+            throw new BO.BlCircularDependency("Can't add dependency, this will create a circular dependency", ex);
         }
     }
 
@@ -361,14 +368,8 @@ internal class TaskImplementation : BlApi.ITask
         {
             try
             {
-                if (((DateTime)_dal.Task.Read(dependency.Id).ProjectedStartDate).Add((TimeSpan)_dal.Task.Read(dependency.Id).Duration) < task.ProjectedStartDate)
-                {
                     _dal.Dependency.Create(new Dependency(task.Id, dependency.Id));
-                }
-                else
-                {
-                    throw new DalBadDependency("This task starts before the other task is done");
-                }
+             
             }
             catch(DalDoesNotExistException ex)
             {
@@ -467,7 +468,7 @@ internal class TaskImplementation : BlApi.ITask
         // Check for cycles
         if (sortedTasks.Count != amount)
         {
-            throw new Exception("Cycle detected in the task dependencies. Unable to perform topological sort.");
+            throw new DalCircularDependency("Cycle detected in the task dependencies. Unable to perform topological sort.");
         }
 
         return sortedTasks;

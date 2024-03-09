@@ -88,6 +88,7 @@ namespace Task
         /// <param name="e">The event arguments.</param>
         private void ListView_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
+
             var listView = sender as ListView;
             var selectedTask = listView.SelectedItem as BO.TaskInList;
 
@@ -101,10 +102,20 @@ namespace Task
         }
         private void AddButton_Click(object sender, RoutedEventArgs e)
         {
-            // Instantiate the EngineerWindow in "Add" mode (not passing an ID)
-            TaskWindow taskWindow = new TaskWindow(); // Assuming a parameterless constructor is "Add" mode
-            taskWindow.ShowDialog(); // ShowDialog to make it modal
-            RefreshTaskList();
+            if (CurrentTask == null)
+            {
+                // Instantiate the EngineerWindow in "Add" mode (not passing an ID)
+                TaskWindow taskWindow = new TaskWindow(); // Assuming a parameterless constructor is "Add" mode
+                taskWindow.ShowDialog(); // ShowDialog to make it modal
+                RefreshTaskList();
+            }
+            else
+            {
+                AddDependenciesView dependenciesWindow = new AddDependenciesView(CurrentTask); // Assuming a parameterless constructor is "Add" mode
+                dependenciesWindow.ShowDialog(); // ShowDialog to make it modal
+                RefreshTaskList();
+
+            }
         }
 
         /// <summary>

@@ -7,7 +7,17 @@ public class DalBadDependency : Exception
 {
     public DalBadDependency(string? message) : base(message) { }
 }
+
 [Serializable]
+public class DalCircularDependency : Exception
+{
+    public DalCircularDependency(string? message) : base(message) { }
+    public DalCircularDependency(string? message, Exception innerException) :
+    base(message, innerException)
+    { }
+}
+[Serializable]
+
 public class DalDoesNotExistException : Exception
 {
     public DalDoesNotExistException(string? message) : base(message) { }

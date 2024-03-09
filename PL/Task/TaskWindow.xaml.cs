@@ -68,7 +68,7 @@ namespace Task
         }
 
         /// <summary>
-        /// Dependency property for the current engineer being manipulated.
+        /// Dependency property for the current Task being manipulated.
         /// </summary>
         public static readonly DependencyProperty CurrentTaskProperty = DependencyProperty.Register(
             "CurrentTask",
