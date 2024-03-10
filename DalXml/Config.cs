@@ -18,7 +18,40 @@ internal class Config
     internal static int NextEngineerId { get => XMLTools.GetAndIncreaseNextId(s_data_config_xml, "NextEngineerId"); }
     internal static int NextDependencyId { get => XMLTools.GetAndIncreaseNextId(s_data_config_xml, "NextDependencyId"); }
 
-    internal static DateTime? ProjectStartDate { get; set; } 
-    internal static DateTime? ProjectEndDate { get; set; }
+    private static DateTime? _projectStartDate = null;
+    internal static DateTime? ProjectStartDate
+    {
+        get
+        {
+            if (_projectStartDate == null)
+            {
+                _projectStartDate = XMLTools.GetProjectStartDate();
+            }
+            return _projectStartDate;
+        }
+        set
+        {
+            _projectStartDate = value;
+            XMLTools.SetProjectDates(value, "StartDate"); // Update the XML upon setting the start date.
+        }
+    }
+
+    private static DateTime? _projectEndDate = null;
+    internal static DateTime? ProjectEndDate
+    {
+        get
+        {
+            if (_projectEndDate == null)
+            {
+                _projectEndDate = XMLTools.GetProjectEndDate();
+            }
+            return _projectEndDate;
+        }
+        set
+        {
+            _projectEndDate = value;
+            XMLTools.SetProjectDates(value, "EndDate"); // Update the XML upon setting the end date.
+        }
+    }
 
 }

@@ -382,7 +382,6 @@ internal class TaskImplementation : BlApi.ITask
         return doTask;
     }
 
-
     public void Scheduler()
     {
         List<DO.Task> doTaskList = _dal.Task.ReadAll(null).ToList();
@@ -405,14 +404,14 @@ internal class TaskImplementation : BlApi.ITask
             if (latestEndDate != null)
             {
                 DateTime? date1 = latestEndDate.Value.AddDays(1);
-                DateTime? date2 = _dal.getProjectStartDate();
+                DateTime? date2 = _bl.Tools.getProjectStartDate();
                 task.ProjectedStartDate = (date1 > date2) ? date1 : date2 ;
                 task.ProjectedEndDate = latestEndDate.Value.Add((TimeSpan)(task.RequiredEffortTime));
             }
             else //If it has no dependencies, we set it start and finish days to be to the ones the
                  // the admin suggested
             {
-                task.ProjectedStartDate = _dal.getProjectStartDate();
+                task.ProjectedStartDate = _bl.Tools.getProjectStartDate();
                 task.ProjectedEndDate = task.DateCreated.Value.Add((TimeSpan)(task.RequiredEffortTime));
             }
             // Check the date is set to finish before the task's deadline and project deadline
@@ -420,7 +419,7 @@ internal class TaskImplementation : BlApi.ITask
             {
                 throw new BlTasksCanNotBeScheduled("The given tasks can not be completed before the deadline.");
             }
-            task.DateCreated = _dal.getProjectStartDate();
+            task.DateCreated = _bl.Tools.getProjectStartDate();
             task.DeadLine = ((DateTime)task.DateCreated).AddDays(1000);
             _dal.Task.Update(taskCreater(task));
         }

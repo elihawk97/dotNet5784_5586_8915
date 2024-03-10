@@ -44,7 +44,6 @@ public partial class GanttChart : Window
 
     private void Window_Loaded(object sender, RoutedEventArgs e)
     {
-        s_bl.Task.Scheduler();
         List<BO.TaskInList> tasksList = FetchTasks().ToList();
         List<BO.Task> tasks = new List<BO.Task>();
 
@@ -78,7 +77,7 @@ public partial class GanttChart : Window
             DateTime start = (task.ProjectedStartDate ?? DateTime.MaxValue).Date;
 
             // Ensure ProjectedEndDate is not null; otherwise, use DateTime.MinValue
-            DateTime end = task.ProjectedEndDate ?? DateTime.MinValue;
+            DateTime end = (task.ProjectedEndDate ?? DateTime.MinValue).Date;
 
 
             for (int i = 1; i < DataTable.Columns.Count; i++)
@@ -94,23 +93,8 @@ public partial class GanttChart : Window
                     taskRow[i] = "";
                 }
             }
-
             DataTable.Rows.Add(taskRow);
 
-            foreach (var dependency in task.Dependencies)
-            {
-                // Check if the dependency row already exists
-                bool dependencyExists = DataTable.AsEnumerable().Any(row => row.Field<string>(0) == $"Dependency: {dependency.Id}");
-
-                if (!dependencyExists)
-                {
-                    DataRow dependencyRow = DataTable.NewRow();
-                    dependencyRow[0] = $"Dependency: {dependency.Id}"; // Add dependency under the task
-                    DataTable.Rows.Add(dependencyRow);
-                }
-            }
-
-            DataTable.Rows.Add(DataTable.NewRow());
         }
         FooBar1.ItemsSource = DataTable.DefaultView;
     }
@@ -124,7 +108,7 @@ public partial class GanttChart : Window
     private static IEnumerable<BO.TaskInList> FetchTasks()
     {
         // Implement this method to return your tasks collection
-        return s_bl.Task.ReadAll(0); // This is just an example; adjust it according to your actual method to fetch tasks
+        return s_bl.Task.ReadAll(null); // This is just an example; adjust it according to your actual method to fetch tasks
     }
 
 }
