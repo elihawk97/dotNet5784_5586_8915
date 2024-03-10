@@ -1,4 +1,5 @@
 ﻿using BlImplementation;
+using BO;
 using Engineer;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
@@ -115,7 +116,20 @@ namespace Task
         public void View_Dependencies(object sender, RoutedEventArgs e)
         {
             new Task.TaskListWindow(CurrentTask).Show();
+            RefreshTask();
+        }
 
+        public void addEngineer(object sender, RoutedEventArgs e) {
+            new Engineer.EngineerListWindow(CurrentTask).Show();
+            RefreshTask();
+        }
+
+        /// <summary>
+        /// Refreshes the list of engineers displayed.
+        /// </summary>
+        private void RefreshTask()
+        {
+            CurrentTask = s_bl?.Task.ReadTask(CurrentTask.Id)!;
         }
     }
 }

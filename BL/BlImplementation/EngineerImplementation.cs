@@ -1,6 +1,7 @@
 ﻿using BlApi;
 using BO;
 using System;
+using System.Collections.Generic;
 
 
 namespace BlImplementation;
@@ -89,20 +90,22 @@ internal class EngineerImplementation : IEngineer
     /// <param name="filter">Optional filter function to apply to the results.</param>
     /// <returns>An IEnumerable of BO.Engineer objects representing the retrieved engineers.</returns>
 
-    public IEnumerable<Engineer> ReadAll(Func<Engineer, bool> filter)
+    public IEnumerable<BO.Engineer> ReadAll(Func<Engineer, bool> filter)
     {
         try
         {
             IEnumerable<DO.Engineer> doEngineers = _dal.Engineer.ReadAll();
-
+            IEnumerable<BO.Engineer> BO_Engineers;
             if (filter != null)
             {
-                // Apply filter after conversion if provided
-                return doEngineers.Select(doEngineer => ConvertDOtoBO(doEngineer)).Where(filter);
+                // Return engineers that are not assigned to a task and that 
+                // have the proper skill level for the task
+                BO_Engineers = doEngineers.Select(doEngineer => ConvertDOtoBO(doEngineer)).Where(filter).Where(boEngineer => boEngineer.Task == null);
+                return BO_Engineers;
             }
             else
             {
-                IEnumerable<BO.Engineer> BO_Engineers = doEngineers.Select(doEngineer => ConvertDOtoBO(doEngineer));  // Convert all fetched records
+                BO_Engineers = doEngineers.Select(doEngineer => ConvertDOtoBO(doEngineer));  // Convert all fetched records
                 return BO_Engineers; 
 
             }

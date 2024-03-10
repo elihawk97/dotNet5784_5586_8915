@@ -11,7 +11,7 @@ namespace PL
     public partial class MainWindow : Window
     {
         private Bl blInstance;
-        public DateTime Date = DateTime.Now;
+        public static DateTime Date = DateTime.Now;
 
         public MainWindow()
         {

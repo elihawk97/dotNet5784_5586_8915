@@ -35,7 +35,7 @@ public partial class AdminView : Window
     /// <param name="e">An RoutedEventArgs that contains the event data.</param>
     private void btnEngineer_Click(object sender, RoutedEventArgs e)
     {
-        new Engineer.EngineerListWindow().Show();
+        new Engineer.EngineerListWindow(null).Show();
     }
 
     /// <summary>

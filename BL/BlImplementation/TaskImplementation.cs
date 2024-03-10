@@ -352,14 +352,11 @@ internal class TaskImplementation : BlApi.ITask
         task.ProjectedStartDate, task.ActualStartDate, task.RequiredEffortTime, task.DeadLine, task.ActualEndDate,
             task.Deliverable, task.Notes, null, doExperienceLevel);
         if (task.EngineerForTask != null) { 
-        doTask.EngineerID = task.EngineerForTask.Id;
-    }
+            doTask.EngineerID = task.EngineerForTask.Id;
+        }
    
         /// Create Dependency Objects based on the Dependency list
         /// 
-
-    
-
         if (task.Dependencies == null)
         {
             task.Dependencies = new List<TaskInList>(); // Replace DependencyType with your actual dependency type

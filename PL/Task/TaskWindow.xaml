@@ -69,14 +69,12 @@
                  Content="View Dependencies"
             />
             
-            <!-- TODO MAKE COMBO BOX OF POSSIBLE ENGINEERS Engineer TextBox for displaying the task's Engineer. -->
-            <Label Grid.Row="12" Grid.Column="0" Content="Engineer ID" />
-            <ComboBox Grid.Row="12" Grid.Column="1"
-            ItemsSource="{Binding EngineersList}" 
-            DisplayMemberPath="BO.Engineer.Name" 
-            SelectedValuePath="BO.Engineer.Id"
-            SelectedItem="{Binding CurrentTask.EngineerForTask}"
-                      />
+            <Label Grid.Row="12" Grid.Column="0" Content="Current Engineer - Click To Set/Change" />
+            <Button Grid.Row="12" Grid.Column="1"
+                 Click="addEngineer"
+                 Content="{Binding EngineerForTask.Id, Mode=OneWay, NotifyOnValidationError=True, ValidatesOnExceptions=True}" 
+             />
+       
 
             <!-- Experience Level ComboBox for selecting the engineer's experience level from a predefined list. -->
             <Label Grid.Row="13" Grid.Column="0" Content="Task Level" />
