@@ -21,14 +21,7 @@ namespace PL
         }
 
 
-
-
-                // Disable the button
-                (sender as Button).IsEnabled = false;
-
-              
-            }
-        }
+        
 
         /// <summary>
         /// Event handler for the "Handle Engineers" button click.

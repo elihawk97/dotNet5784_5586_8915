@@ -1,4 +1,4 @@
-﻿using System.Windows; 
+﻿using System.Windows;
 using System.Globalization;
 using System.Windows.Data;
 using System.Windows.Media;
@@ -58,8 +58,8 @@ public class ForeGroundConvertor : IValueConverter
         if (str == null) return Brushes.Black;
 
         if (str == "Created") return Brushes.Blue;
-        if (str == "UnScheduled") return Brushes.Yellow; 
-        if (str == "Scheduled") return Brushes.Purple; 
+        if (str == "UnScheduled") return Brushes.Yellow;
+        if (str == "Scheduled") return Brushes.Purple;
         if (str == "OnTrack") return Brushes.Pink;
         if (str == "InJeopardy") return Brushes.Red;
         if (str == "Done") return Brushes.Green;

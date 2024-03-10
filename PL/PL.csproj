@@ -14,14 +14,6 @@
 	<RootNamespace />
   </PropertyGroup>
 
-  <ItemGroup>
-    <Compile Remove="Task\GanttChart.xaml.cs" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Page Remove="Task\GanttChart.xaml" />
-  </ItemGroup>
-
 
 
   <ItemGroup>

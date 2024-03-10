@@ -65,7 +65,8 @@
             <!-- Dependencies TextBox for displaying the task's dependencies. -->
             <Label Grid.Row="4" Grid.Column="0" Content="Dependencies" />
             <Button Grid.Row="4" Grid.Column="1"
-                 Click="View_Dependencies"
+                 Click="View_Dependencies" 
+                 Content="View Dependencies"
             />
             
             <!-- TODO MAKE COMBO BOX OF POSSIBLE ENGINEERS Engineer TextBox for displaying the task's Engineer. -->

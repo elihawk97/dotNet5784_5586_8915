@@ -1,4 +1,5 @@
-﻿using System.Windows;
+﻿using Engineer;
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 
@@ -27,17 +28,41 @@ namespace Task
         new PropertyMetadata(null)
         );
 
+        /// <summary>
+        /// Dependency property for the current engineer being manipulated.
+        /// </summary>
+        public static readonly DependencyProperty CurrentTaskProperty = DependencyProperty.Register(
+            "CurrentTask",
+            typeof(BO.Task),
+            typeof(TaskListWindow),
+            new PropertyMetadata(default(BO.Task)));
+
+        /// <summary>
+        /// Gets or sets the current engineer being manipulated.
+        /// </summary>
+        public BO.Task CurrentTask
+        {
+            get { return (BO.Task)GetValue(CurrentTaskProperty); }
+            set { SetValue(CurrentTaskProperty, value); }
+        }
+
+
         private void cbTaskSelector_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
 
 
             // Create the filter based on the selected experience level
             Func<BO.Task, bool> filter = item => item.Level == ExpLevel;
-
-                    // Apply the filter
-                    TaskInList = (ExpLevel == BO.Enums.ExperienceLevel.None) ?
-                                s_bl?.Task.ReadAll(0)! :
-                                s_bl?.Task.ReadAll(filter)!;
+            if (CurrentTask == null)
+            {
+                // Apply the filter
+                TaskInList = (ExpLevel == BO.Enums.ExperienceLevel.None) ?
+                            s_bl?.Task.ReadAll(0)! :
+                            s_bl?.Task.ReadAll(filter)!;
+            }
+            else {
+                TaskInList = CurrentTask.Dependencies;
+            }
                 
         }
 
@@ -50,6 +75,7 @@ namespace Task
             }
             else
             {
+                CurrentTask = task;
                 TaskInList = task.Dependencies;
             }
 
@@ -62,6 +88,7 @@ namespace Task
         /// <param name="e">The event arguments.</param>
         private void ListView_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
+
             var listView = sender as ListView;
             var selectedTask = listView.SelectedItem as BO.TaskInList;
 
@@ -71,7 +98,24 @@ namespace Task
                 TaskWindow TaskWindow = new TaskWindow(selectedTask.Id);
                 TaskWindow.ShowDialog(); // Show the window modally
             }
-            //RefreshTaskList();
+            RefreshTaskList();
+        }
+        private void AddButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (CurrentTask == null)
+            {
+                // Instantiate the EngineerWindow in "Add" mode (not passing an ID)
+                TaskWindow taskWindow = new TaskWindow(); // Assuming a parameterless constructor is "Add" mode
+                taskWindow.ShowDialog(); // ShowDialog to make it modal
+                RefreshTaskList();
+            }
+            else
+            {
+                AddDependenciesView dependenciesWindow = new AddDependenciesView(CurrentTask); // Assuming a parameterless constructor is "Add" mode
+                dependenciesWindow.ShowDialog(); // ShowDialog to make it modal
+                RefreshTaskList();
+
+            }
         }
 
         /// <summary>
@@ -79,7 +123,14 @@ namespace Task
         /// </summary>
         private void RefreshTaskList()
         {
-            TaskInList = s_bl?.Task.ReadAll(null)!;
+            if (CurrentTask == null)
+            {
+                TaskInList = s_bl?.Task.ReadAll(null)!;
+            }
+            else
+            {
+                TaskInList = CurrentTask.Dependencies;
+            }
         }
     }
 }

@@ -9,6 +9,15 @@ public class BlDoesNotExistException : Exception
     { }
 }
 
+[Serializable]
+public class BlCircularDependency : Exception
+{
+    public BlCircularDependency(string? message) : base(message) { }
+    public BlCircularDependency(string? message, Exception innerException) :
+    base(message, innerException)
+    { }
+}
+
 
 [Serializable]
 public class BlTasksCanNotBeScheduled : Exception
