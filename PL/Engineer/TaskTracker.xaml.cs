@@ -20,11 +20,16 @@ namespace Engineer;
 /// </summary>
 public partial class TaskTracker : Window
 {
+    public static readonly BlApi.IBl s_bl = BlApi.Factory.Get();
+
+    private string? engineerId = null;
+    int engineerIdInt;
+
 
     public static readonly DependencyProperty CurrentEngineerProperty = DependencyProperty.Register(
       "CurrentEngineer",
       typeof(BO.Engineer),
-      typeof(EngineerWindow),
+      typeof(TaskTracker),
       new PropertyMetadata(default(BO.Engineer)));
 
     public BO.Engineer CurrentEngineer
@@ -33,28 +38,40 @@ public partial class TaskTracker : Window
         set { SetValue(CurrentEngineerProperty, value); }
     }
 
+    public static readonly DependencyProperty CurrentTaskProperty = DependencyProperty.Register(
+          "CurrentTask",
+          typeof(BO.Task),
+          typeof(TaskTracker),
+          new PropertyMetadata(default(BO.Task)));
+
+    public BO.Task CurrentTask
+    {
+        get { return (BO.Task)GetValue(CurrentTaskProperty); }
+        set { SetValue(CurrentTaskProperty, value); }
+    }
+
+    private void Window_Loaded(object sender, RoutedEventArgs e)
+    {
+       
+    }
     private void AssignedTaskButton_Click(object sender, RoutedEventArgs e)
     {
+        new Task.TaskWindow(CurrentTask.Id).Show(); 
         // Add your logic for what happens when the Current Task button is clicked
-        MessageBox.Show("Current Task button clicked!");
     }
 
     private void TasksButton_Click(object sender, RoutedEventArgs e)
     {
-        Func<BO.Task, bool>? filterByExperienceLevel = task =>
-        {
-            return task.Level == CurrentEngineer.Level;
-        };
-
+        
         TaskListWindow taskListWindow = new TaskListWindow(null); // Assuming a parameterless constructor is "Add" mode
         taskListWindow.ShowDialog(); // ShowDialog to make it modal
-
-        // Add your logic for what happens when the Tasks button is clicked
-        MessageBox.Show("Tasks button clicked!");
     }
 
-    public TaskTracker()
+    public TaskTracker(int id)
     {
+        CurrentEngineer = s_bl.Engineer.ReadEngineer(id);
+        CurrentTask = CurrentEngineer.Task; 
+
         InitializeComponent();
     }
 }

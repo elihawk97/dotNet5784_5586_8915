@@ -5,7 +5,10 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:PL"
         mc:Ignorable="d"
-        Title="TaskTracker" Height="450" Width="800">
+        Title="TaskTracker" Height="450" Width="800"
+        Loaded="Window_Loaded"
+        DataContext="{Binding RelativeSource={RelativeSource Self}}">
+    
 
     <Window.Resources>
 
@@ -36,7 +39,8 @@
                 <TextBlock  HorizontalAlignment="Center" VerticalAlignment="Center"
                     Text="Tasks"
                     FontFamily="Arial" FontSize="30" FontWeight="Bold" FontStyle="Italic"
-                    Foreground="DarkBlue" TextWrapping="Wrap" TextAlignment="Center" Padding="10"/>
+                    Foreground="DarkBlue" TextWrapping="Wrap" TextAlignment="Center" Padding="10"
+                            />
             
                 <Grid Grid.Row="1">
                     <Grid.RowDefinitions>
@@ -50,10 +54,12 @@
                     </Grid.ColumnDefinitions>
                     
                     <Label Grid.Row="0" Grid.Column="0" Content="Current Task ID:" HorizontalAlignment="Center" VerticalAlignment="Center"  Height="30"/>
-                    <TextBox Grid.Row="0" Grid.Column="1" HorizontalAlignment="Center"  TextWrapping="Wrap" Text="" VerticalAlignment="Center" Width="120"/>
+                    <TextBox Grid.Row="0" Grid.Column="1" HorizontalAlignment="Center"  TextWrapping="Wrap"  VerticalAlignment="Center" Width="120"
+                     Text="{Binding Path=CurrentTask.Id, Mode=TwoWay}"/>
 
                     <Label Grid.Row="1" Grid.Column="0" Content="Current Task Name:" HorizontalAlignment="Center"  VerticalAlignment="Center"/>
-                    <TextBox Grid.Row="1" Grid.Column="1" HorizontalAlignment="Center" TextWrapping="Wrap" Text="" VerticalAlignment="Center" Width="120"/>
+                    <TextBox Grid.Row="1" Grid.Column="1" HorizontalAlignment="Center" TextWrapping="Wrap"  VerticalAlignment="Center" Width="120"
+                    Text="{Binding Path=CurrentTask.Name, Mode=TwoWay}"/>
                 </Grid>
             </Grid>
         </Border>

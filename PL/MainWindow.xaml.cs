@@ -43,7 +43,33 @@ namespace PL
         /// <param name="e">An RoutedEventArgs that contains the event data.</param>
         private void btnEngineerView_Click(object sender, RoutedEventArgs e)
         {
-            new Task.TaskListWindow(null).Show();
+
+
+            // Prompt the user for an ID when the window loads
+            string Id = Microsoft.VisualBasic.Interaction.InputBox("Please enter your Engineer ID:", "Engineer ID", "", -1, -1);
+            int engineerIdInt = 0; 
+
+            // Assuming input validation and conversion is handled as necessary
+            if (!string.IsNullOrWhiteSpace(Id) && int.TryParse(Id, out engineerIdInt))
+            {
+
+             
+
+                // Here, you would implement or call your logic to retrieve the engineer's information based on the ID
+                // For demonstration, just showing the ID in a message box
+                MessageBox.Show($"You entered ID: {Id}", "ID Entered");
+
+                // Example: Set the CurrentEngineer based on the input ID
+                // This is where you would retrieve the engineer details using the input ID
+                // CurrentEngineer = YourMethodToGetEngineerById(input);
+
+                // Update UI or do further processing here based on the CurrentEngineer details
+            }
+            else
+            {
+                MessageBox.Show("No ID entered. Please enter a valid Engineer ID to proceed.", "No ID Entered", MessageBoxButton.OK, MessageBoxImage.Warning);
+            }
+            new Engineer.TaskTracker(engineerIdInt).Show();
         }
 
         private void ButtonForward_Click(object sender, RoutedEventArgs e)
