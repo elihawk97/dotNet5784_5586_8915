@@ -68,6 +68,64 @@ static class XMLTools
         }
     }
 
+    public static DateTime? GetProjectStartDate()
+    {
+        try
+        {
+            XElement root = XMLTools.LoadListFromXMLElement("data-config");
+
+            // Find the StartDate element
+            string startDateStr = root.Element("StartDate")?.Value;
+
+            // Convert the StartDate string to a DateTime object
+            if (DateTime.TryParse(startDateStr, out DateTime startDate))
+            {
+                return startDate;
+            }
+            else
+            {
+                // Log or handle the case where the StartDate is not in a valid format
+                Console.WriteLine("The start date in the XML configuration is not in a valid format.");
+                return null;
+            }
+        }
+        catch (Exception ex)
+        {
+            // Log or handle any exceptions that occur during processing
+            Console.WriteLine($"An error occurred while retrieving the project start date: {ex.Message}");
+            return null;
+        }
+    }
+
+    public static DateTime? GetProjectEndDate()
+    {
+        try
+        {
+            XElement root = XMLTools.LoadListFromXMLElement("data-config");
+
+            // Find the EndDate element
+            string endDateStr = root.Element("EndDate")?.Value;
+
+            // Convert the EndDate string to a DateTime object
+            if (DateTime.TryParse(endDateStr, out DateTime endDate))
+            {
+                return endDate;
+            }
+            else
+            {
+                // Log or handle the case where the EndDate is not in a valid format
+                Console.WriteLine("The end date in the XML configuration is not in a valid format.");
+                return null;
+            }
+        }
+        catch (Exception ex)
+        {
+            // Log or handle any exceptions that occur during processing
+            Console.WriteLine($"An error occurred while retrieving the project end date: {ex.Message}");
+            return null;
+        }
+    }
+
 
 
 

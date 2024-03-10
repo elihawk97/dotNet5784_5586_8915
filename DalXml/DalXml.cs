@@ -45,14 +45,13 @@ sealed internal class DalXml : IDal
 
     public void SetProjectEndDate(DateTime? endDate)
     {
-        Config.ProjectEndDate = endDate; 
-        XMLTools.SetProjectDates(endDate, "EndDate");
+        Config.ProjectEndDate = endDate;
+
     }
 
     public void SetProjectStartDate(DateTime? startDate)
     {
-        Config.ProjectStartDate = startDate; 
-        XMLTools.SetProjectDates(startDate, "StartDate");
+        Config.ProjectStartDate = startDate;
     }
 
     public DateTime? getProjectStartDate()

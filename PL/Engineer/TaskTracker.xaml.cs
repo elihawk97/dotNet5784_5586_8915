@@ -46,7 +46,7 @@ public partial class TaskTracker : Window
             return task.Level == CurrentEngineer.Level;
         };
 
-        TaskListWindow taskListWindow = new TaskListWindow( filter: filterByExperienceLevel); // Assuming a parameterless constructor is "Add" mode
+        TaskListWindow taskListWindow = new TaskListWindow(null); // Assuming a parameterless constructor is "Add" mode
         taskListWindow.ShowDialog(); // ShowDialog to make it modal
 
         // Add your logic for what happens when the Tasks button is clicked

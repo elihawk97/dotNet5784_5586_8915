@@ -163,10 +163,10 @@ public static class Initialization
             try
             {
                 // Filter out tasks that are not in the last month (assuming tasks are ordered by month)
-                firstMonthTasks = tasks.Where(task => task.Id <= month*5 && task.Id >= (month - 1) * 5).ToList();
+                firstMonthTasks = tasks.Where(task => task.Id%20 <= month*5 && task.Id%20 >= (month - 1) * 5).ToList();
 
                 // Get tasks for the current month
-                currentMonthTasks = tasks.Where(task => task.Id <= (month+1) * 5 && task.Id > (month) * 5).ToList();
+                currentMonthTasks = tasks.Where(task => task.Id%20 <= (month+1) * 5 && task.Id%20 > (month) * 5).ToList();
 
             // Determine the number of dependencies for tasks in the current month
             int numDependencies = s_rand.Next(1, 4);
@@ -177,8 +177,7 @@ public static class Initialization
                     
                     numDependencies = s_rand.Next(1, 4);
                     // Randomly select tasks from the previous month as dependencies
-                    for (int i = 0; i < numDependencies; i++)
-                {
+            for (int i = 0; i < numDependencies; i++){
                     // Randomly select a task from the previous month
                     DO.Task dependencyTask = firstMonthTasks[s_rand.Next(0, firstMonthTasks.Count)];
 

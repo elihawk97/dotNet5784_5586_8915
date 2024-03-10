@@ -44,7 +44,6 @@ public partial class GanttChart : Window
 
     private void Window_Loaded(object sender, RoutedEventArgs e)
     {
-        s_bl.Task.Scheduler();
         List<BO.TaskInList> tasksList = FetchTasks().ToList();
         List<BO.Task> tasks = new List<BO.Task>();
 
