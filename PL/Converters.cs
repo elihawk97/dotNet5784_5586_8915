@@ -97,3 +97,4 @@ public class ValueColorConverter : IValueConverter
         throw new NotImplementedException();
     }
 }
+

@@ -1,6 +1,7 @@
 ﻿using BlImplementation;
 using System.Windows;
 using System.Windows.Controls;
+using Task;
 
 
 namespace PL
@@ -12,12 +13,25 @@ namespace PL
     {
         private Bl blInstance;
         public static DateTime Date = DateTime.Now;
+        // Property to get or set the value of ProductionMode
+        public static bool ProductionMode = false;
+        /// <summary>
+        /// Dependency property for the current Task being manipulated.
+        /// </summary>
+        public static readonly DependencyProperty ProductionModeProperty = DependencyProperty.Register(
+            "ProductionMode",
+            typeof(bool),
+            typeof(MainWindow),
+            new PropertyMetadata(default(bool)));
+        public static bool _isInitialized = false;
+
 
         public MainWindow()
         {
             InitializeComponent();
             blInstance = new Bl(); // Assuming Bl is instantiated here.
             DataContext = Date; // Set DataContext for data binding
+            ProductionMode = false;
         }
 
 

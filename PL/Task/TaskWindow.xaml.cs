@@ -1,10 +1,9 @@
-﻿using BlImplementation;
-using BO;
-using Engineer;
+﻿using PL;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Windows;
+using System.Windows.Media.Converters;
 
 
 namespace Task
@@ -15,6 +14,7 @@ namespace Task
     public partial class TaskWindow : Window
     {
         public static readonly BlApi.IBl s_bl = BlApi.Factory.Get();
+
 
         // Property to hold the list of engineers
         private ObservableCollection<BO.Engineer> _engineersList;
@@ -97,6 +97,7 @@ namespace Task
             {
                 if (CurrentTask.Id == 0)
                 {
+                    CurrentTask.DateCreated = MainWindow.Date;
                     s_bl.Task.CreateTask(CurrentTask);
                 }
                 else {

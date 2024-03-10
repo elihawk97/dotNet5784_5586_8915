@@ -1,4 +1,5 @@
 ﻿using Engineer;
+using PL;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -102,19 +103,26 @@ namespace Task
         }
         private void AddButton_Click(object sender, RoutedEventArgs e)
         {
-            if (CurrentTask == null)
+            if (CurrentTask == null && MainWindow.ProductionMode == false)
             {
                 // Instantiate the EngineerWindow in "Add" mode (not passing an ID)
                 TaskWindow taskWindow = new TaskWindow(); // Assuming a parameterless constructor is "Add" mode
                 taskWindow.ShowDialog(); // ShowDialog to make it modal
                 RefreshTaskList();
             }
-            else
+            else if(CurrentTask != null && MainWindow.ProductionMode == false)
             {
                 AddDependenciesView dependenciesWindow = new AddDependenciesView(CurrentTask); // Assuming a parameterless constructor is "Add" mode
                 dependenciesWindow.ShowDialog(); // ShowDialog to make it modal
                 RefreshTaskList();
-
+            }
+            else
+            {
+                MessageBox.Show(
+                  "Adding a Task or Dependencies is not possible in production mode!",
+                  "Production Mode Restriction",
+                  MessageBoxButton.OK,
+                  MessageBoxImage.Information);
             }
         }
 

@@ -15,7 +15,6 @@ public partial class AdminView : Window
     /// Static reference to the business logic layer.
     /// </summary>
     static readonly BlApi.IBl s_bl = BlApi.Factory.Get();
-    private bool _isInitialized = false;
 
     /// <summary>
     /// Initializes a new instance of the MainWindow class.
@@ -53,15 +52,23 @@ public partial class AdminView : Window
 
     private void btnSchedule_Click(object sender, RoutedEventArgs e)
     {
-        // Ask user for confirmation
-        MessageBoxResult result = MessageBox.Show("Do you really want to schedule tasks and enter into" +
-            "production mode?", "Confirm", MessageBoxButton.YesNo, MessageBoxImage.Question);
-
-        // If user clicked "Yes", proceed with data initialization
-        if (result == MessageBoxResult.Yes)
+        if (MainWindow.ProductionMode == false)
         {
-            s_bl.Task.Scheduler();
-            MessageBox.Show("Data initialization completed successfully.", "Initialization Done", MessageBoxButton.OK, MessageBoxImage.Information);
+            // Ask user for confirmation
+            MessageBoxResult result = MessageBox.Show("Do you really want to schedule tasks and enter into" +
+                "production mode?", "Confirm", MessageBoxButton.YesNo, MessageBoxImage.Question);
+
+            // If user clicked "Yes", proceed with data initialization
+            if (result == MessageBoxResult.Yes)
+            {
+                s_bl.Task.Scheduler();
+                MessageBox.Show("Scheduling completed successfully.", "Scheduling Done", MessageBoxButton.OK, MessageBoxImage.Information);
+                MainWindow.ProductionMode = true;
+            }
+        }
+        else
+        {
+            MessageBox.Show("Scheduling already completed, can not reschedule tasks.", "Production Limitation", MessageBoxButton.OK, MessageBoxImage.Information);
         }
     }
 
@@ -75,14 +82,15 @@ public partial class AdminView : Window
         {
             s_bl.Task.Reset();
             s_bl.Engineer.Reset();
-            MessageBox.Show("Data initialization completed successfully.", "Initialization Done", MessageBoxButton.OK, MessageBoxImage.Information);
+            MainWindow._isInitialized = false;
+            MessageBox.Show("Data reset completed successfully.", "Reset Done", MessageBoxButton.OK, MessageBoxImage.Information);
         }
 
     }
 
     private void InitializeData_Click(object sender, RoutedEventArgs e)
     {
-        if (!_isInitialized) // Check if already initialized
+        if (!MainWindow._isInitialized) // Check if already initialized
         {
             // Ask user for confirmation
             MessageBoxResult result = MessageBox.Show("Do you really want to Initialize the data?", "Confirm Initialization", MessageBoxButton.YesNo, MessageBoxImage.Question);
@@ -94,12 +102,13 @@ public partial class AdminView : Window
                 // You may need to adjust this line if the actual call is different
                 DalTest.Initialization.Do();
                 MessageBox.Show("Data initialization completed successfully.", "Initialization Done", MessageBoxButton.OK, MessageBoxImage.Information);
-            }
-            // Set flag to true, indicating initialization is complete
-            _isInitialized = true;
+                // Set flag to true, indicating initialization is complete
+                MainWindow._isInitialized = true;
 
-            // Disable the button
-            (sender as Button).IsEnabled = false;
+                // Disable the button
+                (sender as Button).IsEnabled = false;
+            }
+
         }
     }
 

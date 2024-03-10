@@ -94,9 +94,15 @@ public partial class EngineerListWindow : Window
                             s_bl?.Engineer.ReadAll(null)! :
                             s_bl?.Engineer.ReadAll(filter)!;
             }
+            else if(ExpLevel != BO.Enums.ExperienceLevel.None)
+            {
+                EngineerList = s_bl.Engineer.ReadAll(engineer => (engineer.Level >= CurrentTaskEngineerView.Level) 
+                                                    && engineer.Level == ExpLevel);
+            }
             else
             {
-                EngineerList = s_bl.Engineer.ReadAll(engineer => engineer.Level >= CurrentTaskEngineerView.Level);
+            EngineerList = s_bl.Engineer.ReadAll(engineer => (engineer.Level >= CurrentTaskEngineerView.Level));
+
             }
 
     }
@@ -133,11 +139,19 @@ public partial class EngineerListWindow : Window
                 engineerWindow.ShowDialog(); // Show the window modally
             }
         }
-        else //If we are viewing Engineers to assign to a task
+        else if(MainWindow.ProductionMode = false) //If we are viewing Engineers to assign to a task
         {
             CurrentTaskEngineerView.EngineerForTask = selectedEngineer;
             CurrentTaskEngineerView.ActualStartDate = MainWindow.Date;
             s_bl.Task.UpdateTask(CurrentTaskEngineerView.Id, CurrentTaskEngineerView);
+        }
+        else
+        {
+            MessageBox.Show(
+              "Engineer assignment is not possible in planning mode. Please switch to production mode to assign engineers to tasks.",
+              "Planning Mode Restriction",
+              MessageBoxButton.OK,
+              MessageBoxImage.Information);
         }
         RefreshEngineerList();
     }

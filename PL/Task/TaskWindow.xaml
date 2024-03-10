@@ -7,7 +7,6 @@
         mc:Ignorable="d"
         Title="TaskWindow" Height="450" Width="800"
         DataContext="{Binding CurrentTask, RelativeSource={RelativeSource Self}, Mode=TwoWay}">
-
     <!-- Grid layout -->
     <Grid>
 
@@ -67,7 +66,7 @@
             <Button Grid.Row="4" Grid.Column="1"
                  Click="View_Dependencies" 
                  Content="View Dependencies"
-            />
+                  />
             
             <Label Grid.Row="12" Grid.Column="0" Content="Current Engineer - Click To Set/Change" />
             <Button Grid.Row="12" Grid.Column="1"
@@ -87,7 +86,7 @@
             <Label Grid.Row="14" Grid.Column="0" Content="Notes" />
             <TextBox Grid.Row="14" Grid.Column="1"
             Text="{Binding Notes, Mode=TwoWay}" 
-            IsEnabled="True" />
+            />
             
             <Label Grid.Row="5" Grid.Column="0" Content="Date Created" />
             <TextBox Grid.Row="5" Grid.Column="1"
@@ -137,3 +136,4 @@
             Click="btnAddUpdate_Click" />
     </Grid>
 </Window>
+ 
