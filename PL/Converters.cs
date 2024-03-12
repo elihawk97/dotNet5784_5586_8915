@@ -57,12 +57,13 @@ public class ForeGroundConvertor : IValueConverter
         var str = value as string;
         if (str == null) return Brushes.Black;
 
-        if (str == "Created") return Brushes.Blue;
-        if (str == "UnScheduled") return Brushes.Yellow;
-        if (str == "Scheduled") return Brushes.Purple;
-        if (str == "OnTrack") return Brushes.Pink;
-        if (str == "InJeopardy") return Brushes.Red;
-        if (str == "Done") return Brushes.Green;
+        if (str.Contains("Created")) return Brushes.Blue;
+        if (str.Contains("UnScheduled")) return Brushes.Yellow;
+        if (str.Contains("Scheduled")) return Brushes.Purple;
+        if (str.Contains("OnTrack")) return Brushes.Pink;
+        if (str.Contains("InJeopardy")) return Brushes.Red;
+        if (str.Contains("Done")) return Brushes.Green;
+        if (str.Contains("Task")) return Brushes.White;
 
         return Brushes.Black;
     }
@@ -80,12 +81,15 @@ public class ValueColorConverter : IValueConverter
         var str = value as string;
         if (str == null) return Brushes.White;
 
-        if (str == "Created") return Brushes.Blue;
-        if (str == "UnScheduled") return Brushes.Yellow;
-        if (str == "Scheduled") return Brushes.Purple;
-        if (str == "OnTrack") return Brushes.Pink;
-        if (str == "InJeopardy") return Brushes.Red;
-        if (str == "Done") return Brushes.Green;
+        if (str.Contains("Created")) return Brushes.Blue;
+        if (str.Contains("UnScheduled")) return Brushes.Yellow;
+        if (str.Contains("Scheduled")) return Brushes.Purple;
+        if (str.Contains("OnTrack")) return Brushes.Pink;
+        if (str.Contains("InJeopardy")) return Brushes.Red;
+        if (str.Contains("Done")) return Brushes.Green;
+
+
+        if (str.Contains("Task")) return Brushes.Black; 
 
         return Brushes.White; // Default color if parsing fails or value is not an int
     }

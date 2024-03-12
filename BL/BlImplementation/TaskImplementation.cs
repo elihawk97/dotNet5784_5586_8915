@@ -362,7 +362,7 @@ internal class TaskImplementation : BlApi.ITask
             RequiredEffortTime = task.Duration
         };
 
-        boTask.Status = (TaskStatus)taskStatus(boTask);
+        boTask.Status = taskStatus(boTask);
 
         return boTask;
     }
