@@ -9,78 +9,58 @@
     <Window.Resources>
 
         <Style TargetType="Button" x:Key="RoundButton">
-            <Style.Resources>
-                <Style TargetType="Border">
-                    <Setter Property="CornerRadius" Value="25" />
-                </Style>
-            </Style.Resources>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="CadetBlue" CornerRadius="25" Padding="10">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style TargetType="Grid">
+            <Setter Property="Background">
+                <Setter.Value>
+                    <LinearGradientBrush StartPoint="0,0" EndPoint="1,0">
+                        <GradientStop Offset="0" Color="DodgerBlue" />
+                        <GradientStop Offset="1" Color="White" />
+                    </LinearGradientBrush>
+                </Setter.Value>
+            </Setter>
         </Style>
 
     </Window.Resources>
 
-    <!-- Main container grid with 4 rows -->
     <Grid>
-        <!-- Defining four rows of equal height -->
         <Grid.RowDefinitions>
-            <RowDefinition Height="1*"/>
-            <RowDefinition Height="1*"/>
-            <RowDefinition Height="3*"/>
+            <RowDefinition Height="1.5*" />
+            <RowDefinition Height="1*" />
+            <RowDefinition Height="2.5*" />
         </Grid.RowDefinitions>
 
-        <!-- Welcome message section -->
-        <TextBlock  HorizontalAlignment="Center" VerticalAlignment="Center"
+        <TextBlock Grid.Row="0" HorizontalAlignment="Center" VerticalAlignment="Center"
                    Text="Admin Screen"
-                   FontFamily="Arial" FontSize="50" FontWeight="Bold" FontStyle="Italic"
-                   Foreground="DarkBlue" TextWrapping="Wrap" TextAlignment="Center" Padding="10"/>
+                   FontFamily="Arial" FontSize="72" FontWeight="Bold" FontStyle="Italic"
+                   Foreground="Black" TextWrapping="Wrap" TextAlignment="Center" />
 
-
-
-        <!-- Handle Engineers Button -->
-        <Grid Grid.Row="2">
+        <Grid Grid.Row="1">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
             </Grid.ColumnDefinitions>
-            <Button Grid.Column="0" Grid.Row="1" 
-                    Content="Engineers" 
-                    HorizontalAlignment="Center"  VerticalAlignment="Center" 
-                    Width="200" Height="100"
-                    Click="btnEngineer_Click"
-                    Style="{DynamicResource RoundButton}"
-                    FontSize="40"/>
 
-            <Button Grid.Column="1" Grid.Row="1" 
-                    Content="Tasks" HorizontalAlignment="Center"  
-                    VerticalAlignment="Center" Width="200" Height="100" 
-                    Click="btnTask_Click"
-                    Style="{DynamicResource RoundButton}"
-                    FontSize="40"/>
-
-
+            <Button Grid.Column="0" Grid.Row="0" Content="Engineers" HorizontalAlignment="Center" VerticalAlignment="Center" Width="200" Height="100" Click="btnEngineer_Click" Style="{DynamicResource RoundButton}" FontSize="32" />
+            <Button Grid.Column="1" Grid.Row="0" Content="Tasks" HorizontalAlignment="Center" VerticalAlignment="Center" Width="200" Height="100" Click="btnTask_Click" Style="{DynamicResource RoundButton}" FontSize="32" />
         </Grid>
-        <Button Content="Schedule" 
-                HorizontalAlignment="Left" 
-                Margin="173,44,0,0" Grid.Row="1" 
-                Click="btnSchedule_Click"
-                VerticalAlignment="Top"/>
-        <Button Content="Reset" 
-                HorizontalAlignment="Center" 
-                Margin="0,10,0,0" Grid.Row="1" 
-                Click="btnReset_Click"
-                VerticalAlignment="Top"/>
-        <Button Content="Gantt Chart" 
-                HorizontalAlignment="Center" 
-                Margin="0,10,0,0" Grid.Row="1" 
-                Click="GanttChart_Click"
-                VerticalAlignment="Center"/>
-        <!-- Initialize Data Button (hidden example button commented out) -->
-        <Button Content="Initialize"
-                HorizontalAlignment="Right" 
-                Margin="0,10,0,0" Grid.Row="1" 
-                Click="InitializeData_Click"
-                VerticalAlignment="Top"
-                Style="{DynamicResource RoundButton}"/>
 
+        <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,20">
+            <Button Content="Schedule" Style="{DynamicResource RoundButton}" FontSize="24" Width="150" Click="btnSchedule_Click" />
+            <Button Content="Reset" Style="{DynamicResource RoundButton}" FontSize="24" Width="150" Margin="20,0,0,0" Click="btnReset_Click" />
+            <Button Content="Gantt Chart" Style="{DynamicResource RoundButton}" FontSize="24" Width="150" Margin="20,0,0,0" Click="GanttChart_Click" />
+            <Button Content="Initialize" Style="{DynamicResource RoundButton}" FontSize="24" Width="150" Margin="20,0,0,0" Click="InitializeData_Click" />
+        </StackPanel>
 
     </Grid>
 </Window>

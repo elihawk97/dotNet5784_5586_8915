@@ -100,7 +100,8 @@ internal class EngineerImplementation : IEngineer
             {
                 // Return engineers that are not assigned to a task and that 
                 // have the proper skill level for the task
-                BO_Engineers = doEngineers.Select(doEngineer => ConvertDOtoBO(doEngineer)).Where(filter).Where(boEngineer => boEngineer.Task == null);
+                // will also return an engineer that finished his previous task
+                BO_Engineers = doEngineers.Select(doEngineer => ConvertDOtoBO(doEngineer)).Where(filter).Where(boEngineer => (boEngineer.Task == null) ||(boEngineer.Task.ActualEndDate != null));
                 return BO_Engineers;
             }
             else

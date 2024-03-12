@@ -257,11 +257,44 @@ internal class TaskImplementation : BlApi.ITask
         {
             DO.Task doTask = _dal.Task.Read(x => x.Id == id);
             DO.Task doNewTask = taskCreater(boTask);
-            doNewTask.Id = id; 
-            _dal.Task.Update(doNewTask);
+            doNewTask.Id = id;
+            if(boTask.ActualStartDate == null)
+            {
+                //do nothing
+            }
+            else if(boTask.EngineerForTask != null)
+            {
+                bool canAssign = true;
+
+                foreach(TaskInList dependency in boTask.Dependencies)
+                {
+                    if(dependency.Status != BO.Enums.TaskStatus.Done)
+                    {
+                        canAssign = false;
+                    }
+                }
+                if(canAssign == false)
+                {
+                    throw new BlEngineerCantTakeTask("Engineer can't take this task. It's Dependencies have not been completed");
+                }
+            }
+            else if(boTask.ActualStartDate < boTask.DateCreated)
+            {
+                throw new BLInvalidDateException($"Error updating Task {boTask.Id}: Can't assign start date before date created.");
+            }
+            else if ((boTask.EngineerForTask == null || boTask.ActualStartDate == null) && boTask.ActualEndDate != null)
+            {
+                throw new BLNoEngineerException($"Error updating Task {boTask.Id}: Can't assign End date before assiging engineer to task and starting Task.");
+            }
+            else if (boTask.ActualEndDate < boTask.ActualStartDate)
+            {
+                throw new BLInvalidDateException($"Error updating Task {boTask.Id}: Can't assign End date before start date.");
+            }
             List<DO.Task> doTaskList = _dal.Task.ReadAll(null).ToList();
             List<BO.Task> boTaskList = doTaskList.Select(task => taskDo_BO(task)).ToList();
             boTaskList = TopologicalSort(boTaskList);
+            _dal.Task.Update(doNewTask);
+
         }
         catch(DalDoesNotExistException ex)
         {

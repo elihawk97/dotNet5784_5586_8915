@@ -10,6 +10,26 @@ public class BlDoesNotExistException : Exception
 }
 
 [Serializable]
+
+public class BLInvalidDateException : Exception
+{
+    public BLInvalidDateException(string? message) : base(message) { }
+    public BLInvalidDateException(string? message, Exception innerException) :
+    base(message, innerException)
+    { }
+}
+
+[Serializable]
+public class BLNoEngineerException : Exception
+{
+    public BLNoEngineerException(string? message) : base(message) { }
+    public BLNoEngineerException(string? message, Exception innerException) :
+    base(message, innerException)
+    { }
+}
+
+
+[Serializable]
 public class BlCircularDependency : Exception
 {
     public BlCircularDependency(string? message) : base(message) { }

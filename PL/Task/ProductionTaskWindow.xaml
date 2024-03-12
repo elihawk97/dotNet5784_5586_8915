@@ -1,12 +1,12 @@
-﻿<Window x:Class="Task.TaskWindow"
+﻿<Window x:Class="Task.ProductionTaskWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Task"
         mc:Ignorable="d"
-        Title="TaskWindow" Height="450" Width="800"
-        DataContext="{Binding CurrentTask, RelativeSource={RelativeSource Self}, Mode=TwoWay}">
+        Title="ProductionTaskWindow" Height="450" Width="800"
+        DataContext="{Binding CurrentTask3, RelativeSource={RelativeSource Self}, Mode=TwoWay}">
     <!-- Grid layout -->
     <Grid>
 
@@ -67,27 +67,26 @@
                  Click="View_Dependencies" 
                  Content="View Dependencies"
                   />
-            
+
             <Label Grid.Row="12" Grid.Column="0" Content="Current Engineer - Click To Set/Change" />
             <Button Grid.Row="12" Grid.Column="1"
                  Click="addEngineer"
-                 Content="{Binding EngineerForTask.Id, Mode=OneWay, NotifyOnValidationError=True, ValidatesOnExceptions=True}" 
+                 Content="{Binding EngineerForTask.Name, Mode=OneWay, NotifyOnValidationError=True, ValidatesOnExceptions=True}" 
              />
-       
+
 
             <!-- Experience Level ComboBox for selecting the engineer's experience level from a predefined list. -->
             <Label Grid.Row="13" Grid.Column="0" Content="Task Level" />
-            <ComboBox Grid.Row="13" Grid.Column="1"
-                ItemsSource="{Binding Source={StaticResource ExpCollectionKey}}"
-                SelectedValue="{Binding Level, Mode=TwoWay, ValidatesOnExceptions=true,
-                NotifyOnValidationError=true}"
-                />
+            <TextBlock Grid.Row="13" Grid.Column="1"
+                Text="{Binding Level, Mode=TwoWay}" 
+                IsEnabled="False"
+             />
 
             <Label Grid.Row="14" Grid.Column="0" Content="Notes" />
             <TextBox Grid.Row="14" Grid.Column="1"
             Text="{Binding Notes, Mode=TwoWay}" 
             />
-            
+
             <Label Grid.Row="5" Grid.Column="0" Content="Date Created" />
             <TextBox Grid.Row="5" Grid.Column="1"
             Text="{Binding DateCreated, Mode=OneWay}" 
@@ -125,15 +124,20 @@
             <!-- Required Effort Time Label and TextBox for entering the task's required effort time. -->
             <Label Grid.Row="11" Grid.Column="0" Content="Required Effort Time" />
             <TextBox Grid.Row="11" Grid.Column="1"
-                 Text="{Binding RequiredEffortTime, Mode=TwoWay, NotifyOnValidationError=True, ValidatesOnExceptions=True}" />
-
+                 Text="{Binding RequiredEffortTime, Mode=OneWay, NotifyOnValidationError=True, ValidatesOnExceptions=True}" 
+                 IsEnabled="False"
+                     />
         </Grid>
 
         <!-- Add/Update Button with dynamic content based on the task's ID. 
     This button is used to either add a new task or update an existing one's details. -->
         <Button Grid.Row="1" Content="{Binding Id, Mode=OneTime, Converter={StaticResource ConvertIdToContentKey}}"
-            HorizontalAlignment="Center" Margin="3,0,0,0" VerticalAlignment="Center" Padding="5" Width="100" Height="50"
+            HorizontalAlignment="Stretch" Margin="3,0,120,0" VerticalAlignment="Center" Padding="5" Width="100" Height="50"
             Click="btnAddUpdate_Click" />
+        
+        <Button Grid.Row="1" Content="Mark As Done"
+            HorizontalAlignment="Right" Margin="3,0,290,0" VerticalAlignment="Center" Padding="5" Width="100" Height="50"
+            Click="Mark_As_Done" />
     </Grid>
 </Window>
  

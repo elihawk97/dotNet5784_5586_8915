@@ -93,11 +93,16 @@ namespace Task
             var listView = sender as ListView;
             var selectedTask = listView.SelectedItem as BO.TaskInList;
 
-            if (selectedTask != null)
+            if (selectedTask != null && MainWindow.ProductionMode == false)
             {
                 // Assuming EngineerWindow has a constructor that takes an engineer's ID for update mode
                 TaskWindow TaskWindow = new TaskWindow(selectedTask.Id);
                 TaskWindow.ShowDialog(); // Show the window modally
+            }
+            else if (selectedTask != null)
+            {
+                ProductionTaskWindow productionTaskWindow = new ProductionTaskWindow(selectedTask.Id);
+                productionTaskWindow.ShowDialog();
             }
             RefreshTaskList();
         }

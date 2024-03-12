@@ -139,7 +139,7 @@ public partial class EngineerListWindow : Window
                 engineerWindow.ShowDialog(); // Show the window modally
             }
         }
-        else if(MainWindow.ProductionMode = false) //If we are viewing Engineers to assign to a task
+        else if(MainWindow.ProductionMode == true) //If we are viewing Engineers to assign to a task
         {
             CurrentTaskEngineerView.EngineerForTask = selectedEngineer;
             CurrentTaskEngineerView.ActualStartDate = MainWindow.Date;
