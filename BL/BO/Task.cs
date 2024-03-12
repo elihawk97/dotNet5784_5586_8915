@@ -8,7 +8,7 @@ public class Task
 {    public int Id { get; init; }
     public string? Name { get; set; }
     public string? Description { get; set; }
-    public TaskStatus Status { get; set; }
+    public BO.Enums.TaskStatus Status { get; set; }
     public List<TaskInList> Dependencies { get; set; }
     public DateTime? DateCreated { get; set; }
     public DateTime? ProjectedStartDate { get; set; }
