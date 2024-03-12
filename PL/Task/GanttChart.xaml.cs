@@ -82,7 +82,7 @@ public partial class GanttChart : Window
                 DateTime end = (task.ProjectedEndDate ?? DateTime.MinValue).Date;
 
             string dependencyString = task.Dependencies != null
-            ? string.Join(" ", task.Dependencies.Select(d => d.Name))
+            ? string.Join(" ", task.Dependencies.Select(d => d.Name).Distinct())
             : string.Empty;
 
             for (int i = 1; i < DataTable.Columns.Count; i++)
