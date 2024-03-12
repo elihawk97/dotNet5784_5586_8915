@@ -69,9 +69,16 @@ public partial class TaskTracker : Window
 
     public TaskTracker(int id)
     {
-        CurrentEngineer = s_bl.Engineer.ReadEngineer(id);
-        CurrentTask = CurrentEngineer.Task; 
+        try
+        {
+            CurrentEngineer = s_bl.Engineer.ReadEngineer(id);
+            CurrentTask = CurrentEngineer.Task;
 
-        InitializeComponent();
+            InitializeComponent();
+        }
+        catch (Exception ex)
+        {
+            MessageBox.Show($"An error occurred: {ex.Message}", "Read Exception", MessageBoxButton.OK, MessageBoxImage.Error);
+        }
     }
 }

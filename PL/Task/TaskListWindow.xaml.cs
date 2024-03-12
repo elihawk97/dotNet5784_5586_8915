@@ -51,8 +51,6 @@ namespace Task
 
         private void cbTaskSelector_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-
-
             // Create the filter based on the selected experience level
             Func<BO.Task, bool> filter = item => item.Level == ExpLevel;
             try
@@ -94,14 +92,11 @@ namespace Task
                     CurrentTask = task;
                     TaskInList = task.Dependencies;
                 }
+
             }
-            catch(BlDoesNotExistException ex)
+            catch (BlDoesNotExistException ex)
             {
-                MessageBox.Show(
-                  "List is empty! Add Tasks or initialize system.",
-                  "Empty List",
-                  MessageBoxButton.OK,
-                  MessageBoxImage.Information);
+                //Do Nothing and let the window initialize
             }
             InitializeComponent();
         }

@@ -129,7 +129,6 @@ public partial class AdminView : Window
                 MainWindow._isInitialized = true;
 
                 // Disable the button
-                (sender as Button).IsEnabled = false;
             }
 
         }

@@ -113,7 +113,8 @@ namespace Task
         {
             try
             {
-                new Task.TaskListWindow(CurrentTask).Show();
+                TaskListWindow window = new Task.TaskListWindow(CurrentTask);
+                window.Show();
                 RefreshTask();
             }
             catch(BlDoesNotExistException ex)

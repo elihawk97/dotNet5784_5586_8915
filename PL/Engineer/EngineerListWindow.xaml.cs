@@ -68,14 +68,21 @@ public partial class EngineerListWindow : Window
     /// </summary>
     private void RefreshEngineerList()
     {
-        if (CurrentTaskEngineerView == null)
+        try
         {
-            EngineerList = s_bl?.Engineer.ReadAll(null)!;
+            if (CurrentTaskEngineerView == null)
+            {
+                EngineerList = s_bl?.Engineer.ReadAll(null)!;
+            }
+            else
+            {
+                EngineerList = s_bl.Engineer.ReadAll(engineer => engineer.Level >= CurrentTaskEngineerView.Level);
+                CurrentTaskEngineerView = CurrentTaskEngineerView;
+            }
         }
-        else
+        catch (Exception ex)
         {
-            EngineerList = s_bl.Engineer.ReadAll(engineer => engineer.Level >= CurrentTaskEngineerView.Level);
-            CurrentTaskEngineerView = CurrentTaskEngineerView;
+            MessageBox.Show($"An error occurred: {ex.Message}. The List is empty.", "ReadAll Exception", MessageBoxButton.OK, MessageBoxImage.Error);
         }
     }
 
@@ -84,8 +91,10 @@ public partial class EngineerListWindow : Window
     /// </summary>
     private void cbEngineerSelector_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-
-            if(CurrentTaskEngineerView == null) { 
+        try
+        {
+            if (CurrentTaskEngineerView == null)
+            {
                 // Create the filter based on the selected experience level
                 Func<BO.Engineer, bool> filter = item => item.Level == ExpLevel;
 
@@ -94,16 +103,21 @@ public partial class EngineerListWindow : Window
                             s_bl?.Engineer.ReadAll(null)! :
                             s_bl?.Engineer.ReadAll(filter)!;
             }
-            else if(ExpLevel != BO.Enums.ExperienceLevel.None)
+            else if (ExpLevel != BO.Enums.ExperienceLevel.None)
             {
-                EngineerList = s_bl.Engineer.ReadAll(engineer => (engineer.Level >= CurrentTaskEngineerView.Level) 
+                EngineerList = s_bl.Engineer.ReadAll(engineer => (engineer.Level >= CurrentTaskEngineerView.Level)
                                                     && engineer.Level == ExpLevel);
             }
             else
             {
-            EngineerList = s_bl.Engineer.ReadAll(engineer => (engineer.Level >= CurrentTaskEngineerView.Level));
+                EngineerList = s_bl.Engineer.ReadAll(engineer => (engineer.Level >= CurrentTaskEngineerView.Level));
 
             }
+        }
+        catch (Exception ex)
+        {
+            MessageBox.Show($"An error occurred: {ex.Message}. The list is empty.", "ReadAll Exception", MessageBoxButton.OK, MessageBoxImage.Error);
+        }
 
     }
 
@@ -115,10 +129,21 @@ public partial class EngineerListWindow : Window
     
     private void AddButton_Click(object sender, RoutedEventArgs e)
     {
-        // Instantiate the EngineerWindow in "Add" mode (not passing an ID)
-        EngineerWindow engineerWindow = new EngineerWindow(); // Assuming a parameterless constructor is "Add" mode
-        engineerWindow.ShowDialog(); // ShowDialog to make it modal
-        RefreshEngineerList(); 
+        if (CurrentTaskEngineerView == null)
+        {
+            // Instantiate the EngineerWindow in "Add" mode (not passing an ID)
+            EngineerWindow engineerWindow = new EngineerWindow(); // Assuming a parameterless constructor is "Add" mode
+            engineerWindow.ShowDialog(); // ShowDialog to make it modal
+            RefreshEngineerList();
+        }
+        else
+        {
+            MessageBox.Show(
+              "Can't add new engineer while editing a task.",
+              "Task Editing Restriction",
+              MessageBoxButton.OK,
+              MessageBoxImage.Information);
+        }
     }
 
     /// <summary>
@@ -128,32 +153,41 @@ public partial class EngineerListWindow : Window
     /// <param name="e">The event arguments.</param>
     private void ListView_MouseDoubleClick(object sender, MouseButtonEventArgs e)
     {
-        var listView = sender as ListView;
-        var selectedEngineer = listView.SelectedItem as BO.Engineer;
-        if (CurrentTaskEngineerView == null)
+        try
         {
-            if (selectedEngineer != null)
+            var listView = sender as ListView;
+            var selectedEngineer = listView.SelectedItem as BO.Engineer;
+            if (CurrentTaskEngineerView == null)
             {
-                // Assuming EngineerWindow has a constructor that takes an engineer's ID for update mode
-                EngineerWindow engineerWindow = new EngineerWindow(selectedEngineer.Id);
-                engineerWindow.ShowDialog(); // Show the window modally
+                if (selectedEngineer != null)
+                {
+                    // Assuming EngineerWindow has a constructor that takes an engineer's ID for update mode
+                    EngineerWindow engineerWindow = new EngineerWindow(selectedEngineer.Id);
+                    engineerWindow.ShowDialog(); // Show the window modally
+                }
+                RefreshEngineerList();
+            }
+            else if (MainWindow.ProductionMode == true) //If we are viewing Engineers to assign to a task
+            {
+                CurrentTaskEngineerView.EngineerForTask = selectedEngineer;
+                CurrentTaskEngineerView.ActualStartDate = MainWindow.Date;
+                s_bl.Task.UpdateTask(CurrentTaskEngineerView.Id, CurrentTaskEngineerView);
+                Close();
+            }
+            else
+            {
+                MessageBox.Show(
+                  "Engineer assignment is not possible in planning mode. Please switch to production mode to assign engineers to tasks.",
+                  "Planning Mode Restriction",
+                  MessageBoxButton.OK,
+                  MessageBoxImage.Information);
             }
         }
-        else if(MainWindow.ProductionMode == true) //If we are viewing Engineers to assign to a task
+        catch (Exception ex)
         {
-            CurrentTaskEngineerView.EngineerForTask = selectedEngineer;
-            CurrentTaskEngineerView.ActualStartDate = MainWindow.Date;
-            s_bl.Task.UpdateTask(CurrentTaskEngineerView.Id, CurrentTaskEngineerView);
+            MessageBox.Show($"An error occurred: {ex.Message}. Update Failed.", "Update Exception", MessageBoxButton.OK, MessageBoxImage.Error);
+            Close();
         }
-        else
-        {
-            MessageBox.Show(
-              "Engineer assignment is not possible in planning mode. Please switch to production mode to assign engineers to tasks.",
-              "Planning Mode Restriction",
-              MessageBoxButton.OK,
-              MessageBoxImage.Information);
-        }
-        RefreshEngineerList();
     }
 
     /// <summary>
@@ -161,13 +195,21 @@ public partial class EngineerListWindow : Window
     /// </summary>
     public EngineerListWindow(BO.Task task)
     {
-        if (task == null)
+        try
         {
-            EngineerList = s_bl?.Engineer.ReadAll(null)!;
+            if (task == null)
+            {
+                EngineerList = s_bl?.Engineer.ReadAll(null)!;
+            }
+            else
+            {
+                EngineerList = s_bl.Engineer.ReadAll(engineer => engineer.Level >= task.Level);
+                CurrentTaskEngineerView = task;
+            }
         }
-        else {
-            EngineerList = s_bl.Engineer.ReadAll(engineer => engineer.Level >= task.Level);
-            CurrentTaskEngineerView = task;
+        catch (Exception ex)
+        {
+            //Do nothing, let the window initialize
         }
         InitializeComponent();
     }
