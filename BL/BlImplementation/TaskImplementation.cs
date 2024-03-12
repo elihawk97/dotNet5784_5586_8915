@@ -327,7 +327,7 @@ internal class TaskImplementation : BlApi.ITask
         {
              engineer = _dal.Engineer.Read(x => x.Id == task.EngineerID);
             engineerForBO = new BO.Engineer(engineer.Id, engineer.Name, engineer.Email,
-            (BO.Enums.ExperienceLevel)engineer.EngineerExperience, engineer.Cost);
+            MapFromDO(engineer.EngineerExperience), engineer.Cost);
         }
         catch (DalDoesNotExistException ex)
         { engineerForBO = null;     }
@@ -357,7 +357,7 @@ internal class TaskImplementation : BlApi.ITask
             );
             }).ToList(),
             EngineerForTask = engineerForBO,//get engineer based off of the ID
-            Level = (BO.Enums.ExperienceLevel)task.DifficultyLevel,
+            Level = MapFromDO(task.DifficultyLevel),
             Notes = task.Notes,
             RequiredEffortTime = task.Duration
         };
@@ -375,7 +375,7 @@ internal class TaskImplementation : BlApi.ITask
     /// <returns>The created DO.Task object.</returns>
     private DO.Task taskCreater(BO.Task task)
     {
-        DO.Enums.ExperienceLevel doExperienceLevel = (DO.Enums.ExperienceLevel)task.Level;
+        DO.Enums.ExperienceLevel doExperienceLevel = MapToDO(task.Level);
 
         // Check the dates make sense, note the project may start before the projected
         // start date and finish before the deadline, and may finish after the deadline
@@ -504,7 +504,32 @@ internal class TaskImplementation : BlApi.ITask
     }
 
 
+    public static BO.Enums.ExperienceLevel MapFromDO(DO.Enums.ExperienceLevel doLevel)
+    {
+        return doLevel switch
+        {
+            DO.Enums.ExperienceLevel.Novice => BO.Enums.ExperienceLevel.Novice,
+            DO.Enums.ExperienceLevel.AdvancedBeginner => BO.Enums.ExperienceLevel.AdvancedBeginner,
+            DO.Enums.ExperienceLevel.Competent => BO.Enums.ExperienceLevel.Competent,
+            DO.Enums.ExperienceLevel.Proficient => BO.Enums.ExperienceLevel.Proficient,
+            DO.Enums.ExperienceLevel.Expert => BO.Enums.ExperienceLevel.Expert,
+            _ => BO.Enums.ExperienceLevel.None, // Default case if not matched
+        };
+    }
 
+    public static DO.Enums.ExperienceLevel MapToDO(BO.Enums.ExperienceLevel boLevel)
+    {
+        return boLevel switch
+        {
+            BO.Enums.ExperienceLevel.Novice => DO.Enums.ExperienceLevel.Novice,
+            BO.Enums.ExperienceLevel.AdvancedBeginner => DO.Enums.ExperienceLevel.AdvancedBeginner,
+            BO.Enums.ExperienceLevel.Competent => DO.Enums.ExperienceLevel.Competent,
+            BO.Enums.ExperienceLevel.Proficient => DO.Enums.ExperienceLevel.Proficient,
+            BO.Enums.ExperienceLevel.Expert => DO.Enums.ExperienceLevel.Expert,
+            // Handle 'None' and 'All' explicitly if needed or throw an exception
+            _ => throw new InvalidOperationException($"BO.Enums.ExperienceLevel '{boLevel}' cannot be mapped to DO.Enums.ExperienceLevel")
+        };
+    }
 
 }
 
