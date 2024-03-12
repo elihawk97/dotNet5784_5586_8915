@@ -1,4 +1,5 @@
 ﻿
+using BO;
 using System.Windows;
 using Task;
 
@@ -68,9 +69,13 @@ public partial class EngineerWindow : Window
             // Close the window or navigate away
             this.Close();
         }
+        catch (BlInvalidTaskCreation ex)
+        {
+         MessageBox.Show($"An error occurred: {ex.Message}", "Create Exception", MessageBoxButton.OK, MessageBoxImage.Error);
+        }
         catch (Exception ex)
         {
-            MessageBox.Show($"An error occurred: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            MessageBox.Show($"An error occurred: {ex.Message}", "Update Exception", MessageBoxButton.OK, MessageBoxImage.Error);
         }
     }
 

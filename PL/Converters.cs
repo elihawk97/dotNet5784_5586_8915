@@ -4,12 +4,12 @@ using System.Windows.Data;
 using System.Windows.Media;
 using System.Windows.Controls; // Add this for DataGridCell
 
-
-namespace PL;
-
 /// <summary>
 /// Converts an ID to content for display purposes.
 /// </summary>
+namespace PL;
+
+
 public class ConvertIdToContent : IValueConverter
 {
 

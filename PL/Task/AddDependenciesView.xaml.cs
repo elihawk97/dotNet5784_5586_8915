@@ -12,6 +12,8 @@ namespace Task
     public partial class AddDependenciesView : Window
     {
         public static readonly BlApi.IBl s_bl = BlApi.Factory.Get();
+        public BO.Enums.ExperienceLevel ExpLevel { get; set; } = BO.Enums.ExperienceLevel.None;
+
         /// <summary>
         /// Dependency property for the current Task being manipulated.
         /// </summary>
@@ -45,38 +47,88 @@ namespace Task
 
         public void Add_Dependency(object sender, MouseButtonEventArgs e)
         {
-            var listView = sender as ListView;
-            TaskInList toAdd = listView.SelectedItem as BO.TaskInList;
-            Current_Task.Dependencies.Add(toAdd);
-            s_bl.Task.UpdateTask(Current_Task.Id, Current_Task);
+            try
+            {
+                var listView = sender as ListView;
+                TaskInList toAdd = listView.SelectedItem as BO.TaskInList;
+                Current_Task.Dependencies.Add(toAdd);
+                s_bl.Task.UpdateTask(Current_Task.Id, Current_Task);
+            }
+            catch (BlDoesNotExistException ex)
+            {
+                MessageBox.Show(
+                  $"Task with ID={Current_Task.Id} does not exist!", "Not Created",
+                  MessageBoxButton.OK,
+                  MessageBoxImage.Information);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(
+                "Internal Server Error 504. Please try again later.",
+                "Query Error",
+                MessageBoxButton.OK,
+                MessageBoxImage.Information);
+            }
         }
 
         public AddDependenciesView(BO.Task task)
         {
-            Current_Task = task;
-            TaskInList2 = s_bl.Task.ReadAll(0);       
-            InitializeComponent();
+            try
+            {
+                Current_Task = task;
+                TaskInList2 = s_bl.Task.ReadAll(0);
+                InitializeComponent();
+            }
+            catch (BlDoesNotExistException ex)
+            {
+                MessageBox.Show(
+                  $"Task with ID={task.Id} does not exist!", "Not Created",
+                  MessageBoxButton.OK,
+                  MessageBoxImage.Information);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(
+                "Internal Server Error 504. Please try again later.",
+                "Query Error",
+                MessageBoxButton.OK,
+                MessageBoxImage.Information);
+            }
         }
 
         private void cbTaskSelector_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-
-
-            /*          FIX THE EXP to be included
-             *          // Create the filter based on the selected experience level
-                        Func<BO.Task, bool> filter = item => item.Level == ExpLevel;
-                        if (CurrentTask == null)
-                        {
-                            // Apply the filter
-                            TaskInList = (ExpLevel == BO.Enums.ExperienceLevel.None) ?
-                                        s_bl?.Task.ReadAll(0)! :
-                                        s_bl?.Task.ReadAll(filter)!;
-                        }
-                        else
-                        {
-                            TaskInList = CurrentTask.Dependencies;
-                        }*/
-            TaskInList2 = s_bl?.Task.ReadAll(0);
+            try
+            {
+                // Create the filter based on the selected experience level
+                Func<BO.Task, bool> filter = item => item.Level == ExpLevel;
+                if (Current_Task == null)
+                {
+                    // Apply the filter
+                    TaskInList2 = (ExpLevel == BO.Enums.ExperienceLevel.None) ?
+                                s_bl?.Task.ReadAll(0)! :
+                                s_bl?.Task.ReadAll(filter)!;
+                }
+                else
+                {
+                    TaskInList2 = s_bl?.Task.ReadAll(0);
+                }
+            }
+            catch (BlDoesNotExistException ex)
+            {
+                MessageBox.Show(
+                  $"The Task list is empty.", "Not Created",
+                  MessageBoxButton.OK,
+                  MessageBoxImage.Information);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(
+                "Internal Server Error 504. Please try again later.",
+                "Query Error",
+                MessageBoxButton.OK,
+                MessageBoxImage.Information);
+            }
 
 
         }

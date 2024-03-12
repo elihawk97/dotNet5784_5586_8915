@@ -44,40 +44,42 @@ public partial class GanttChart : Window
 
     private void Window_Loaded(object sender, RoutedEventArgs e)
     {
-        List<BO.TaskInList> tasksList = FetchTasks().ToList();
-        List<BO.Task> tasks = new List<BO.Task>();
-
-        foreach (var task in tasksList)
+        try
         {
-            tasks.Add(s_bl.Task.ReadTask(task.Id));
-        }
+            List<BO.TaskInList> tasksList = FetchTasks().ToList();
+            List<BO.Task> tasks = new List<BO.Task>();
 
-        DataTable = new DataTable();
+            foreach (var task in tasksList)
+            {
+                tasks.Add(s_bl.Task.ReadTask(task.Id));
+            }
 
-        DateTime minStartDate = tasks.Min(task => task.ProjectedStartDate ?? DateTime.MaxValue);
-        DateTime maxEndDate = tasks.Max(task => task.ProjectedEndDate ?? DateTime.MinValue);
+            DataTable = new DataTable();
 
-        double diffResult = (maxEndDate - minStartDate).TotalDays;
+            DateTime minStartDate = tasks.Min(task => task.ProjectedStartDate ?? DateTime.MaxValue);
+            DateTime maxEndDate = tasks.Max(task => task.ProjectedEndDate ?? DateTime.MinValue);
 
-        DataTable.Columns.Add("Tasks & Dependencies");
+            double diffResult = (maxEndDate - minStartDate).TotalDays;
 
-        for (int i = 0; i <= diffResult; i += 1)
-        {
-            DataTable.Columns.Add(minStartDate.AddDays(i).ToString("MM dd yyyy"));
-        }
+            DataTable.Columns.Add("Tasks & Dependencies");
 
-        DataRow dr = DataTable.NewRow();
+            for (int i = 0; i <= diffResult; i += 1)
+            {
+                DataTable.Columns.Add(minStartDate.AddDays(i).ToString("MM dd yyyy"));
+            }
 
-        foreach (var task in tasks)
-        {
-            DataRow taskRow = DataTable.NewRow();
-            taskRow[0] = task.Name + " Id: " + task.Id; // Add task name in the first column
+            DataRow dr = DataTable.NewRow();
+
+            foreach (var task in tasks)
+            {
+                DataRow taskRow = DataTable.NewRow();
+                taskRow[0] = task.Name + " Id: " + task.Id; // Add task name in the first column
 
             // Ensure ProjectedStartDate is not null; otherwise, use DateTime.MaxValue
             DateTime start = (task.ActualStartDate ?? task.ProjectedStartDate ?? DateTime.MaxValue).Date;
 
-            // Ensure ProjectedEndDate is not null; otherwise, use DateTime.MinValue
-            DateTime end = (task.ProjectedEndDate ?? DateTime.MinValue).Date;
+                // Ensure ProjectedEndDate is not null; otherwise, use DateTime.MinValue
+                DateTime end = (task.ProjectedEndDate ?? DateTime.MinValue).Date;
 
             string dependencyString = task.Dependencies != null
             ? string.Join(" ", task.Dependencies.Select(d => d.Name))
@@ -105,8 +107,17 @@ public partial class GanttChart : Window
             }
             DataTable.Rows.Add(taskRow);
 
+            }
+            FooBar1.ItemsSource = DataTable.DefaultView;
         }
-        FooBar1.ItemsSource = DataTable.DefaultView;
+        catch (Exception ex)
+        {
+            MessageBox.Show(
+                  "Please ensure system was properly initialized. Gantt Chart Creation Failed!",
+                  "ReadAll Exception",
+                  MessageBoxButton.OK,
+                  MessageBoxImage.Warning);
+        }
     }
 
     public GanttChart()
@@ -117,8 +128,20 @@ public partial class GanttChart : Window
 
     private static IEnumerable<BO.TaskInList> FetchTasks()
     {
-        // Implement this method to return your tasks collection
-        return s_bl.Task.ReadAll(null); // This is just an example; adjust it according to your actual method to fetch tasks
+        try
+        {
+            // Implement this method to return your tasks collection
+            return s_bl.Task.ReadAll(null); // This is just an example; adjust it according to your actual method to fetch tasks
+        }
+        catch (Exception ex)
+        {
+            MessageBox.Show(
+                  "Please ensure system was properly initialized. ReadAll Failed!",
+                  "ReadAll Exception",
+                  MessageBoxButton.OK,
+                  MessageBoxImage.Warning);
+        }
+        return null;
     }
 
 }

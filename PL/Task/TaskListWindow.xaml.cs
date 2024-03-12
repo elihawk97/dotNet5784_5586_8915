@@ -1,4 +1,5 @@
-﻿using Engineer;
+﻿using BO;
+using Engineer;
 using PL;
 using System.Windows;
 using System.Windows.Controls;
@@ -50,36 +51,53 @@ namespace Task
 
         private void cbTaskSelector_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-
-
             // Create the filter based on the selected experience level
             Func<BO.Task, bool> filter = item => item.Level == ExpLevel;
-            if (CurrentTask == null)
+            try
             {
-                // Apply the filter
-                TaskInList = (ExpLevel == BO.Enums.ExperienceLevel.None) ?
-                            s_bl?.Task.ReadAll(0)! :
-                            s_bl?.Task.ReadAll(filter)!;
+                if (CurrentTask == null)
+                {
+                    // Apply the filter
+                    TaskInList = (ExpLevel == BO.Enums.ExperienceLevel.None) ?
+                                s_bl?.Task.ReadAll(0)! :
+                                s_bl?.Task.ReadAll(filter)!;
+                }
+                else
+                {
+                    TaskInList = CurrentTask.Dependencies;
+                }
             }
-            else {
-                TaskInList = CurrentTask.Dependencies;
+            catch (BlDoesNotExistException ex)
+            {
+                MessageBox.Show(
+                  "List is empty! Add Tasks or initialize system.",
+                  "Empty List",
+                  MessageBoxButton.OK,
+                  MessageBoxImage.Information);
             }
-                
+
         }
 
 
         public TaskListWindow(BO.Task? task)
         {
-            if (task == null)
+            try
             {
-                TaskInList = s_bl?.Task.ReadAll(0)!;
-            }
-            else
-            {
-                CurrentTask = task;
-                TaskInList = task.Dependencies;
-            }
+                if (task == null)
+                {
+                    TaskInList = s_bl?.Task.ReadAll(0)!;
+                }
+                else
+                {
+                    CurrentTask = task;
+                    TaskInList = task.Dependencies;
+                }
 
+            }
+            catch (BlDoesNotExistException ex)
+            {
+                //Do Nothing and let the window initialize
+            }
             InitializeComponent();
         }
 
@@ -111,7 +129,7 @@ namespace Task
             if (CurrentTask == null && MainWindow.ProductionMode == false)
             {
                 // Instantiate the EngineerWindow in "Add" mode (not passing an ID)
-                TaskWindow taskWindow = new TaskWindow(); // Assuming a parameterless constructor is "Add" mode
+                TaskWindow taskWindow = new TaskWindow(0); // Assuming a parameterless constructor is "Add" mode
                 taskWindow.ShowDialog(); // ShowDialog to make it modal
                 RefreshTaskList();
             }
@@ -136,13 +154,24 @@ namespace Task
         /// </summary>
         private void RefreshTaskList()
         {
-            if (CurrentTask == null)
+            try
             {
-                TaskInList = s_bl?.Task.ReadAll(null)!;
+                if (CurrentTask == null)
+                {
+                    TaskInList = s_bl?.Task.ReadAll(null)!;
+                }
+                else
+                {
+                    TaskInList = CurrentTask.Dependencies;
+                }
             }
-            else
+            catch (BlDoesNotExistException ex)
             {
-                TaskInList = CurrentTask.Dependencies;
+                MessageBox.Show(
+                  "List is empty! Add Tasks or initialize system.",
+                  "Empty List",
+                  MessageBoxButton.OK,
+                  MessageBoxImage.Information);
             }
         }
     }

@@ -1,4 +1,5 @@
-﻿using PL;
+﻿using BO;
+using PL;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
@@ -16,18 +17,6 @@ namespace Task
         public static readonly BlApi.IBl s_bl = BlApi.Factory.Get();
 
 
-        // Property to hold the list of engineers
-        private ObservableCollection<BO.Engineer> _engineersList;
-        public ObservableCollection<BO.Engineer> EngineersList
-        {
-            get { return _engineersList; }
-            set
-            {
-                _engineersList = value;
-                OnPropertyChanged();
-            }
-        }
-
         // Implement INotifyPropertyChanged interface
         public event PropertyChangedEventHandler PropertyChanged;
 
@@ -38,33 +27,39 @@ namespace Task
         }
 
 
-        // Method to retrieve the list of engineers from the data source
-        private void LoadEngineers()
-        {
-            // Assuming bl.Engineer is an instance of your business logic class for engineers
-            // and ReadAll() method retrieves all engineers from the data source
-            EngineersList = new ObservableCollection<BO.Engineer>(s_bl.Engineer.ReadAll(x => x != null));
-        }
 
-        public TaskWindow(int Id = 0)
+
+        public TaskWindow(int Id)
         {
-            InitializeComponent();
-            if (Id == 0)
+            try
             {
-                // Initialize the EngineersList property
-                EngineersList = new ObservableCollection<BO.Engineer>();
+                InitializeComponent();
+                if (Id == 0)
+                {
 
-                // Call a method to populate the EngineersList property
-                LoadEngineers();
-                // Add mode: Assign a new object
-                CurrentTask = new BO.Task() { Id = 0};
+                    // Add mode: Assign a new object
+                    CurrentTask = new BO.Task() { Id = 0 };
+                }
+                else
+                {
+                    // Update mode: Fetch the object from BL
+                    CurrentTask = s_bl.Task.ReadTask(Id);
+                }
             }
-            else
+            catch (BlDoesNotExistException ex)
             {
-                // Update mode: Fetch the object from BL
-                CurrentTask = s_bl.Task.ReadTask(Id);
-                LoadEngineers();
-
+                MessageBox.Show(
+                  $"Task with ID={CurrentTask.Id} does not exist!", "Not Created",
+                  MessageBoxButton.OK,
+                  MessageBoxImage.Information);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(
+                "Internal Server Error 504. Please try again later.",
+                "Query Error",
+                MessageBoxButton.OK,
+                MessageBoxImage.Information);
             }
         }
 
@@ -116,8 +111,28 @@ namespace Task
 
         public void View_Dependencies(object sender, RoutedEventArgs e)
         {
-            new Task.TaskListWindow(CurrentTask).Show();
-            RefreshTask();
+            try
+            {
+                TaskListWindow window = new Task.TaskListWindow(CurrentTask);
+                window.Show();
+                RefreshTask();
+            }
+            catch(BlDoesNotExistException ex)
+            {
+                MessageBox.Show(
+                  "You must first create the task before adding dependencies!",
+                  "Not Created",
+                  MessageBoxButton.OK,
+                  MessageBoxImage.Information);
+            }
+            catch(Exception ex)
+            {
+                MessageBox.Show(
+                "Internal Server Error 504. Please try again later.",
+                "Query Error",
+                MessageBoxButton.OK,
+                MessageBoxImage.Information);
+            }
         }
 
         public void addEngineer(object sender, RoutedEventArgs e) {
@@ -130,7 +145,26 @@ namespace Task
         /// </summary>
         private void RefreshTask()
         {
-            CurrentTask = s_bl?.Task.ReadTask(CurrentTask.Id)!;
+            try
+            {
+                CurrentTask = s_bl?.Task.ReadTask(CurrentTask.Id)!;
+            }
+            catch (BlDoesNotExistException ex)
+            {
+                MessageBox.Show(
+                  $"Task with ID={CurrentTask.Id} does not exist!",
+                  "Not Created",
+                  MessageBoxButton.OK,
+                  MessageBoxImage.Information);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(
+                "Internal Server Error 504. Please try again later.",
+                "Query Error",
+                MessageBoxButton.OK,
+                MessageBoxImage.Information);
+            }
         }
     }
 }

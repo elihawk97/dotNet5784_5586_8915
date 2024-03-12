@@ -57,7 +57,7 @@ internal class EngineerImplementation : IEngineer
 
         catch (DO.DalAlreadyExistsException ex)
         {
-            throw new Exception(
+            throw new BlInvalidTaskCreation(
             $"Engineer with ID={boItem.Id} already exists", ex
             );
         }

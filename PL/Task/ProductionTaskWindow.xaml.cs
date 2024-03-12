@@ -34,10 +34,16 @@ namespace Task
         /// <param name="Id">Id of the Task</param>
         public ProductionTaskWindow(int Id)
         {
-            InitializeComponent();
-   
-            // Update mode: Fetch the object from BL
-            CurrentTask3 = s_bl.Task.ReadTask(Id);
+            try
+            {
+                InitializeComponent();
+                // Update mode: Fetch the object from BL
+                CurrentTask3 = s_bl.Task.ReadTask(Id);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"An error occurred: {ex.Message}", "Read Exception", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
         }
 
         /// <summary>
@@ -83,7 +89,8 @@ namespace Task
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"An error occurred: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show($"An error occurred: {ex.Message}", "Update Exception",
+                    MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
 
@@ -108,7 +115,7 @@ namespace Task
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"An error occurred: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show($"An error occurred: {ex.Message}", "Update Exception", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
 
@@ -132,7 +139,15 @@ namespace Task
         /// </summary>
         private void RefreshTask()
         {
-            CurrentTask3 = s_bl?.Task.ReadTask(CurrentTask3.Id)!;
+            try
+            {
+                CurrentTask3 = s_bl?.Task.ReadTask(CurrentTask3.Id)!;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"An error occurred: {ex.Message}", "Update Exception", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+
         }
     }
 }
