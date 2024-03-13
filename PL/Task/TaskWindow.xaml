@@ -71,7 +71,7 @@
             <Label Grid.Row="12" Grid.Column="0" Content="Current Engineer - Click To Set/Change" />
             <Button Grid.Row="12" Grid.Column="1"
                  Click="addEngineer"
-                 Content="{Binding EngineerForTask.Id, Mode=OneWay, NotifyOnValidationError=True, ValidatesOnExceptions=True}" 
+                 Content="{Binding EngineerForTask.Name, Mode=OneWay, NotifyOnValidationError=True, ValidatesOnExceptions=True}" 
              />
        
 

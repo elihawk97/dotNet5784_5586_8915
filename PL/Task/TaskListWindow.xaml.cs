@@ -1,6 +1,7 @@
 ﻿using BO;
 using Engineer;
 using PL;
+using System.Security.RightsManagement;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -17,6 +18,7 @@ namespace Task
 
         public BO.Enums.ExperienceLevel ExpLevel { get; set; } = BO.Enums.ExperienceLevel.None;
 
+        public BO.Engineer? engineer { get; set; } = null; 
 
         public IEnumerable<BO.TaskInList> TaskInList
         {
@@ -78,28 +80,54 @@ namespace Task
 
         }
 
-
-        public TaskListWindow(BO.Task? task)
+        public TaskListWindow(BO.Task? task = null, BO.Engineer? e = null )
         {
-            try
+
+
+            InitializeComponent();
+
+
+            if (task != null)
             {
-                if (task == null)
-                {
-                    TaskInList = s_bl?.Task.ReadAll(0)!;
-                }
-                else
+                try
                 {
                     CurrentTask = task;
                     TaskInList = task.Dependencies;
                 }
-
+                catch (BlDoesNotExistException ex)
+                {
+                    // Do Nothing and let the window initialize
+                }
             }
-            catch (BlDoesNotExistException ex)
+            else if (e != null)
             {
-                //Do Nothing and let the window initialize
+                try
+                {
+
+                    Func<BO.Task, bool> filter = item => (item.Level <= e.Level && item.EngineerForTask == null);
+
+                    engineer = e; 
+                    TaskInList = s_bl?.Task.ReadAll(filter);
+                }
+                catch (BlDoesNotExistException ex)
+                {
+                    // Do Nothing and let the window initialize
+                }
             }
-            InitializeComponent();
+            else
+            {
+                try
+                {
+                    TaskInList = s_bl?.Task.ReadAll(0)!;
+                }
+                catch (BlDoesNotExistException ex)
+                {
+                    // Do Nothing and let the window initialize
+                }
+            }
+
         }
+
 
         /// <summary>
         /// Handles the mouse double click event of the list view.    /// </summary>
@@ -110,8 +138,29 @@ namespace Task
 
             var listView = sender as ListView;
             var selectedTask = listView.SelectedItem as BO.TaskInList;
+            
+            if (engineer != null)
+            {
+                try
+                {
+                    BO.Task task = s_bl.Task.ReadTask(selectedTask.Id);
+                    task.EngineerForTask = engineer;
 
-            if (selectedTask != null && MainWindow.ProductionMode == false)
+
+                    s_bl.Task.UpdateTask(task.Id, task);
+                }
+                catch(Exception ex)
+                {
+                    MessageBox.Show(
+                 "Error Assigning Engineer To Task",
+                 "Assignment Error",
+                 MessageBoxButton.OK,
+                 MessageBoxImage.Information);
+                }
+            }
+          
+           
+            else if (selectedTask != null && MainWindow.ProductionMode == false)
             {
                 // Assuming EngineerWindow has a constructor that takes an engineer's ID for update mode
                 TaskWindow TaskWindow = new TaskWindow(selectedTask.Id);
@@ -156,7 +205,13 @@ namespace Task
         {
             try
             {
-                if (CurrentTask == null)
+
+                if (engineer != null)
+                {
+                    Func<BO.Task, bool> filter = item => (item.Level <= engineer.Level && item.EngineerForTask == null);
+                    TaskInList = s_bl?.Task.ReadAll(filter);
+                }
+                else if (CurrentTask == null)
                 {
                     TaskInList = s_bl?.Task.ReadAll(null)!;
                 }

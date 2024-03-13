@@ -25,6 +25,8 @@ public partial class TaskTracker : Window
     private string? engineerId = null;
     int engineerIdInt;
 
+    public string EngineerInfoString => GetEngineerInfoString();
+
 
     public static readonly DependencyProperty CurrentEngineerProperty = DependencyProperty.Register(
       "CurrentEngineer",
@@ -50,35 +52,47 @@ public partial class TaskTracker : Window
         set { SetValue(CurrentTaskProperty, value); }
     }
 
-    private void Window_Loaded(object sender, RoutedEventArgs e)
+    private string GetEngineerInfoString()
     {
-       
+        return $"{CurrentEngineer?.Name} {CurrentEngineer?.Id} {CurrentEngineer?.Level}";
     }
+
+
     private void AssignedTaskButton_Click(object sender, RoutedEventArgs e)
     {
-        new Task.TaskWindow(CurrentTask.Id).Show(); 
+        if (CurrentTask != null)
+        {
+            new Task.ProductionTaskWindow(CurrentTask.Id).Show();
+        }
         // Add your logic for what happens when the Current Task button is clicked
     }
 
     private void TasksButton_Click(object sender, RoutedEventArgs e)
     {
-        
-        TaskListWindow taskListWindow = new TaskListWindow(null); // Assuming a parameterless constructor is "Add" mode
-        taskListWindow.ShowDialog(); // ShowDialog to make it modal
+        if (CurrentTask == null)
+        {
+
+
+            TaskListWindow taskListWindow = new TaskListWindow(null, CurrentEngineer); // Assuming a parameterless constructor is "Add" mode
+            taskListWindow.ShowDialog(); // ShowDialog to make it modal
+        }
     }
 
     public TaskTracker(int id)
     {
         try
         {
+
             CurrentEngineer = s_bl.Engineer.ReadEngineer(id);
             CurrentTask = CurrentEngineer.Task;
 
             InitializeComponent();
+
         }
         catch (Exception ex)
         {
             MessageBox.Show($"An error occurred: {ex.Message}", "Read Exception", MessageBoxButton.OK, MessageBoxImage.Error);
         }
+        
     }
 }

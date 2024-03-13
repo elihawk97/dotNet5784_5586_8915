@@ -6,7 +6,6 @@
         xmlns:local="clr-namespace:PL"
         mc:Ignorable="d"
         Title="TaskTracker" Height="450" Width="800"
-        Loaded="Window_Loaded"
         DataContext="{Binding RelativeSource={RelativeSource Self}}">
     
 
@@ -37,7 +36,7 @@
                     <RowDefinition Height="2*"/>
                 </Grid.RowDefinitions>
                 <TextBlock  HorizontalAlignment="Center" VerticalAlignment="Center"
-                    Text="Tasks"
+                    Text="{Binding Path=EngineerInfoString, Mode=OneWay}"
                     FontFamily="Arial" FontSize="30" FontWeight="Bold" FontStyle="Italic"
                     Foreground="DarkBlue" TextWrapping="Wrap" TextAlignment="Center" Padding="10"
                             />
