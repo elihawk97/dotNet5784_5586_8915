@@ -3,6 +3,7 @@ using DO;
 using DalApi;
 using Dal;
 using System.Xml.Linq;
+using System.Data.Common;
 
 namespace Dal;
 
@@ -35,9 +36,14 @@ internal class DependencyImplementation : IDependency
 
         // Add the new element to the existing XML
         xElement.Add(newElement);
+        if (ReadAll().Any(d => (d.DependentTask == entity.DependentTask && d.DependentOnTask == entity.DependentOnTask))){
+        }
+        else
+        {
+            // Save the modified XElement back to the same file, overwriting it
+            XMLTools.SaveListToXMLElement(xElement, s_dependencies_xml);
+        }
 
-        // Save the modified XElement back to the same file, overwriting it
-        XMLTools.SaveListToXMLElement(xElement, s_dependencies_xml);
 
         return _id;
    
