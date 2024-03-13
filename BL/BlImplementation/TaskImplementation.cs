@@ -151,6 +151,7 @@ internal class TaskImplementation : BlApi.ITask
             }
     }
 
+
     private BO.Enums.TaskStatus taskStatus(BO.Task task)
     {
         BO.Enums.TaskStatus status;
@@ -176,6 +177,33 @@ internal class TaskImplementation : BlApi.ITask
         }
         return status;
     }
+
+    private BO.Enums.TaskStatus doTaskStatus(DO.Task task)
+    {
+        BO.Enums.TaskStatus status;
+        if (task.ProjectedStartDate == null)
+        {
+            status = BO.Enums.TaskStatus.Unscheduled;
+        }
+        else if (task.ActualStartTime == null)
+        {
+            status = BO.Enums.TaskStatus.Scheduled;
+        }
+        else if (task.ActualEndDate == null && ((DateTime)task.ActualStartTime).Add(((TimeSpan)task.Duration)) < task.DeadLine)
+        {
+            status = BO.Enums.TaskStatus.OnTrack;
+        }
+        else if (task.ActualEndDate != null)
+        {
+            status = BO.Enums.TaskStatus.Done;
+        }
+        else
+        {
+            status = BO.Enums.TaskStatus.InJeopardy;
+        }
+        return status;
+    }
+
 
     public IEnumerable<BO.TaskInList> ReadAll(Func<BO.Task, bool> filter)
     {
@@ -258,7 +286,7 @@ internal class TaskImplementation : BlApi.ITask
             DO.Task doTask = _dal.Task.Read(x => x.Id == id);
             DO.Task doNewTask = taskCreater(boTask);
             doNewTask.Id = id;
-            if(boTask.ActualStartDate == null)
+            if(boTask.ActualStartDate == null && boTask.ActualEndDate == null)
             {
                 //do nothing
             }
@@ -353,7 +381,7 @@ internal class TaskImplementation : BlApi.ITask
                 dep.DependentOnTask, // Assuming this is the ID
                 dependentOnTask?.Description ?? "", // Accessing Description property if dependentOnTask is not null
                 dependentOnTask?.NickName ?? "", // Accessing NickName property if dependentOnTask is not null
-                BO.Enums.TaskStatus.Unscheduled
+                doTaskStatus(dependentOnTask)
             );
             }).ToList(),
             EngineerForTask = engineerForBO,//get engineer based off of the ID
@@ -361,7 +389,7 @@ internal class TaskImplementation : BlApi.ITask
             Notes = task.Notes,
             RequiredEffortTime = task.Duration
         };
-
+        
         boTask.Status = (BO.Enums.TaskStatus)taskStatus(boTask);
 
         return boTask;
@@ -452,7 +480,7 @@ internal class TaskImplementation : BlApi.ITask
             {
                 throw new BlTasksCanNotBeScheduled("The given tasks can not be completed before the deadline.");
             }
-            task.DateCreated = _bl.Tools.getProjectStartDate();
+            task.DateCreated = ((DateTime)(_bl.Tools.getProjectStartDate())).AddDays(-1);
             task.DeadLine = ((DateTime)task.DateCreated).AddDays(1000);
             _dal.Task.Update(taskCreater(task));
         }

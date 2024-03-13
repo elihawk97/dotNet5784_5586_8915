@@ -55,7 +55,7 @@ public static class Initialization
                 int randomAmountOfDays = s_rand.Next(1, 10);
 
                 // Project is Created within at least one year of the current date
-                DateTime dateCreated = startingPoint.AddDays(randomAmountOfDays);
+                DateTime dateCreated = startingPoint;//.AddDays(randomAmountOfDays);
 
                 // Projected start date is within the same month
                 DateTime? projectedStartDate = null;
