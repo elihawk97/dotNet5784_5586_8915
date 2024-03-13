@@ -19,7 +19,11 @@ internal class DependencyImplementation : IDependency
     {
         int id = DataSource.Config.NextDependencyId;
         Dependency copy = item with { Id = id };
-        DataSource.Dependencies.Add(copy);
+        if (DataSource.Dependencies.Any(d => (d.DependentTask == copy.DependentTask && d.DependentOnTask == copy.DependentOnTask))){
+        }
+        else {
+            DataSource.Dependencies.Add(copy); 
+        }
         return id;
     }
 

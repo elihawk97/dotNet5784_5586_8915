@@ -97,6 +97,7 @@ public partial class AdminView : Window
                 s_bl.Task.Reset();
                 s_bl.Engineer.Reset();
                 MainWindow._isInitialized = false;
+                MainWindow.ProductionMode = false;
                 MessageBox.Show("Data reset completed successfully.", "Reset Done", MessageBoxButton.OK, MessageBoxImage.Information);
             }
         }

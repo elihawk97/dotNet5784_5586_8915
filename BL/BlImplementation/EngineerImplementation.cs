@@ -261,8 +261,10 @@ internal class EngineerImplementation : IEngineer
                 Level = (BO.Enums.ExperienceLevel)task.DifficultyLevel,
                 Notes = task.Notes,
             };
-
-            engineer.Task = boTask;
+            if (boTask.ActualEndDate == null)
+            {
+                engineer.Task = boTask;
+            }
         }
         catch (Exception ex)
         {
