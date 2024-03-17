@@ -1,4 +1,5 @@
 ﻿
+using BO;
 using System.Windows;
 using System.Windows.Controls;
 
@@ -72,6 +73,14 @@ public partial class AdminView : Window
             {
                 MessageBox.Show("Scheduling already completed, can not reschedule tasks.", "Production Limitation", MessageBoxButton.OK, MessageBoxImage.Information);
             }
+        }
+        catch(BlTasksCanNotBeScheduled ex)
+        {
+            MessageBox.Show(
+              ex.Message,
+              "Scheduling Exception",
+              MessageBoxButton.OK,
+              MessageBoxImage.Warning);
         }
         catch (Exception ex)
         {

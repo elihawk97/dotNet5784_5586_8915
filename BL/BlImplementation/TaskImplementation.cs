@@ -29,6 +29,18 @@ internal class TaskImplementation : BlApi.ITask
             {
                 throw new BlInvalidTaskCreation("Can't create the Task, name has not been set!");
             }
+            if(task.RequiredEffortTime == null)
+            {
+                throw new BlInvalidTaskCreation("Can't create task without a duration!");
+            }
+            if (task.DeadLine == null)
+            {
+                throw new BlInvalidTaskCreation("Can't create task without a deadline!");
+            }
+            if (task.Level == null)
+            {
+                throw new BlInvalidTaskCreation("Can't create task without a duration!");
+            }
             DO.Task doTask = taskCreater(task);
             IEnumerable<DO.Dependency> dependencies = from taskInList in task.Dependencies
                                                       select new Dependency(doTask.Id, taskInList.Id);
@@ -525,7 +537,7 @@ internal class TaskImplementation : BlApi.ITask
                 throw new BlTasksCanNotBeScheduled("The given tasks can not be completed before the deadline.");
             }
             task.DateCreated = ((DateTime)(_bl.Tools.getProjectStartDate())).AddDays(-1);
-            task.DeadLine = ((DateTime)task.DateCreated).AddDays(1000);
+            //task.DeadLine = ((DateTime)task.DateCreated).AddDays(1000);
             _dal.Task.Update(taskCreater(task));
         }
 
