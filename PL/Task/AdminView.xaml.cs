@@ -26,7 +26,7 @@ public partial class AdminView : Window
 
     }
 
-     /// <summary>
+    /// <summary>
     /// Event handler for the "Handle Engineers" button click.
     /// Opens the Engineer List Window to manage engineers.
     /// </summary>
@@ -96,6 +96,10 @@ public partial class AdminView : Window
             {
                 s_bl.Task.Reset();
                 s_bl.Engineer.Reset();
+                s_bl.Tools.SetProjectStartDate(null);
+                s_bl.Tools.SetProjectEndDate(null); 
+
+
                 MainWindow._isInitialized = false;
                 MainWindow.ProductionMode = false;
                 MessageBox.Show("Data reset completed successfully.", "Reset Done", MessageBoxButton.OK, MessageBoxImage.Information);
@@ -135,9 +139,9 @@ public partial class AdminView : Window
         }
     }
 
-    private void GanttChart_Click(object sender, RoutedEventArgs e) { 
-                new Task.GanttChart().Show(); 
-            }
+    private void GanttChart_Click(object sender, RoutedEventArgs e) {
 
-
+            new Task.GanttChart().Show();
+  
+    }  
 }

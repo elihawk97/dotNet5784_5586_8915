@@ -339,7 +339,7 @@ internal class TaskImplementation : BlApi.ITask
     /// </summary>
     public void Reset()
     {
-        _dal.Task.Reset();
+        _dal.Task.Reset(); 
     }
 
     /// <summary>

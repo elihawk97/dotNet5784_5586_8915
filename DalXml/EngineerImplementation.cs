@@ -13,7 +13,7 @@ internal class EngineerImplementation : IEngineer
     {
             List<Engineer> engineers = XMLTools.LoadListFromXMLSerializer<Engineer>(s_engineers_xml);
 
-            int nextId = XMLTools.GetAndIncreaseNextId("data-config", "NextEngineerId");
+            int nextId = XMLTools.GetAndIncreaseNextId("data-config", "NextEngineerId", false);
             entity.Id = nextId;
             engineers.Add(entity);
 
@@ -89,6 +89,7 @@ internal class EngineerImplementation : IEngineer
     public void Reset()
     {
         List<Engineer> engineers = new List<Engineer>();
+        XMLTools.GetAndIncreaseNextId("data-config", "NextEngineerId", true);
         XMLTools.SaveListToXMLSerializer(engineers, s_engineers_xml);
     }
 
