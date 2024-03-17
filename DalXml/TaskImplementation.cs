@@ -14,7 +14,7 @@ internal class TaskImplementation : ITask
        
             List<DO.Task> tasks = XMLTools.LoadListFromXMLSerializer<DO.Task>(s_tasks_xml);
 
-            int nextId = XMLTools.GetAndIncreaseNextId("data-config", "NextTaskId");
+            int nextId = XMLTools.GetAndIncreaseNextId("data-config", "NextTaskId", false);
             entity.Id = nextId;
             tasks.Add(entity);
 
@@ -87,7 +87,8 @@ internal class TaskImplementation : ITask
     public void Reset()
     {
             List<DO.Task> tasks = new List<DO.Task>();
-            XMLTools.SaveListToXMLSerializer(tasks, s_tasks_xml);
+        XMLTools.GetAndIncreaseNextId("data-config", "NextTaskId", true);
+        XMLTools.SaveListToXMLSerializer(tasks, s_tasks_xml);
     }
 
     public void Update(DO.Task item)

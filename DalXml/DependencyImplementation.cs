@@ -23,7 +23,7 @@ internal class DependencyImplementation : IDependency
         XElement xElement = XMLTools.LoadListFromXMLElement(s_dependencies_xml);
 
         // Get the next ID and increase it
-        int _id = XMLTools.GetAndIncreaseNextId("data-config", "NextDependencyId");
+        int _id = XMLTools.GetAndIncreaseNextId("data-config", "NextDependencyId", false);
 
         // Create a new XElement for the Dependency
         XElement newElement = new XElement("Dependency",
@@ -174,6 +174,7 @@ internal class DependencyImplementation : IDependency
         // Remove all child nodes from the root element
         xmlDoc.RemoveNodes();
         // Save the modified XDocument back to the same file, overwriting it
+        XMLTools.GetAndIncreaseNextId("data-config", "NextDependencyId", true);
         XMLTools.SaveListToXMLElement(xmlDoc,s_dependencies_xml);
     }
 

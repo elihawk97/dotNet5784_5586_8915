@@ -50,6 +50,7 @@ static class XMLTools
                         Console.WriteLine($"Successfully set {elemName} to {Date.Value.ToString("MM/dd/yyyy")}");
                         return; // Exit the method after successful execution
                     }
+
                     Console.WriteLine($"Element {elemName} not found in the XML file.");
                 }
                 else
@@ -132,17 +133,22 @@ static class XMLTools
 
 
     #region XmlConfig
-    public static int GetAndIncreaseNextId(string data_config_xml, string elemName)
+    public static int GetAndIncreaseNextId(string data_config_xml, string elemName, bool reset)
     {
+
+        
         XElement root = XMLTools.LoadListFromXMLElement(data_config_xml);
 
         // Attempt to get the value of NextId, or use a default value of 1 if it doesn't exist
         int nextId = root.ToNullableInt(elemName) ?? 1;
 
-        // Update the XML with the new value
+        if (reset == true)
+        {
+            nextId = 0; 
+        }
+
         root.Element(elemName)?.SetValue((nextId + 1).ToString());
         XMLTools.SaveListToXMLElement(root, data_config_xml);
-
         return nextId;
     } 
     #endregion

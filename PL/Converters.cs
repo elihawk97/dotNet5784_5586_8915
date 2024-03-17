@@ -52,6 +52,15 @@ public class ConvertIdToContent : IValueConverter
 
 public class ForeGroundConvertor : IValueConverter
 {
+
+    /// <summary>
+    /// Determines the Color of the Text
+    /// </summary>
+    /// <param name="value"></param>
+    /// <param name="targetType"></param>
+    /// <param name="parameter"></param>
+    /// <param name="culture"></param>
+    /// <returns></returns>
     public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
     {
         var str = value as string;
@@ -60,12 +69,15 @@ public class ForeGroundConvertor : IValueConverter
         if (str.Contains("Created")) return Brushes.Blue;
         if (str.Contains("UnScheduled")) return Brushes.Blue;
         if (str.Contains("Scheduled")) return Brushes.Blue;
-        if (str.Contains("OnTrack")) return Brushes.Pink;
+        if (str.Contains("OnTrack")) return Brushes.Yellow;
         if (str.Contains("InJeopardy")) return Brushes.Red;
         if (str.Contains("Done")) return Brushes.Green;
+
+
+
         if (str.Contains("Task")) return Brushes.White;
 
-        return Brushes.Black;
+        return Brushes.White;
     }
 
     public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
@@ -76,19 +88,29 @@ public class ForeGroundConvertor : IValueConverter
 
 public class ValueColorConverter : IValueConverter
 {
+    /// <summary>
+    /// Determines the Color of the Cell
+    /// </summary>
+    /// <param name="value"></param>
+    /// <param name="targetType"></param>
+    /// <param name="parameter"></param>
+    /// <param name="culture"></param>
+    /// <returns></returns>
     public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
     {
+
         var str = value as string;
         if (str == null) return Brushes.White;
 
-        if (str.Contains("Created")) return Brushes.Blue;
-        if (str.Contains("UnScheduled")) return Brushes.Yellow;
-        if (str.Contains("Scheduled")) return Brushes.Purple;
-        if (str.Contains("OnTrack")) return Brushes.Pink;
+
+
+        if (str.Contains("Create") ||
+            str.Contains("UnScheduled") || 
+            str.Contains("Scheduled")) return Brushes.Blue;
+
+        if (str.Contains("OnTrack")) return Brushes.Yellow;
         if (str.Contains("InJeopardy")) return Brushes.Red;
         if (str.Contains("Done")) return Brushes.Green;
-
-
         if (str.Contains("Task")) return Brushes.Black; 
 
         return Brushes.White; // Default color if parsing fails or value is not an int

@@ -45,7 +45,7 @@ internal class EngineerImplementation : IEngineer
             boItem.Id,
             boItem.Name,
             boItem.Email,
-            (DO.Enums.ExperienceLevel)boItem.Level,
+            MapToDO(boItem.Level),
             boItem.Cost);
 
         try
