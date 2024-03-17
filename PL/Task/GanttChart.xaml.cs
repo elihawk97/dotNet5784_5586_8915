@@ -104,6 +104,10 @@ public partial class GanttChart : Window
                     // If the column date is outside the task's date range, leave the cell empty
                     taskRow[i] = "";
                 }
+
+                
+                
+
             }
             DataTable.Rows.Add(taskRow);
 

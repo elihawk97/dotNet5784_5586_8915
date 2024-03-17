@@ -58,8 +58,8 @@ public class ForeGroundConvertor : IValueConverter
         if (str == null) return Brushes.Black;
 
         if (str.Contains("Created")) return Brushes.Blue;
-        if (str.Contains("UnScheduled")) return Brushes.Yellow;
-        if (str.Contains("Scheduled")) return Brushes.Purple;
+        if (str.Contains("UnScheduled")) return Brushes.Blue;
+        if (str.Contains("Scheduled")) return Brushes.Blue;
         if (str.Contains("OnTrack")) return Brushes.Pink;
         if (str.Contains("InJeopardy")) return Brushes.Red;
         if (str.Contains("Done")) return Brushes.Green;
