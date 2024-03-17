@@ -1,5 +1,6 @@
 ﻿using DO;
 using BO;
+using System.Diagnostics;
 namespace BlImplementation;
 
 /// <summary>
@@ -126,21 +127,22 @@ internal class TaskImplementation : BlApi.ITask
                                                  where (task.DifficultyLevel <= engineer.EngineerExperience && task.EngineerID == 0)
                                                  select taskDo_BO(task);
 
-                    
-                    tasksInList = from task in tasks
+                tasks = jeoperadyTree(tasks);
+                tasksInList = from task in tasks
                             let idNum = task.Id
                             from dependency in _dal.Dependency.ReadAll()
                             where ((dependency.DependentTask == idNum && _dal.Task.Read(dependency.DependentTask).IsActive == false) ||
                                     (dependency.DependentTask != idNum))
-                            select new TaskInList(task.Id, task.Description, task.Name, taskStatus(task));
-
+                            select new TaskInList(task.Id, task.Description, task.Name, task.Status);
+                    
                     return tasksInList;
                 }
 
             tasks = from task in _dal.Task.ReadAll()
                     select taskDo_BO(task);
+            tasks = jeoperadyTree(tasks);
             tasksInList = from task in tasks
-                          select new TaskInList(task.Id, task.Description, task.Name, taskStatus(task));
+                          select new TaskInList(task.Id, task.Description, task.Name, task.Status);
                    return tasksInList; 
 
                 
@@ -155,7 +157,13 @@ internal class TaskImplementation : BlApi.ITask
     private BO.Enums.TaskStatus taskStatus(BO.Task task)
     {
         BO.Enums.TaskStatus status;
-        if (task.ProjectedStartDate == null)
+        if((task.ActualEndDate == null && task.DeadLine < _bl.Clock)||
+            (task.ActualStartDate != null && ((DateTime)task.ActualStartDate).Add((TimeSpan)task.RequiredEffortTime!) > task.DeadLine)){
+            status = BO.Enums.TaskStatus.InJeopardy;
+
+        }
+
+        else if (task.ProjectedStartDate == null)
         {
             status = BO.Enums.TaskStatus.Unscheduled;
         }
@@ -217,22 +225,19 @@ internal class TaskImplementation : BlApi.ITask
                 tasks = from task in tasks
                         where filter(task)
                         select task;
-
-               /* tasks = from task in tasks
-                        let idNum = task.Id
-                        from dependency in _dal.Dependency.ReadAll()
-                        where ((dependency.DependentTask == idNum && _dal.Task.Read(dependency.DependentTask).IsActive == false) ||
-                                (dependency.DependentTask != idNum))
-                        select task;*/
-               taskInList = from task in tasks
-                            select new TaskInList(task.Id, task.Description, task.Name, taskStatus(task));
+                tasks = jeoperadyTree(tasks);
+             
+                taskInList = from task in tasks
+                            select new TaskInList(task.Id, task.Description, task.Name, task.Status);
                 return taskInList;
             }
 
             tasks = from task in _dal.Task.ReadAll()
                     select taskDo_BO(task);
+            tasks = jeoperadyTree(tasks);
+
             taskInList = from task in tasks
-                          select new TaskInList(task.Id, task.Description, task.Name, taskStatus(task));
+                          select new TaskInList(task.Id, task.Description, task.Name, task.Status);
             return taskInList;
 
 
@@ -242,6 +247,41 @@ internal class TaskImplementation : BlApi.ITask
             throw new BO.BlDoesNotExistException("Can't Read-All The Task list is empty!", ex);
         }
     }
+    
+    /// <summary>
+    /// Sets all tasks that are dependent on tasks in jeoperady to be 
+    /// in jeoperady
+    /// It uses a queue similar to the BFS
+    /// </summary>
+    /// <param name="tasks"></param>
+    /// <returns></returns>
+    public IEnumerable<BO.Task> jeoperadyTree(IEnumerable<BO.Task> tasks)
+    {
+        List<BO.Task> jTasks = new List<BO.Task>();
+        foreach(var task in tasks)
+        {
+            jTasks.Add(task);
+        }
+        jTasks = TopologicalSort(jTasks);
+
+        BO.Task holder;
+        BO.Task dependentTask;
+        for(int j = 0; j< jTasks.Count;j++)
+        {
+            foreach (var dependency in jTasks[j].Dependencies)
+            {
+                for(int i = 0; i < jTasks.Count; i++)
+                {
+                    if ((jTasks[i].Id == dependency.Id) && (jTasks[i].Status == BO.Enums.TaskStatus.InJeopardy))
+                    {
+                        jTasks[j].Status = BO.Enums.TaskStatus.InJeopardy;
+                    }
+                }
+            }
+        }
+        return (IEnumerable<BO.Task>)jTasks;
+    }
+
     /// <summary>
     /// Updates the start date of a task with the specified ID.
     /// </summary>
@@ -339,7 +379,8 @@ internal class TaskImplementation : BlApi.ITask
     /// </summary>
     public void Reset()
     {
-        _dal.Task.Reset(); 
+        _dal.Task.Reset();
+        _dal.Dependency.Reset();
     }
 
     /// <summary>
@@ -426,7 +467,10 @@ internal class TaskImplementation : BlApi.ITask
         {
             try
             {
+                if (task.Id != dependency.Id)
+                {
                     _dal.Dependency.Create(new Dependency(task.Id, dependency.Id));
+                }
              
             }
             catch(DalDoesNotExistException ex)

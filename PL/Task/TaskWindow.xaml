@@ -113,9 +113,9 @@
 
             <!-- Deadline Label and DatePicker for displaying the task's deadline. -->
             <Label Grid.Row="9" Grid.Column="0" Content="Deadline" />
-            <TextBox Grid.Row="9" Grid.Column="1"
-            Text="{Binding DeadLine, Mode=OneWay}" 
-            IsEnabled="False" />
+            <DatePicker Grid.Row="9" Grid.Column="1"
+            Text="{Binding DeadLine, Mode=twoWay}" 
+            IsEnabled="True" />
 
             <!-- Actual End Date Label and DatePicker for displaying the task's actual end date. -->
             <Label Grid.Row="10" Grid.Column="0" Content="Actual End Date" />
