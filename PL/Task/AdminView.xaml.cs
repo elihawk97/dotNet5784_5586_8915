@@ -141,7 +141,14 @@ public partial class AdminView : Window
 
     private void GanttChart_Click(object sender, RoutedEventArgs e) {
 
+        if (MainWindow.ProductionMode == false)
+        {
+            MessageBox.Show("Cannot Access Gantt chart during planning mode", "", MessageBoxButton.OK, MessageBoxImage.Information);
+
+        }
+        else
+        {
             new Task.GanttChart().Show();
-  
+        }
     }  
 }

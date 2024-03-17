@@ -58,16 +58,6 @@ static class XMLTools
                     Console.WriteLine("Failed to load XML file.");
                 }
             }
-            else if (Date.HasValue == false)
-            {
-                XElement root = XMLTools.LoadListFromXMLElement("data-config");
-                XElement element = root.Element(elemName);
-                DateTime dateValue = new DateTime(2000, 1, 1);
-                element.SetValue(dateValue.ToString("MM/dd/yyyy"));
-                XMLTools.SaveListToXMLElement(root, "data-config");
-                Console.WriteLine($"Successfully set {elemName} to {Date.Value.ToString("MM/dd/yyyy")}");
-                return; // Exit the method after successful execution
-            }
             else
             {
                 Console.WriteLine("Date parameter is null.");
