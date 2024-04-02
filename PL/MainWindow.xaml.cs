@@ -93,12 +93,15 @@ namespace PL
         private void ButtonForward_Click(object sender, RoutedEventArgs e)
         {
             blInstance.ClockForward(); // Adjust the time forward by 1 day
+            Date = blInstance.Clock.Date;
             DataContext = blInstance.Clock;
         }
 
         private void ButtonBackward_Click(object sender, RoutedEventArgs e)
         {
-            blInstance.ClockBackward(); // Adjust the time backward by 1 day
+            blInstance.ClockBackward();
+            // Adjust the time backward by 1 day
+            Date = blInstance.Clock.Date;
             DataContext = blInstance.Clock;
         }
 

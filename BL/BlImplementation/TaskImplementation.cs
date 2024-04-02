@@ -237,7 +237,7 @@ internal class TaskImplementation : BlApi.ITask
                 tasks = from task in tasks
                         where filter(task)
                         select task;
-                tasks = jeoperadyTree(tasks);
+                //tasks = jeoperadyTree(tasks);
              
                 taskInList = from task in tasks
                             select new TaskInList(task.Id, task.Description, task.Name, task.Status);
@@ -554,7 +554,7 @@ internal class TaskImplementation : BlApi.ITask
         {
             if (task.Dependencies != null && task.Dependencies.Count() != 0)
             {
-                dependencies[task.Id] = new HashSet<int>(task.Dependencies.Select(dep => dep.Id));
+                dependencies[task.Id] = new HashSet<int>(task.Dependencies.Where(dep => tasks.Any(task => task.Id == dep.Id)).Select(dep => dep.Id));
             }
         }
 
@@ -573,7 +573,10 @@ internal class TaskImplementation : BlApi.ITask
             List<BO.Task> newTasks = tasks.Where(task => dependencies.ContainsKey(task.Id) && dependencies[task.Id].Count == 0 && !sortedTasks.Any(sortedTask => sortedTask.Id == task.Id)).ToList();
             foreach (var task in newTasks)
             {
-                queue.Enqueue(task);
+                if (!sortedTasks.Any(cur => cur.Id == task.Id))
+                {
+                    queue.Enqueue(task);
+                }
                 tasks.RemoveAll(curTask => curTask.Id == task.Id);
             }
         }

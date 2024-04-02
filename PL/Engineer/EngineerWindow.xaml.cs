@@ -90,16 +90,22 @@ public partial class EngineerWindow : Window
     {
         InitializeComponent();
         EngineerId = engineerId;
-
-        if (EngineerId == 0)
+        try
         {
-            // Add mode: Assign a new object
-            CurrentEngineer = new BO.Engineer();
+            if (EngineerId == 0)
+            {
+                // Add mode: Assign a new object
+                CurrentEngineer = new BO.Engineer();
+            }
+            else
+            {
+                // Update mode: Fetch the object from BL
+                CurrentEngineer = s_bl.Engineer.ReadEngineer(EngineerId);
+            }
         }
-        else
+        catch(Exception ex)
         {
-            // Update mode: Fetch the object from BL
-            CurrentEngineer = s_bl.Engineer.ReadEngineer(EngineerId);
+            MessageBox.Show($"An error occurred: {ex.Message}", "Update Exception", MessageBoxButton.OK, MessageBoxImage.Error);
         }
     }
 }

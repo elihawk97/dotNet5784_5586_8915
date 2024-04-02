@@ -77,6 +77,14 @@ namespace Task
                   MessageBoxButton.OK,
                   MessageBoxImage.Information);
             }
+            catch(Exception ex)
+            {
+                MessageBox.Show(
+                  ex.Message,
+                  "Data Query Error",
+                  MessageBoxButton.OK,
+                  MessageBoxImage.Information);
+            }
 
         }
 
@@ -145,6 +153,7 @@ namespace Task
                 {
                     BO.Task task = s_bl.Task.ReadTask(selectedTask.Id);
                     task.EngineerForTask = engineer;
+                    task.ActualStartDate = MainWindow.Date; 
 
 
                     s_bl.Task.UpdateTask(task.Id, task);
