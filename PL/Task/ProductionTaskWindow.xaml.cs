@@ -102,7 +102,11 @@ namespace Task
                  if(CurrentTask3.ActualEndDate == null)
                 {
                     CurrentTask3.ActualEndDate = MainWindow.Date;
+                    CurrentTask3.EngineerForTask = null;
+                    
                     s_bl.Task.UpdateTask(CurrentTask3.Id, CurrentTask3);
+
+
                 }
                 else
                 {
