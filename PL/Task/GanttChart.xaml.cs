@@ -25,8 +25,6 @@ public partial class GanttChart : Window
 
     static readonly BlApi.IBl s_bl = BlApi.Factory.Get();
 
-
-
     private DataTable DataTable { get; set; }
     public DataView DataView { get; set; }
 
@@ -79,7 +77,7 @@ public partial class GanttChart : Window
             DateTime start = (task.ActualStartDate ?? task.ProjectedStartDate ?? DateTime.MaxValue).Date;
 
                 // Ensure ProjectedEndDate is not null; otherwise, use DateTime.MinValue
-                DateTime end = (task.ProjectedEndDate ?? DateTime.MinValue).Date;
+            DateTime end = (task.ActualEndDate ?? task.ProjectedEndDate ?? DateTime.MinValue).Date;
 
             string dependencyString = task.Dependencies != null
             ? string.Join(" ", task.Dependencies.Select(d => d.Name).Distinct())
