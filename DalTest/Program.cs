@@ -10,6 +10,22 @@ internal class Program
     //static readonly IDal s_dal = new DalXml.DalXml();//stage 3
     static readonly IDal s_dal = Factory.Get; //stage 4
 
+    public static T GetUserInput<T>(string prompt, Func<string, (bool IsValid, T Value)> tryParse)
+    {
+        while (true)
+        {
+            Console.WriteLine(prompt);
+            string input = Console.ReadLine() ?? "";
+            var (isValid, value) = tryParse(input);
+            if (isValid)
+            {
+                return value;
+            }
+            Console.WriteLine("Invalid input. Please try again.");
+        }
+    }
+
+
     public static DO.Task taskInput()
     {
 
@@ -24,40 +40,75 @@ internal class Program
         Console.WriteLine("Enter task description: (String)");
         string? description = Console.ReadLine();
 
-        Console.WriteLine("Is it a milestone? (True/False):");
+        Console.WriteLine("Is it a milestone? (True/False):");      
         bool isMilestone = bool.Parse(Console.ReadLine());
+ 
+        DateTime dateCreated = GetUserInput<DateTime>("Enter date created (MM/dd/yyyy HH:mm:ss):", input =>
+        {
+            bool isValid = DateTime.TryParse(input, out DateTime value)
+                  && value >= DateTime.Today && value <= DateTime.Today; // Ensure date is not in the past
+            return (isValid, value);
+        });
 
-        Console.WriteLine("Enter date created (MM/dd/yyyy HH:mm:ss):");
-        DateTime dateCreated = DateTime.Parse(Console.ReadLine());
+        DateTime projectedStartDate = GetUserInput<DateTime>("Enter projected start date (MM/dd/yyyy HH:mm:ss):", input =>
+        {
+            bool isValid = DateTime.TryParse(input, out DateTime value)
+                  && value >= DateTime.Today && value <= DateTime.Today; // Ensure date is not in the past
+            return (isValid, value);
+        });
 
-        Console.WriteLine("Enter projected start date (MM/dd/yyyy HH:mm:ss):");
-        DateTime projectedStartDate = DateTime.Parse(Console.ReadLine());
 
-        Console.WriteLine("Enter actual start time (optional, leave blank if not applicable - MM/dd/yyyy HH:mm:ss):");
-        string actualStartTimeInput = Console.ReadLine();
-        DateTime? actualStartTime = string.IsNullOrEmpty(actualStartTimeInput) ? (DateTime?)null : DateTime.Parse(actualStartTimeInput);
+        DateTime? actualStartTime = GetUserInput<DateTime>("Enter actual start time (optional, leave blank if not applicable - MM/dd/yyyy HH:mm:ss):", input =>
+        {
+            bool isValid = DateTime.TryParse(input, out DateTime value)
+                  && value >= DateTime.Today && value <= DateTime.Today; // Ensure date is not in the past
+            return (isValid, value);
+        });
 
-        Console.WriteLine("Enter task duration (HH:mm:ss):");
-        TimeSpan duration = TimeSpan.Parse(Console.ReadLine());
 
-        Console.WriteLine("Enter deadline (MM/dd/yyyy HH:mm:ss):");
-        DateTime dealLine = DateTime.Parse(Console.ReadLine());
+        TimeSpan duration = GetUserInput<TimeSpan>("Enter task duration (HH:mm:ss):", input =>
+        {
+            bool isValid = TimeSpan.TryParse(input, out TimeSpan value)
+                && value >= TimeSpan.Zero; // Ensure non-negative time span
+            return (isValid, value);
+        });
 
-        Console.WriteLine("Enter actual end date (optional, leave blank if not applicable - MM/dd/yyyy HH:mm:ss):");
-        string actualEndDateInput = Console.ReadLine();
-        DateTime? actualEndDate = string.IsNullOrEmpty(actualEndDateInput) ? (DateTime?)null : DateTime.Parse(actualEndDateInput);
+        DateTime dealLine = GetUserInput<DateTime>("Enter deadline (MM/dd/yyyy HH:mm:ss):", input =>
+        {
+            bool isValid = DateTime.TryParse(input, out DateTime value)
+                  && value >= DateTime.Today && value <= DateTime.Today; // Ensure date is not in the past
+            return (isValid, value);
+        });
 
-        Console.WriteLine("Enter deliverables: (String)");
-        string deliverables = Console.ReadLine();
 
-        Console.WriteLine("Enter additional notes: (String)");
-        string notes = Console.ReadLine();
+        DateTime? actualEndDate = GetUserInput<DateTime>("Enter actual end date (optional, leave blank if not applicable - MM/dd/yyyy HH:mm:ss):", input =>
+        {
+            bool isValid = DateTime.TryParse(input, out DateTime value)
+                  && value >= DateTime.Today && value <= DateTime.Today; // Ensure date is not in the past
+            return (isValid, value);
+        });
+
+        string deliverables = GetUserInput<string>("Enter deliverables: (String)", input =>
+        {
+            bool isValid = !string.IsNullOrEmpty(input);
+            return (isValid, input); // input is directly the value for string types
+        });
+
+        string notes = GetUserInput<string>("Enter additional notes: (String)", input =>
+        {
+            bool isValid = !string.IsNullOrEmpty(input);
+            return (isValid, input); // input is directly the value for string types
+        });
 
         Console.WriteLine("Enter engineer ID:");
         int engineerID = int.Parse(Console.ReadLine());
 
-        Console.WriteLine("Enter experience level (Novice, AdvancedBeginner, Competent, Proficient, Expert):");
-        DO.Enums.ExperienceLevel level = (DO.Enums.ExperienceLevel)Enum.Parse(typeof(DO.Enums.ExperienceLevel), Console.ReadLine());
+        // For Enums (e.g., level)
+        DO.Enums.ExperienceLevel level = GetUserInput<DO.Enums.ExperienceLevel>("Enter experience level (e.g., Novice, AdvancedBeginner):", input =>
+        {
+            bool isValid = Enum.TryParse<DO.Enums.ExperienceLevel>(input, out var value);
+            return (isValid, value);
+        });
 
         DO.Task newTask = new DO.Task(
             Id,
@@ -262,6 +313,37 @@ internal class Program
             Console.WriteLine(ex);
         }
     }
+
+    public static void ActivateEntity<T>()
+    {
+        try
+        {
+            Console.WriteLine($"Enter the id of the {typeof(T).Name} you wish to delete");
+            int id = int.Parse(Console.ReadLine());
+
+            if (typeof(T) == typeof(DO.Task))
+            {
+                s_dal.Task.Activate(id);
+            }
+            else if (typeof(T) == typeof(DO.Engineer))
+            {
+                s_dal.Engineer.Activate(id);
+            }
+            else if (typeof(T) == typeof(DO.Dependency))
+            {
+                s_dal.Dependency.Activate(id);
+            }
+            else
+            {
+                Console.WriteLine($"Unsupported entity type: {typeof(T).Name}");
+            }
+        }
+        catch (DalDoesNotExistException ex)
+        {
+            Console.WriteLine(ex);
+        }
+    }
+
     public static void ResetEntities<T>()
     {
         if (typeof(T) == typeof(DO.Task))
@@ -342,6 +424,7 @@ internal class Program
                         4: Delete {typeof(T).Name}
                         5: Read all {typeof(T).Name}s
                         6: Reset
+                        7: Activate Entity
                         Any Other number to go back
     ");
 
@@ -370,6 +453,9 @@ internal class Program
                     break;
                 case 6:
                     ResetEntities<T>();
+                    break;
+                case 7:
+                    ActivateEntity<T>();
                     break;
                 default:
                     break;

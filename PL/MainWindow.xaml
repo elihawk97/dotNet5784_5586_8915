@@ -6,11 +6,9 @@
         xmlns:local="clr-namespace:PL"
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="700"
-        DataContext="{Binding RelativeSource={RelativeSource Mode=Self}}"
-        >
+        DataContext="{Binding RelativeSource={RelativeSource Mode=Self}}">
 
     <Window.Resources>
-
         <Style TargetType="Button" x:Key="RoundButton">
             <Setter Property="Template">
                 <Setter.Value>
@@ -40,29 +38,49 @@
             <Setter Property="FontWeight" Value="Bold" />
             <Setter Property="Margin" Value="10" />
         </Style>
-
     </Window.Resources>
 
     <Grid>
         <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
             <RowDefinition Height="1*" />
             <RowDefinition Height="1*" />
         </Grid.RowDefinitions>
 
-        <TextBlock HorizontalAlignment="Center" VerticalAlignment="Top"
-                   Text="Main Window"
-                   FontFamily="Arial" FontSize="50" FontWeight="Bold" FontStyle="Italic"
-                   Foreground="DarkBlue" TextWrapping="Wrap" TextAlignment="Center" Padding="10" Margin="0,31,0,0" />
-        <Label Content="{Binding Date, StringFormat=hh:mm:ss tt,Mode=OneWay}" 
-               HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,20,0,0"
-               Grid.ColumnSpan="2" Style="{DynamicResource ClockLabel}" />
 
-        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Bottom" Margin="0,20,0,0">
+        <Grid>
+            <Rectangle Stroke="DarkBlue" StrokeThickness="2" Width="200" Height="100" HorizontalAlignment="Center" VerticalAlignment="Top">
+                <Rectangle.Fill>
+                    <SolidColorBrush Color="LightGray" />
+                </Rectangle.Fill>
+            </Rectangle>
+
+            <Canvas Width="200" Height="200" HorizontalAlignment="Center">
+                <TextBlock Text="Main Window" FontSize="30" FontWeight="Bold" 
+               HorizontalAlignment="Center" VerticalAlignment="Center"
+               Margin="0,0,0,-90" />
+            </Canvas>
+        </Grid>
+
+
+
+
+
+
+
+
+        <Label Content="{Binding Date, StringFormat=hh:mm:ss tt,Mode=OneWay}" 
+               HorizontalAlignment="Center" VerticalAlignment="Top" Margin="0,-60,0,0"
+               Grid.Row="2" Style="{DynamicResource ClockLabel}" />
+
+        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Bottom" Margin="0,20,0,0" Grid.Row="2">
             <Button Content="Forward" Click="ButtonForward_Click" Margin="5" Style="{DynamicResource RoundButton}" FontSize="20" />
             <Button Content="Backward" Click="ButtonBackward_Click" Margin="5" Style="{DynamicResource RoundButton}" FontSize="20" />
             <Button Content="Reset Clock" Click="Reset_Clock" Margin="5" Style="{DynamicResource RoundButton}" FontSize="20" />
         </StackPanel>
-        <Grid Grid.Row="1">
+
+        <Grid Grid.Row="3">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*" />
                 <ColumnDefinition Width="*" />
@@ -83,8 +101,6 @@
                     Click="btnEngineerView_Click"
                     Style="{DynamicResource RoundButton}"
                     FontSize="30" />
-
         </Grid>
-
     </Grid>
 </Window>

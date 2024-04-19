@@ -21,13 +21,29 @@ internal class EngineerImplementation : IEngineer
             return nextId;
     }
 
+    public void Activate(int id)
+    {
+        List<Engineer> engineers = XMLTools.LoadListFromXMLSerializer<Engineer>(s_engineers_xml);
+
+        Engineer? engineerToDelete = engineers.FirstOrDefault(e => e.Id == id);
+
+        if (engineerToDelete == null || engineerToDelete.IsActive == false)
+        {
+            throw new DalDoesNotExistException($"Engineer with ID {id} does not exist.");
+        }
+
+        engineerToDelete.IsActive = true;
+
+        XMLTools.SaveListToXMLSerializer(engineers, s_engineers_xml);
+    }
+
     public void Delete(int id)
     {
             List<Engineer> engineers = XMLTools.LoadListFromXMLSerializer<Engineer>(s_engineers_xml);
 
             Engineer? engineerToDelete = engineers.FirstOrDefault(e => e.Id == id);
 
-            if (engineerToDelete == null)
+            if (engineerToDelete == null || engineerToDelete.IsActive == false)
             {
                 throw new DalDoesNotExistException($"Engineer with ID {id} does not exist.");
             }
@@ -56,7 +72,7 @@ internal class EngineerImplementation : IEngineer
             List<Engineer> engineers = XMLTools.LoadListFromXMLSerializer<Engineer>(s_engineers_xml);
             Engineer? engineerToRead = engineers.FirstOrDefault(filter);
 
-            if (engineerToRead == null)
+            if (engineerToRead == null || engineerToRead.IsActive == false)
             {
                 throw new DalDoesNotExistException($"Engineer does not exist.");
             }
@@ -99,7 +115,7 @@ internal class EngineerImplementation : IEngineer
 
             Engineer? existingItem = engineers.FirstOrDefault(e => e.Id == item.Id);
 
-            if (existingItem == null)
+            if (existingItem == null || existingItem.IsActive == false)
             {
                 throw new DalDoesNotExistException($"Can not update Engineer. Engineer with ID={item.Id} does not exist");
             }

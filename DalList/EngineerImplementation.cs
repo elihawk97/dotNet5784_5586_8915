@@ -24,6 +24,16 @@ internal class EngineerImplementation : IEngineer
         return id;
     }
 
+    public void Activate(int id)
+    {
+        Engineer? copy = DataSource.Engineers.FirstOrDefault(e => e.Id == id);
+        if (copy == null)
+        {
+            throw new DalDoesNotExistException($"Engineer with ID={id} does not exist in deleted state, so it can not be deleted");
+        }
+        copy.IsActive = true;
+    }
+
     /// <summary>
     /// Marks an Engineer as inactive by setting its IsActive property to false.
     /// </summary>
@@ -32,11 +42,11 @@ internal class EngineerImplementation : IEngineer
     public void Delete(int id)
     {
         Engineer? copy = DataSource.Engineers.FirstOrDefault(item => item.Id == id);
-        if (copy == null)
+        if (copy == null || copy.IsActive == false)
         {
             throw new DalDoesNotExistException($"Can not delete Engineer. Engineer with ID={id} does Not exist");
         }
-        DataSource.Engineers.Remove(copy);
+        copy.IsActive = false;
     }
 
     /// <summary>
@@ -47,7 +57,7 @@ internal class EngineerImplementation : IEngineer
     public Engineer? Read(int id)
     {
         Engineer copy = DataSource.Engineers.FirstOrDefault(item => item.Id == id);
-        if (copy == null)
+        if (copy == null || copy.IsActive == false)
         {
             throw new DalDoesNotExistException($"Can not read Engineer. Engineer with ID={id} does Not exist");
         }
@@ -73,7 +83,7 @@ internal class EngineerImplementation : IEngineer
             toRead = DataSource.Engineers.FirstOrDefault();
         }
 
-        if (toRead == null)
+        if (toRead == null || toRead.IsActive == false)
         {
             throw new DalDoesNotExistException("No engineer fits this filter argument");
         }
@@ -92,7 +102,7 @@ internal class EngineerImplementation : IEngineer
     {
         Engineer? existingItem = DataSource.Engineers.FirstOrDefault(item => item.Id == engineer.Id);
 
-        if (existingItem == null)
+        if (existingItem == null || existingItem.IsActive == false)
         {
             throw new DalDoesNotExistException($"Can not update Engineer. Engineer with ID={engineer.Id} does Not exist");
         }
@@ -132,7 +142,7 @@ internal class EngineerImplementation : IEngineer
             engineers = from item in DataSource.Engineers
                         select item;
         }
-
+        engineers = engineers.Where(item => item.IsActive = true);
         if (engineers.Count() == 0)
         {
             throw new DalDoesNotExistException($"Can not read all Engineers. The Engineer list is empty");

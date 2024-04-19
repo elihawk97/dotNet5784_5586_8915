@@ -21,6 +21,23 @@ internal class TaskImplementation : ITask
             XMLTools.SaveListToXMLSerializer(tasks, s_tasks_xml);
             return nextId;
     }
+
+    public void Activate(int id)
+    {
+        List<DO.Task> tasks = XMLTools.LoadListFromXMLSerializer<DO.Task>(s_tasks_xml);
+
+        DO.Task? taskToAdd = tasks.FirstOrDefault(e => e.Id == id);
+
+        if (taskToAdd == null)
+        {
+            throw new DalDoesNotExistException($"Task with ID {id} does not exist.");
+        }
+
+        taskToAdd.IsActive = true;
+
+        XMLTools.SaveListToXMLSerializer(tasks, s_tasks_xml);
+    }
+
     public void Delete(int id)
     { 
             List<DO.Task> tasks = XMLTools.LoadListFromXMLSerializer<DO.Task>(s_tasks_xml);
@@ -97,7 +114,7 @@ internal class TaskImplementation : ITask
 
             DO.Task? existingItem = tasks.FirstOrDefault(e => e.Id == item.Id);
 
-            if (existingItem == null)
+            if (existingItem == null || existingItem.IsActive == false)
             {
                 throw new DalDoesNotExistException($"Can not update Task. Task with ID={item.Id} does not exist");
             }

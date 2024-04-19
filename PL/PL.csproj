@@ -12,7 +12,12 @@
 	<AppendRuntimeIdentifierToOutputPath>false</AppendRuntimeIdentifierToOutputPath>
 	<UseCommonOutputDirectory>true</UseCommonOutputDirectory>
 	<RootNamespace />
+	<ApplicationIcon>task_icon.ico</ApplicationIcon>
   </PropertyGroup>
+
+  <ItemGroup>
+    <Content Include="task_icon.ico" />
+  </ItemGroup>
 
 
 

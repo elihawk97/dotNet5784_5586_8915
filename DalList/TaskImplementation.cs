@@ -4,6 +4,7 @@ using DalApi;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using System.Threading;
 
 /// <summary>
 /// Implementation of the ITask interface for CRUD operations on Task objects.
@@ -39,6 +40,17 @@ internal class TaskImplementation : ITask
         return id;
     }
 
+
+    public void Activate(int id)
+    {
+        Task? copy = DataSource.Tasks.FirstOrDefault(e => e.Id == id);
+        if (copy == null)
+        {
+            throw new DalDoesNotExistException($"Task with ID={id} does not exist in deleted state, so it can not be deleted");
+        }
+        copy.IsActive = true;
+    }
+
     /// <summary>
     /// Marks a Task as inactive by setting its IsActive property to false.
     /// </summary>
@@ -47,12 +59,11 @@ internal class TaskImplementation : ITask
     {
         Task? copy = DataSource.Tasks.FirstOrDefault(e => e.Id == id);
 
-        if (copy == null)
+        if (copy == null || copy.IsActive == false)
         {
             throw new DalDoesNotExistException($"Task with ID={id} does not exist");
         }
-
-        DataSource.Tasks.Remove(copy);
+        copy.IsActive = false;
     }
 
     /// <summary>
@@ -64,7 +75,7 @@ internal class TaskImplementation : ITask
     {
         Task? task = DataSource.Tasks.FirstOrDefault(e => e.Id == id);
 
-        if (task == null)
+        if (task == null || task.IsActive == false)
         {
            throw new DalDoesNotExistException($"Can't read Task with ID={id}, it does not exist");
         }
@@ -89,7 +100,7 @@ internal class TaskImplementation : ITask
             toRead = DataSource.Tasks.FirstOrDefault();
         }
 
-        if(toRead == null)
+        if(toRead == null || toRead.IsActive == false)
         {
             throw new DalDoesNotExistException("No task with fits this filter argument");
         }
@@ -106,10 +117,11 @@ internal class TaskImplementation : ITask
     {
         IEnumerable<Task> tasks;
         if (filter == null)
-            tasks = DataSource.Tasks.Select(item => item);
+            tasks = DataSource.Tasks.Where(item => item.IsActive == true).Select(item => item);
         else
             tasks = DataSource.Tasks.Where(filter);
-        if(tasks.Count() == 0)
+        tasks = tasks.Where(item => item.IsActive == true);
+  ;      if(tasks.Count() == 0)
         {
             throw new DalDoesNotExistException("Can not read all tasks, the Task list is empty");
         }
@@ -125,7 +137,7 @@ internal class TaskImplementation : ITask
     {
         Task? existingItem = DataSource.Tasks.FirstOrDefault(e => e.Id == item.Id);
 
-        if (existingItem == null)
+        if (existingItem == null || existingItem.IsActive == false)
         {
             throw new DalDoesNotExistException($"Task with ID={item.Id} does not exist");
         }

@@ -49,7 +49,17 @@ internal class DependencyImplementation : IDependency
    
 
     }
-
+    public void Activate(int id)
+    {
+        XElement root = XMLTools.LoadListFromXMLElement(s_dependencies_xml);
+        XElement? dep = root.Elements().FirstOrDefault(d => d.Element("Id")!.Value == id.ToString());
+        if (dep == null || dep.Element("IsActive")!.Value == "false")
+        {
+            throw new DalDoesNotExistException($"Dependency with ID={id} does not exist in the database");
+        }
+        dep.Element("IsActive")!.Value = "true";
+        XMLTools.SaveListToXMLElement(root, s_dependencies_xml);
+    }
 
     /// <summary>
     /// Deletes a Dependency with the specified ID from the XML file.
@@ -82,7 +92,7 @@ internal class DependencyImplementation : IDependency
         XElement? foundElement = xElement.Elements("Dependency")
                                         .FirstOrDefault(element => element.Element("Id") != null && (int)element.Element("Id") == id && element.Element("IsActive").ToString().Equals("True"));
 
-        if (foundElement == null)
+        if (foundElement == null || foundElement.Element("IsActive")!.Value == "false")
         {
             // Log the error or handle it accordingly
             throw new DalDoesNotExistException($"Dependency with ID={id} does not exist in the database");
@@ -121,7 +131,7 @@ internal class DependencyImplementation : IDependency
 
         // Apply the filter to find the matching Dependency
         Dependency foundDependency = dependencies.FirstOrDefault(filter);
-        if(foundDependency == null) {
+        if(foundDependency == null || foundDependency.IsActive == false) {
             throw new DalDoesNotExistException($"No Dependency fitting that filter exists in the database");
         }
         return foundDependency;
@@ -186,7 +196,7 @@ internal class DependencyImplementation : IDependency
     {
         int id = item.Id;
         XElement root = XMLTools.LoadListFromXMLElement(s_dependencies_xml);
-        XElement? dep = root.Elements().FirstOrDefault(d => d.Element("Id")!.Value == id.ToString());
+        XElement? dep = root.Elements().FirstOrDefault(d => d.Element("Id")!.Value == id.ToString() && d.Element("IsActive")!.Value == "true");
         if (dep == null)
         {
             throw new DalDoesNotExistException($"Dependency with ID={item.Id} does not exist in the database");

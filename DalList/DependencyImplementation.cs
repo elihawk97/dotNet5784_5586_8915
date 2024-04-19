@@ -4,6 +4,7 @@ using DalApi;
 using System.Collections.Generic;
 using System.Linq;
 using System;
+using System.Threading;
 
 /// <summary>
 /// Implementation for the Dependency interface
@@ -27,6 +28,16 @@ internal class DependencyImplementation : IDependency
         return id;
     }
 
+    public void Activate(int id)
+    {
+        Dependency? copy = DataSource.Dependencies.FirstOrDefault(e => e.Id == id);
+        if (copy == null)
+        {
+            throw new DalDoesNotExistException($"Dependency with ID={id} does not exist in deleted state, so it can not be deleted");
+        }
+        copy.IsActive = true;
+    }
+
     public void Delete(int id)
     {
         Dependency? copy = DataSource.Dependencies.FirstOrDefault(e => e.Id == id);
@@ -34,13 +45,14 @@ internal class DependencyImplementation : IDependency
         {
             throw new DalDoesNotExistException($"Dependency with ID={id} does not exist, so it can not be deleted");
         }
-        DataSource.Dependencies.Remove(copy);
+        copy.IsActive = false;
+
     }
 
     public Dependency? Read(int id)
     {
         Dependency? toRead = DataSource.Dependencies.FirstOrDefault(item => item.Id == id);
-        if (toRead == null)
+        if (toRead == null || toRead.IsActive == false)
         {
             throw new DalDoesNotExistException($"Can't Read! Dependency with ID={id} does not exist");
         }
@@ -59,7 +71,7 @@ internal class DependencyImplementation : IDependency
             toRead = DataSource.Dependencies.FirstOrDefault();
         }
 
-        if (toRead == null)
+        if (toRead == null || toRead.IsActive == false)
         {
             throw new DalDoesNotExistException("No task with fits this filter argument");
         }
@@ -72,7 +84,7 @@ internal class DependencyImplementation : IDependency
     {
 
         Dependency? toDelete = DataSource.Dependencies.FirstOrDefault(element => element.Id == item.Id);
-        if (toDelete == null)
+        if (toDelete == null || toDelete.IsActive == false)
         {
             throw new DalDoesNotExistException($"Can't update! No Dependency  with matching ID {item.Id} found");
         }
@@ -95,12 +107,13 @@ internal class DependencyImplementation : IDependency
         if (filter != null)
         {
             dependencies = from item in DataSource.Dependencies
-                           where filter(item)
+                           where filter(item) && item.IsActive == true
                            select item;
         }
         else
         {
             dependencies = from item in DataSource.Dependencies
+                           where item.IsActive == true
                            select item;
         }
         if (dependencies.Count() == 0)
