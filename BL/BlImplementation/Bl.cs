@@ -9,6 +9,7 @@ using BlApi;
 /// </summary>
 public class Bl : IBl
 {
+    public static object clockLock = new object(); // Synchronization object for clock access
     private static DateTime s_Clock = DateTime.Now.Date;
     public DateTime Clock
     {

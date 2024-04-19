@@ -27,6 +27,7 @@ namespace PL
             new PropertyMetadata(default(bool)));
         public static bool _isInitialized = false;
         private DispatcherTimer timer;
+        private bool isStopping = false; // Flag to signal timer stop
 
 
         public MainWindow()
@@ -45,11 +46,25 @@ namespace PL
 
         private void Timer_Tick(object sender, object e)
         {
-            blInstance.ClockForwardHour();
+            lock (Bl.clockLock) // Lock using the static object
+            {
+                blInstance.ClockForwardHour();
+            }
             DataContext = blInstance.Clock; // Notify UI of data change
             Date = blInstance.Clock.Date;
         }
+        protected override void OnClosing(System.ComponentModel.CancelEventArgs e)
+        {
+            isStopping = true; // Set flag to signal timer stop
 
+            // Wait for timer to stop using Dispatcher.Invoke
+            Dispatcher.Invoke(() =>
+            {
+                timer.Stop();
+            });
+
+            base.OnClosing(e);
+        }
 
         /// <summary>
         /// Event handler for the "Handle Engineers" button click.
@@ -106,14 +121,20 @@ namespace PL
 
         private void ButtonForward_Click(object sender, RoutedEventArgs e)
         {
-            blInstance.ClockForward(); // Adjust the time forward by 1 day
+            lock (Bl.clockLock)
+            { // Lock using the static object
+                blInstance.ClockForward(); // Adjust the time forward by 1 day
+            }
             Date = blInstance.Clock.Date;
             DataContext = blInstance.Clock;
         }
 
         private void ButtonBackward_Click(object sender, RoutedEventArgs e)
         {
-            blInstance.ClockBackward();
+            lock (Bl.clockLock)
+            { // Lock using the static object
+                blInstance.ClockBackward();
+            }
             // Adjust the time backward by 1 day
             Date = blInstance.Clock.Date;
             DataContext = blInstance.Clock;
@@ -121,10 +142,11 @@ namespace PL
 
         private void Reset_Clock(object sender, RoutedEventArgs e)
         {
-            blInstance.Reset_Time(); // Adjust the time backward by 1 day
+            lock (Bl.clockLock)
+            { // Lock using the static object
+                blInstance.Reset_Time(); // Adjust the time backward by 1 day
+            }
             DataContext = blInstance.Clock;
         }
     }
-
-
 }
