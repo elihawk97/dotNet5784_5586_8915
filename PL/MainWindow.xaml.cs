@@ -2,6 +2,7 @@
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media.Imaging;
+using System.Windows.Threading;
 using Task;
 
 
@@ -25,6 +26,7 @@ namespace PL
             typeof(MainWindow),
             new PropertyMetadata(default(bool)));
         public static bool _isInitialized = false;
+        private DispatcherTimer timer;
 
 
         public MainWindow()
@@ -33,10 +35,21 @@ namespace PL
             blInstance = new Bl(); // Assuming Bl is instantiated here.
             DataContext = Date; // Set DataContext for data binding
             ProductionMode = false;
+
+            // Initialize and start the timer (adjust interval as needed)
+            timer = new DispatcherTimer();
+            timer.Interval = TimeSpan.FromSeconds(1);
+            timer.Tick += Timer_Tick;
+            timer.Start();
         }
 
+        private void Timer_Tick(object sender, object e)
+        {
+            blInstance.ClockForwardHour();
+            DataContext = blInstance.Clock; // Notify UI of data change
+            Date = blInstance.Clock.Date;
+        }
 
-        
 
         /// <summary>
         /// Event handler for the "Handle Engineers" button click.

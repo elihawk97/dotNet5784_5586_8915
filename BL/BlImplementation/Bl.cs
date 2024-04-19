@@ -24,6 +24,10 @@ public class Bl : IBl
     public void ClockForward() {
         Clock = Clock.AddDays(1);
     }
+    public void ClockForwardHour()
+    {
+        Clock = Clock.AddHours(1);
+    }
     public void ClockBackward()
     {
         Clock = Clock.AddDays(-1);
