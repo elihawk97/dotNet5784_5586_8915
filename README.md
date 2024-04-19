@@ -16,4 +16,4 @@ Option 1 - based only on existing data
 8: Meaningful use of transformations 
 9: Graphics (shape) 
 10: Running the system clock in the background (e.g., every second the clock advances by an hour or 10 minutes), while updating the clock display in the main window 
-11: Must allow multiple engineers to log in (in separate windows) simultaneously
+11: טיפול בישויות משתמשים Must allow multiple engineers to log in (in separate windows) simultaneously
