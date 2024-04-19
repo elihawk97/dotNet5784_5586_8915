@@ -362,7 +362,7 @@ internal class TaskImplementation : BlApi.ITask
             {
                 throw new BLInvalidDateException($"Error updating Task {boTask.Id}: Can't assign start date before date created.");
             }
-            else if ((boTask.EngineerForTask == null || boTask.ActualStartDate == null) && boTask.ActualEndDate != null)
+            else if ( boTask.ActualStartDate == null && boTask.ActualEndDate != null)
             {
                 throw new BLNoEngineerException($"Error updating Task {boTask.Id}: Can't assign End date before assiging engineer to task and starting Task.");
             }

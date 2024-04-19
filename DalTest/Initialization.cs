@@ -29,6 +29,7 @@ public static class Initialization
         createTasks();
         CreateEngineers();
         CreateDependencies();
+        s_dal!.SetProjectStartDate(DateTime.Now); 
     }
 
     private static void createTasks()
@@ -135,6 +136,7 @@ public static class Initialization
 
             //generate Cost
             double Cost = s_rand.NextDouble() * (300 - 150) + 150;
+            Cost = Math.Round(Cost, 2);
 
             //Create new Engineer Object
             Engineer NewEngineer = new(
