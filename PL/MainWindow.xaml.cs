@@ -1,4 +1,5 @@
 ﻿using BlImplementation;
+using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media.Imaging;
@@ -28,11 +29,15 @@ namespace PL
         public static bool _isInitialized = false;
         private DispatcherTimer timer;
         private bool isStopping = false; // Flag to signal timer stop
+        private bool isStopping2 = false; // Flag to signal timer stop
+        private Dictionary<int, Thread> engineerThreads; // Dictionary to store engineer threads
 
 
         public MainWindow()
         {
             InitializeComponent();
+            engineerThreads = new Dictionary<int, Thread>();//threading for mulitple engineers
+
             blInstance = new Bl(); // Assuming Bl is instantiated here.
             DataContext = Date; // Set DataContext for data binding
             ProductionMode = false;
@@ -53,6 +58,11 @@ namespace PL
             DataContext = blInstance.Clock; // Notify UI of data change
             Date = blInstance.Clock.Date;
         }
+
+        /// <summary>
+        /// Closing of the engineer view and clock threads
+        /// </summary>
+        /// <param name="e"></param>
         protected override void OnClosing(System.ComponentModel.CancelEventArgs e)
         {
             isStopping = true; // Set flag to signal timer stop
@@ -62,6 +72,13 @@ namespace PL
             {
                 timer.Stop();
             });
+            isStopping2 = true;
+
+            // Wait for all engineer threads to stop
+            foreach (Thread thread in engineerThreads.Values)
+            {
+                thread.Join();
+            }
 
             base.OnClosing(e);
         }
@@ -81,6 +98,7 @@ namespace PL
         /// Event handler for the "Handle Tasks" button click.
         /// Opens the Task List Window to manage tasks.
         /// This method is currently not connected in the XAML, thus commented out.
+        /// Added support for multiple engineers in different threads
         /// </summary>
         /// <param name="sender">The source of the event.</param>
         /// <param name="e">An RoutedEventArgs that contains the event data.</param>
@@ -100,7 +118,14 @@ namespace PL
                     // Here, you would implement or call your logic to retrieve the engineer's information based on the ID
                     // For demonstration, just showing the ID in a message box
                     MessageBox.Show($"You entered ID: {Id}", "ID Entered");
-
+                    // Check if engineer thread already exists for this ID
+                    if (!engineerThreads.ContainsKey(engineerIdInt))
+                    {
+                        Thread engineerThread = new Thread(() => GetEngineerDataAndTasks(engineerIdInt));
+                        engineerThread.Start();
+                        engineerThreads.Add(engineerIdInt, engineerThread);
+                        engineerThreads.Remove(engineerIdInt);
+                    }
                     // Example: Set the CurrentEngineer based on the input ID
                     // This is where you would retrieve the engineer details using the input ID
                     // CurrentEngineer = YourMethodToGetEngineerById(input);
@@ -111,14 +136,28 @@ namespace PL
                 {
                     MessageBox.Show("No ID entered. Please enter a valid Engineer ID to proceed.", "No ID Entered", MessageBoxButton.OK, MessageBoxImage.Warning);
                 }
-                new Engineer.TaskTracker(engineerIdInt).Show();
             }
             else
             {
                 MessageBox.Show("You are still in Planning Mode", "System has not been initialized yet", MessageBoxButton.OK, MessageBoxImage.Warning);
             }
         }
+        /// <summary>
+        /// Functionality of the engineer thread
+        /// </summary>
+        /// <param name="engineerID"></param>
+        public void GetEngineerDataAndTasks(int engineerID)
+        {
+            Dispatcher.Invoke(() =>
+            {
+                // Update UI elements based on the retrieved engineer data (e.g., display engineer name in a label)
+                new Engineer.TaskTracker(engineerID).Show();
 
+            });
+
+        }
+
+  
         private void ButtonForward_Click(object sender, RoutedEventArgs e)
         {
             lock (Bl.clockLock)
